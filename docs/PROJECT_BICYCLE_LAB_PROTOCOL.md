@@ -43,18 +43,18 @@ Project Bicycle does not claim:
 
 ## Test Payload
 
-The current public test payload is Project Bicycle v0.2.0:
+The current public test payload is Project Bicycle v0.2.1:
 
-<https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.2.0-standalone-tool>
+<https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.2.1-readme-test-pointer>
 
 The direct standalone zip is:
 
-<https://github.com/Lucid-Studios/Project-Bicycle/releases/download/v0.2.0-standalone-tool/project-bicycle-v0.2.0-standalone-tool.zip>
+<https://github.com/Lucid-Studios/Project-Bicycle/releases/download/v0.2.1-readme-test-pointer/project-bicycle-v0.2.1-readme-test-pointer.zip>
 
 Inside this standalone package, the current tool posture is:
 
 - package line: `Project Bicycle`;
-- current version: `0.2.0`;
+- current version: `0.2.1`;
 - root solution: `San.sln`;
 - bundled documentation: none;
 - bundled legacy line folders: none;
@@ -93,19 +93,19 @@ Create a clean lab folder and download the standalone package:
 ```powershell
 mkdir sanctuary-lab
 cd sanctuary-lab
-$tag = "v0.2.0-standalone-tool"
-$zip = "project-bicycle-v0.2.0-standalone-tool.zip"
+$tag = "v0.2.1-readme-test-pointer"
+$zip = "project-bicycle-v0.2.1-readme-test-pointer.zip"
 Invoke-WebRequest `
   -Uri "https://github.com/Lucid-Studios/Project-Bicycle/releases/download/$tag/$zip" `
   -OutFile $zip
-Expand-Archive -LiteralPath $zip -DestinationPath ".\Project-Bicycle-v0.2.0"
-cd ".\Project-Bicycle-v0.2.0"
+Expand-Archive -LiteralPath $zip -DestinationPath ".\Project-Bicycle-v0.2.1"
+cd ".\Project-Bicycle-v0.2.1"
 ```
 
 Alternatively, clone the tagged repository:
 
 ```powershell
-git clone --branch v0.2.0-standalone-tool --depth 1 https://github.com/Lucid-Studios/Project-Bicycle.git
+git clone --branch v0.2.1-readme-test-pointer --depth 1 https://github.com/Lucid-Studios/Project-Bicycle.git
 cd Project-Bicycle
 ```
 

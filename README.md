@@ -76,7 +76,8 @@ This repository currently provides:
 - project identity and scope;
 - stewardship and department framing;
 - Project Bicycle lab-testing protocol;
-- bounded environment preparation and archive-harness test instructions;
+- bounded environment preparation for the standalone Project Bicycle tool
+  package;
 - public contribution and support boundaries;
 - security and disclosure posture;
 - release-control language;
@@ -95,16 +96,20 @@ This repository currently does not provide:
 
 ## Project Bicycle
 
-Project Bicycle is the public lab protocol for testing Project Sanctuary in a
-bounded environment. It defines how Operators and agents may use governed
-tool-use cycles to simulate Prime, Cryptic, and Steward role bodies without
-confusing rehearsal, successful execution, or coherent output with authority.
+Project Bicycle is the standalone public tool package for testing Project
+Sanctuary in a bounded environment. It defines how Operators and agents may use
+governed tool-use cycles to simulate Prime, Cryptic, and Steward role bodies
+without confusing rehearsal, successful execution, or coherent output with
+authority.
 
-The downloadable first-ride package is separate from the archive body:
+The downloadable first-ride package is separate from the archive body and does
+not require Codex Mirror:
 
 - Project Bicycle repository: <https://github.com/Lucid-Studios/Project-Bicycle>
-- Project Bicycle release package:
-  <https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.1.0-public-test-payload>
+- Project Bicycle v0.2.0 standalone tool release:
+  <https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.2.0-standalone-tool>
+- Project Bicycle v0.2.0 standalone zip:
+  <https://github.com/Lucid-Studios/Project-Bicycle/releases/download/v0.2.0-standalone-tool/project-bicycle-v0.2.0-standalone-tool.zip>
 
 Read the protocol:
 

@@ -43,21 +43,25 @@ Project Bicycle does not claim:
 
 ## Test Payload
 
-The current public test payload is the archived OAN harness preserved in Codex
-Mirror:
+The current public test payload is Project Bicycle:
 
-<https://github.com/Lucid-Studios/Codex-Mirror>
+<https://github.com/Lucid-Studios/Project-Bicycle>
 
-Inside that archive, the current runnable truth is:
+Inside this standalone package, the current runnable truth is:
 
-- payload folder: `OAN-Tech-Stack`;
-- current line: `OAN Mortalis V1.2.1`;
+- payload line: `OAN Mortalis V1.2.1`;
+- retained parent marker: `OAN Mortalis V1.1.1`;
 - current version: `1.3.18`;
-- retained parent: `OAN Mortalis V1.1.1`;
-- runtime authority: refused.
+- runtime authority: refused;
+- production readiness: not claimed.
 
-Project Sanctuary is the public release page and protocol home. Codex Mirror is
-the archive payload source for the current test ride.
+Project Sanctuary is the public release page and protocol home. Project Bicycle
+is the standalone download and first-ride test payload. Codex Mirror remains
+archive lineage only and is not required for this test.
+
+The retained parent marker is included as lineage evidence for the preflight
+checks. It is not the archived parent implementation and is not a release
+target.
 
 ## Required Lab Tools
 
@@ -76,32 +80,25 @@ Recommended optional tools:
 - Roswell for managing Common Lisp implementations.
 - A markdown editor for reviewing receipts and protocol notes.
 
-The current archived harness builds through .NET and C#. A separate Lisp
-runtime is not required for the first cold test unless your lab is extending
-Lisp-form experiments.
+The current package builds through .NET and C#. A separate Lisp runtime is not
+required for the first cold test unless your lab is extending Lisp-form
+experiments.
 
 ## Download And File Preparation
 
-Create a clean lab folder and clone both repositories:
+Create a clean lab folder and clone the standalone package:
 
 ```powershell
 mkdir sanctuary-lab
 cd sanctuary-lab
-git clone https://github.com/Lucid-Studios/Project-Sanctuary.git
-git clone https://github.com/Lucid-Studios/Codex-Mirror.git
+git clone https://github.com/Lucid-Studios/Project-Bicycle.git
 ```
 
 Confirm the payload folder exists:
 
 ```powershell
-cd Codex-Mirror
-Test-Path .\OAN-Tech-Stack
-```
-
-Enter the test payload:
-
-```powershell
-cd .\OAN-Tech-Stack
+cd Project-Bicycle
+Test-Path ".\OAN Mortalis V1.2.1"
 ```
 
 Confirm .NET is available:
@@ -110,7 +107,7 @@ Confirm .NET is available:
 dotnet --info
 ```
 
-The archive includes a `global.json` requesting the .NET 8 SDK line. If your
+The package includes a `global.json` requesting the .NET 8 SDK line. If your
 installed patch version is newer, normal .NET roll-forward behavior should use
 the latest compatible patch.
 
@@ -287,7 +284,7 @@ Operator:
 Contact:
 
 Test payload:
-Payload commit or archive date:
+Payload commit or package tag:
 Current line under test:
 
 Objective:
@@ -387,7 +384,7 @@ Stop or pause the test if any role:
 A useful external report should include:
 
 - environment summary;
-- payload commit or archive date;
+- payload commit or package tag;
 - exact commands run;
 - pass/fail results;
 - role cards used;

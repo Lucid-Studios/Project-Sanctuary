@@ -2,16 +2,17 @@
 
 ## Scope
 
-Project Sanctuary currently accepts release-page polish and release-boundary
-work only. It is not the place to restore archived documentation, submit
-implementation-bearing pull requests, private build materials, runtime payloads,
-or reconstruction guides.
+Project Sanctuary currently accepts release-page polish, Project Bicycle
+lab-protocol work, and release-boundary work only. It is not the place to
+restore archived documentation, submit implementation-bearing pull requests,
+private build materials, runtime payloads, or reconstruction guides.
 
 ## Suitable Contributions
 
 Suitable public contributions include:
 
 - clearer Project Sanctuary release-page wording;
+- clearer Project Bicycle lab-testing instructions;
 - safer non-claim language;
 - issue and pull request template improvements;
 - responsible disclosure routing;
@@ -24,7 +25,8 @@ Suitable public contributions include:
 Do not submit:
 
 - source code intended to reconstruct the private build;
-- build, install, test, release, or deployment automation;
+- private build, install, test, release, or deployment automation;
+- production deployment instructions;
 - datasets, fixtures, generated audit outputs, or runtime payloads;
 - private corpus references or raw logs;
 - local absolute paths, credentials, tokens, secrets, or machine-specific
@@ -43,10 +45,11 @@ Each pull request should state:
 
 ## Issues
 
-Use public issues for Project Sanctuary release-page clarity, public boundary
-questions, and repository hygiene. Do not use public issues to request private
-build instructions, internal file maps, local runtime details,
-archived-material restoration, or executable reproduction steps.
+Use public issues for Project Sanctuary release-page clarity, Project Bicycle
+lab-protocol clarity, public boundary questions, and repository hygiene. Do not
+use public issues to request private build instructions, internal file maps,
+local runtime details, archived-material restoration, or executable
+reconstruction steps.
 
 Security concerns and sensitive disclosure should be reported through the
 repository security policy rather than a public issue.

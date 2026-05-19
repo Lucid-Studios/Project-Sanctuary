@@ -23,10 +23,10 @@ Private disclosure contacts:
 ## Public Repository Rule
 
 The public repository should currently contain only Project Sanctuary
-release-page custody, governance posture, contribution/security routing,
-non-claims, and disclosure guidance. Historical public material belongs in
-archive custody. Buildable materials belong outside this public surface until a
-deliberate release gate admits them.
+release-page custody, Project Bicycle lab protocol, governance posture,
+contribution/security routing, non-claims, and disclosure guidance. Historical
+public material belongs in archive custody. Buildable materials belong outside
+this public surface until a deliberate release gate admits them.
 
 ## Boundary Reports
 
@@ -38,6 +38,8 @@ Please report privately if public material appears to expose:
 - local path or machine-specific information;
 - claims that imply deployment readiness, legal authority, custody authority, or
   personified operation.
+- instructions that convert bounded archive-harness testing into private
+  reconstruction, production deployment, or runtime authority.
 
 ## Temporary Mitigation
 

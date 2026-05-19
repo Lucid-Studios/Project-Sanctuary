@@ -2,7 +2,8 @@
 
 ## Use The Right Channel
 
-For Project Sanctuary release-page or public-boundary clarity:
+For Project Sanctuary release-page, Project Bicycle lab-protocol, or
+public-boundary clarity:
 
 - open a public boundary correction;
 - open a public explanation request.
@@ -13,8 +14,9 @@ public issue tracker. Follow [SECURITY.md](SECURITY.md).
 ## Repository Scope
 
 This repository is currently a public test-release shell. It does not provide
-build support, runtime support, deployment support, model configuration support,
-archived-material restoration on demand, or private implementation assistance.
+production build support, runtime support, deployment support, model
+configuration support, archived-material restoration on demand, or private
+implementation assistance.
 
 ## Maintainer Contact
 

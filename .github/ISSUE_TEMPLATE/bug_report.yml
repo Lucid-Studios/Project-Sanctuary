@@ -18,6 +18,7 @@ body:
       description: Choose the public surface that best matches the concern.
       options:
         - Project Sanctuary release page
+        - Project Bicycle lab protocol
         - Contribution process
         - Issue or pull request template
         - Release-boundary wording

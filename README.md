@@ -75,6 +75,8 @@ This repository currently provides:
 
 - project identity and scope;
 - stewardship and department framing;
+- Project Bicycle lab-testing protocol;
+- bounded environment preparation and archive-harness test instructions;
 - public contribution and support boundaries;
 - security and disclosure posture;
 - release-control language;
@@ -85,10 +87,22 @@ This repository currently does not provide:
 - a runnable product;
 - a playable harness;
 - implementation source;
-- build, install, test, release, or deployment instructions;
+- production build, install, release, or deployment instructions;
+- private reconstruction instructions;
 - private corpus, runtime, telemetry, or model payloads;
 - CME.Actual, Sanctuary.Actual, diagnostic, legal, medical, custody, or safety
   authority.
+
+## Project Bicycle
+
+Project Bicycle is the public lab protocol for testing Project Sanctuary in a
+bounded environment. It defines how Operators and agents may use governed
+tool-use cycles to simulate Prime, Cryptic, and Steward role bodies without
+confusing rehearsal, successful execution, or coherent output with authority.
+
+Read the protocol:
+
+- [Project Bicycle Lab Protocol](docs/PROJECT_BICYCLE_LAB_PROTOCOL.md)
 
 ## Archive Lineage
 

@@ -106,10 +106,10 @@ The downloadable first-ride package is separate from the archive body and does
 not require Codex Mirror:
 
 - Project Bicycle repository: <https://github.com/Lucid-Studios/Project-Bicycle>
-- Project Bicycle v0.2.0 standalone tool release:
-  <https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.2.0-standalone-tool>
-- Project Bicycle v0.2.0 standalone zip:
-  <https://github.com/Lucid-Studios/Project-Bicycle/releases/download/v0.2.0-standalone-tool/project-bicycle-v0.2.0-standalone-tool.zip>
+- Project Bicycle v0.2.1 README test-pointer release:
+  <https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.2.1-readme-test-pointer>
+- Project Bicycle v0.2.1 standalone zip:
+  <https://github.com/Lucid-Studios/Project-Bicycle/releases/download/v0.2.1-readme-test-pointer/project-bicycle-v0.2.1-readme-test-pointer.zip>
 
 Read the protocol:
 

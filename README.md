@@ -100,6 +100,12 @@ bounded environment. It defines how Operators and agents may use governed
 tool-use cycles to simulate Prime, Cryptic, and Steward role bodies without
 confusing rehearsal, successful execution, or coherent output with authority.
 
+The downloadable first-ride package is separate from the archive body:
+
+- Project Bicycle repository: <https://github.com/Lucid-Studios/Project-Bicycle>
+- Project Bicycle release package:
+  <https://github.com/Lucid-Studios/Project-Bicycle/releases/tag/v0.1.0-public-test-payload>
+
 Read the protocol:
 
 - [Project Bicycle Lab Protocol](docs/PROJECT_BICYCLE_LAB_PROTOCOL.md)
@@ -112,7 +118,8 @@ Codex Mirror for archive custody:
 <https://github.com/Lucid-Studios/Codex-Mirror>
 
 Archive custody preserves lineage. It does not make archived material current
-release truth.
+release truth, and users do not need to clone the archive to test Project
+Bicycle.
 
 ## Release Rule
 

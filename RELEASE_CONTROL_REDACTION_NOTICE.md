@@ -26,6 +26,7 @@ left intermingled with the release home.
 The current public tree intentionally retains only:
 
 - root project identity;
+- Project Bicycle lab-testing protocol;
 - contribution and security guidance;
 - public issue and pull request hygiene;
 - release-control notice;
@@ -38,7 +39,8 @@ The current public tree intentionally excludes:
 - historical public docs and examples;
 - implementation source;
 - project and solution files;
-- build, test, release, deployment, and automation scripts;
+- private build, test, release, deployment, and automation scripts;
+- production deployment instructions;
 - datasets, fixtures, corpora, symbolic payloads, and generated audit material;
 - private topology, corpus lineage, model-specific operations, local paths, and
   machine-specific assumptions.
@@ -52,6 +54,14 @@ the working term for governed cognition-on-demand cycles.
 
 This public identity is release framing. It is not an implementation disclosure,
 runtime authority grant, or metaphysical claim.
+
+## Public Test Protocol
+
+Project Bicycle may provide bounded environment preparation, download, file
+preparation, and execution basics for testing the archived harness. These
+instructions are allowed only as public lab protocol and must preserve explicit
+non-claims around runtime authority, production readiness, private
+reconstruction, CME.Actual, and Sanctuary.Actual.
 
 ## Lineage Treatment
 

@@ -6,11 +6,12 @@ change.
 # Public Purpose
 
 Explain how this improves public understanding, safety, release control,
-disclosure posture, product test-release clarity, or accountability.
+disclosure posture, Project Bicycle lab testing, product test-release clarity,
+or accountability.
 
 # Boundary Check
 
-- [ ] No build, install, test, release, deployment, or reconstruction
+- [ ] No private build, install, test, release, deployment, or reconstruction
       instructions were added.
 - [ ] No source code, scripts, datasets, fixtures, runtime payloads, generated
       audit material, or private architecture contracts were added.

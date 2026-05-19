@@ -42,7 +42,7 @@ body:
     attributes:
       label: Public intake hygiene
       options:
-        - label: I am asking for public release-page or boundary material only, not source code, build instructions, datasets, private architecture, runtime payloads, or deployment detail.
+        - label: I am asking for public release-page, Project Bicycle lab-protocol, or boundary material only, not source code, private build instructions, datasets, private architecture, runtime payloads, or deployment detail.
           required: true
         - label: I have not included private corpus paths, credentials, tokens, logs, local absolute paths, or sensitive operator material.
           required: true

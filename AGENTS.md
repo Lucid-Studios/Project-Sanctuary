@@ -33,6 +33,8 @@ Allowed changes are limited to:
 
 - release-page polish;
 - project-scope clarification;
+- Project Bicycle lab-protocol documentation;
+- bounded archive-harness setup and inspection instructions;
 - release-boundary wording;
 - non-claim clarification;
 - responsible disclosure routing;
@@ -43,7 +45,8 @@ Allowed changes are limited to:
 
 Do not add or restore:
 
-- build, install, test, release, or deployment commands;
+- private build, install, test, release, or deployment commands;
+- production deployment commands;
 - workflow files that execute product build or release candidates;
 - private corpus paths, local absolute paths, secrets, tokens, logs, or
   machine-specific configuration;
@@ -57,8 +60,8 @@ Do not add or restore:
 ## Review Standard
 
 A public change is acceptable when it improves Project Sanctuary's release-page
-clarity, preserves non-claim discipline, and avoids giving enough detail to
-reconstruct private implementation.
+clarity, makes Project Bicycle testing safer, preserves non-claim discipline,
+and avoids giving enough detail to reconstruct private implementation.
 
 When uncertain, reduce specificity and route the material to private maintainer
 review.

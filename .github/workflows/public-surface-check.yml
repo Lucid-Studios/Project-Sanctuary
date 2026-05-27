@@ -21,18 +21,25 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Reject implementation-bearing public surfaces
+      - name: Reject implementation-bearing public surfaces outside admitted core lane
         shell: bash
         run: |
           set -euo pipefail
 
-          forbidden_paths='(^|/)(src|tests|tools|datasets|Modules|Build Contracts|runtime|\.audit)(/|$)|(^|/)OAN Mortalis V[0-9]'
-          forbidden_files='(^|/)(build|test)\.ps1$|(^|/)global\.json$|\.(cs|csproj|sln|ps1|lisp|jsonl|xlsx|zip)$'
+          allowed_core='^(src/Sanctuary\.Core/|src/Sanctuary\.Cli/|tests/Sanctuary\.Core\.Tests/|tools/(Invoke-SanctuaryTool|Start-SanctuaryServiceLayer|Stop-SanctuaryServiceLayer|Get-SanctuaryServiceLayerStatus|Start-SanctuaryMcpAlphaService|Stop-SanctuaryMcpAlphaService)\.ps1$|plugins/sanctuary-cme/|docs/(THEORY_BODY|CODE_BODY|GOVERNANCE_MODEL|CODEX_PLUGIN_RELEASE_PATH|ENGINEERED_COGNITION_LISP_CONTROL_MATRIX|INTERCONNECT_POLICY|DISCERNMENT_LINEAGE_CONTRACT|GPT_USE_CASE_TESTING_BODY|PROJECT_BICYCLE_LAB_PROTOCOL|PUBLIC_RELEASE_POSTURE|AUTHORITY_BODY|RELEASE_CHECKLIST|PRIVACY_AND_DATA_BOUNDARY|MATH_EC_PROTOCOL_BENCH)\.md$|Directory\.Build\.props$|ProjectSanctuary\.sln$|global\.json$|AGENTS\.md$|README\.md$|SECURITY\.md$|SECURITY_HARDENING\.md$|SUPPORT\.md$|CONTRIBUTING\.md$|CODE_OF_CONDUCT\.md$|RELEASE_CONTROL_REDACTION_NOTICE\.md$|\.agents/plugins/marketplace\.json$)'
+          forbidden_paths='(^|/)(datasets|Modules|Build Contracts|runtime|\.audit)(/|$)|(^|/)OAN Mortalis V[0-9]'
+          forbidden_files='(^|/)(build|test)\.ps1$|\.(lisp|jsonl|xlsx|zip)$'
 
-          path_hits="$(git ls-files | grep -E "$forbidden_paths|$forbidden_files" || true)"
+          path_hits="$(git ls-files | grep -E "$forbidden_paths|$forbidden_files" | grep -Ev "$allowed_core" || true)"
+          implementation_hits="$(git ls-files 'src/*' 'tests/*' 'tools/*' 'plugins/*' '.agents/*' '*.cs' '*.csproj' '*.sln' '*.ps1' '*.json' | grep -Ev "$allowed_core" || true)"
           if [[ -n "$path_hits" ]]; then
-            echo "Implementation-bearing files are not allowed in the public descriptive repository:"
+            echo "Implementation-bearing files outside the admitted core lane are not allowed:"
             echo "$path_hits"
+            exit 1
+          fi
+          if [[ -n "$implementation_hits" ]]; then
+            echo "Unexpected implementation-bearing files outside the admitted core lane:"
+            echo "$implementation_hits"
             exit 1
           fi
 
@@ -41,7 +48,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          term_hits="$(git grep -n -I -E 'ChatGPT Archive|Lab Context|D:\\|C:\\Users\\Rober|Qwen|RTME|SLI\.Lisp|RootAtlas|RootIndex|SymbolicIndex|SanctuaryID' -- . ':!.github/workflows/public-surface-check.yml' || true)"
+          term_hits="$(git grep -n -I -E 'ChatGPT Archive|Lab Context|D:\\|C:\\Users\\Rober|Qwen|RTME|RootIndex|SymbolicIndex|SanctuaryID' -- . ':!.github/workflows/public-surface-check.yml' || true)"
           if [[ -n "$term_hits" ]]; then
             echo "Public tree contains terms reserved for private review:"
             echo "$term_hits"

@@ -1,0 +1,20 @@
+{
+  "name": "project-sanctuary",
+  "interface": {
+    "displayName": "Project Sanctuary"
+  },
+  "plugins": [
+    {
+      "name": "sanctuary-cme",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sanctuary-cme"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

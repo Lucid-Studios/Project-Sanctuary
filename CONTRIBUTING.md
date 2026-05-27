@@ -3,9 +3,10 @@
 ## Scope
 
 Project Sanctuary currently accepts release-page polish, Project Bicycle
-lab-protocol work, and release-boundary work only. It is not the place to
-restore archived documentation, submit implementation-bearing pull requests,
-private build materials, runtime payloads, or reconstruction guides.
+lab-protocol work, release-boundary work, and narrow hardening work for the
+admitted core executable lane. It is not the place to restore archived
+documentation, submit private-build pull requests, publish runtime payloads, or
+add reconstruction guides.
 
 ## Suitable Contributions
 
@@ -14,6 +15,8 @@ Suitable public contributions include:
 - clearer Project Sanctuary release-page wording;
 - clearer Project Bicycle lab-testing instructions;
 - safer non-claim language;
+- tests, docs, or small code fixes that preserve the admitted core lane's
+  closed-gate behavior;
 - issue and pull request template improvements;
 - responsible disclosure routing;
 - public release-boundary clarification;
@@ -24,7 +27,9 @@ Suitable public contributions include:
 
 Do not submit:
 
-- source code intended to reconstruct the private build;
+- source code intended to reconstruct the private Lab build;
+- code outside the admitted core executable lane unless a maintainer explicitly
+  opens a reviewed release gate;
 - private build, install, test, release, or deployment automation;
 - production deployment instructions;
 - datasets, fixtures, generated audit outputs, or runtime payloads;

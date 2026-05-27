@@ -7,12 +7,15 @@ Sanctuary.
 
 ## Public Surface Rule
 
-The public repository must remain a sparse test-release shell until a deliberate
-release gate admits new public material. It may contain Project Bicycle
-lab-protocol instructions for bounded archive-harness testing. It should not
-contain implementation material, private build recipes, datasets, fixtures,
-automation, runtime payloads, private topology, or local environment
-assumptions.
+The public repository is a test-release shell with one admitted core executable
+lane. It may contain the minimal Sanctuary core, CLI, tests, wrapper, Codex
+plugin surface, public documentation, and release checks needed to build and
+inspect cold receipt-bearing behavior.
+
+It must not contain the private Lab ecology, production deployment recipes,
+private build automation, datasets, fixtures, runtime payloads, private
+topology, local environment assumptions, secrets, or reconstruction material
+that would turn the public floor into the private build map.
 
 ## CI Sources
 
@@ -30,14 +33,20 @@ build, route it to private maintainer review instead.
 Allowed tracked surfaces:
 
 - `.github/` metadata and public-surface checks;
-- `docs/` public lab-protocol and release-boundary documents;
+- `src/Sanctuary.Core/`, `src/Sanctuary.Cli/`, and
+  `tests/Sanctuary.Core.Tests/` as the admitted core executable lane;
+- `tools/Invoke-SanctuaryTool.ps1` and `plugins/sanctuary-cme/` as the bounded
+  local invocation surface;
+- `docs/` public theory, code, governance, protocol, and release-boundary
+  documents;
+- solution/build metadata required for the admitted core lane;
 - top-level security, support, conduct, contribution, and release posture files.
 
 Disallowed tracked surfaces:
 
-- source code and project files;
 - private build, test, release, deployment, or automation scripts;
 - production deployment instructions;
 - datasets, fixtures, symbolic payloads, generated audit material, or runtime
   artifacts;
-- internal architecture contracts and working ledgers.
+- internal architecture contracts, private working ledgers, and local `.local/`
+  install state.

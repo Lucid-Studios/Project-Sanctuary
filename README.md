@@ -192,6 +192,18 @@ Local benches may call `http://127.0.0.1:8717/mcp` or
 private loopback URLs; use OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP
 endpoint, then point the ChatGPT MCP Server URL at the tunnel endpoint.
 
+For a lab-only ChatGPT connector smoke test, Trivium Forum can start a
+temporary Cloudflare HTTPS tunnel to the local loopback service:
+
+```powershell
+.\tools\Start-TriviumForumHttpsTunnel.ps1 -Protocol http2 -Json
+```
+
+Paste the returned `chatGptMcpServerUrl` into the ChatGPT MCP Server URL
+field. This quick tunnel is a temporary lab bridge: no OAuth is issued, no
+provider/model call is granted, no GEL/SelfGEL admission is performed, and all
+exposed MCP tools remain cold read/fetch candidate surfaces.
+
 The public HTTPS/OAuth connector membrane is not part of this Sanctuary core
 lane. That surface belongs under the Trivium Forum tool body, which owns
 external exposure, tunnel selection, OAuth/provider posture, token scopes,

@@ -125,6 +125,18 @@ Start the loopback alpha service:
 .\tools\Start-SanctuaryMcpAlphaService.ps1 -Port 8717
 ```
 
+Start a lab-only Trivium Forum HTTPS bridge for ChatGPT developer-mode
+connector testing:
+
+```powershell
+.\tools\Start-TriviumForumHttpsTunnel.ps1 -Protocol http2 -Json
+```
+
+Use the returned `chatGptMcpServerUrl` as the ChatGPT MCP Server URL. This
+temporary bridge exists only to let ChatGPT reach the local MCP service over
+HTTPS during alpha testing; it does not issue OAuth tokens, expose secret
+intake, grant action, or admit GEL/SelfGEL.
+
 Inspect tools:
 
 ```powershell

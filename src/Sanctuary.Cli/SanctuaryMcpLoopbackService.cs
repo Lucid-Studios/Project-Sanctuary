@@ -132,6 +132,7 @@ internal static class SanctuaryMcpLoopbackService
         }
 
         var contentLength = 0;
+        var transferEncodingChunked = false;
         string? header;
         while (!string.IsNullOrEmpty(header = await reader.ReadLineAsync()))
         {
@@ -148,10 +149,21 @@ internal static class SanctuaryMcpLoopbackService
             {
                 contentLength = parsed;
             }
+
+            if (string.Equals(name, "Transfer-Encoding", StringComparison.OrdinalIgnoreCase) &&
+                value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    .Any(part => string.Equals(part, "chunked", StringComparison.OrdinalIgnoreCase)))
+            {
+                transferEncodingChunked = true;
+            }
         }
 
         var body = string.Empty;
-        if (contentLength > 0)
+        if (transferEncodingChunked)
+        {
+            body = await ReadChunkedBodyAsync(reader);
+        }
+        else if (contentLength > 0)
         {
             var buffer = new char[contentLength];
             var read = 0;
@@ -239,6 +251,56 @@ internal static class SanctuaryMcpLoopbackService
         }
 
         await WriteResponseAsync(stream, 404, new { error = "route-not-found", failClosed = true });
+    }
+
+    private static async Task<string> ReadChunkedBodyAsync(StreamReader reader)
+    {
+        var builder = new StringBuilder();
+        while (true)
+        {
+            var sizeLine = await reader.ReadLineAsync();
+            if (string.IsNullOrWhiteSpace(sizeLine))
+            {
+                continue;
+            }
+
+            var semicolon = sizeLine.IndexOf(';', StringComparison.Ordinal);
+            var sizeText = semicolon >= 0 ? sizeLine[..semicolon] : sizeLine;
+            if (!int.TryParse(
+                    sizeText.Trim(),
+                    System.Globalization.NumberStyles.HexNumber,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var chunkSize))
+            {
+                throw new InvalidDataException("Malformed chunked request body.");
+            }
+
+            if (chunkSize == 0)
+            {
+                while (!string.IsNullOrEmpty(await reader.ReadLineAsync()))
+                {
+                    // Drain optional chunk trailers.
+                }
+
+                return builder.ToString();
+            }
+
+            var buffer = new char[chunkSize];
+            var read = 0;
+            while (read < chunkSize)
+            {
+                var count = await reader.ReadAsync(buffer, read, chunkSize - read);
+                if (count == 0)
+                {
+                    throw new EndOfStreamException("Chunked request body ended early.");
+                }
+
+                read += count;
+            }
+
+            builder.Append(buffer, 0, read);
+            await reader.ReadLineAsync();
+        }
     }
 
     private static async Task HandleSseOpenAsync(Stream stream)

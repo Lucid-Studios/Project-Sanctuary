@@ -48,6 +48,7 @@ The intended Git-to-Codex path is:
 public release review
 -> admitted core code lane
 -> bounded plugin package
+-> repo-local marketplace entry
 -> Codex install
 -> cold receipt invocation
 -> closed-gate review
@@ -57,6 +58,11 @@ public release review
 
 The plugin should be treated as a doorway into a bounded local tool surface, not
 as proof that the tool has gained authority.
+
+Project Bicycle remains frozen as the first-ride test artifact. Do not import
+its live-body or authority-envelope work merely to make this plugin install
+feel complete. Sanctuary's local install body is the core executable lane plus
+the `sanctuary-cme` plugin.
 
 ## Publisher Gate
 
@@ -117,9 +123,22 @@ Initial admitted surfaces include:
 - cognitive and math learning benches;
 - meaning bridge and pre-personified Industrial rendering;
 - typed admission decant, admission cleave/append, and spline watch;
-- reviewed `gel-admission`, `selfgel-admission`, `cme-actualization`, and
+- reviewed `gel-admission`, `selfgel-admission`,
+  `cme-actual-keypair-forge`, `cme-actualization`, and
   `sanctuary-actualization` commands that remain held closed unless the full
   reviewed authority bundle is supplied.
+
+The local install package is:
+
+```text
+.agents/plugins/marketplace.json
+plugins/sanctuary-cme/.codex-plugin/plugin.json
+plugins/sanctuary-cme/skills/sanctuary-cme/SKILL.md
+plugins/sanctuary-cme/scripts/Invoke-SanctuaryCme.ps1
+tools/Invoke-SanctuaryTool.ps1
+src/Sanctuary.Cli
+src/Sanctuary.Core
+```
 
 The first public plugin should not expose:
 

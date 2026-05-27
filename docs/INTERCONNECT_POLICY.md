@@ -369,6 +369,7 @@ Initial policy consumers:
 | `pre-personified-industrial-rendering` | voice/rendering modulation without personification |
 | `typed-admission-decant`, `admission-cleave-append` | candidate review and lifecycle sorting |
 | `gel-admission`, `selfgel-admission` | reviewed performance of admission lanes |
+| `cme-actual-keypair-forge` | reviewed encrypted CME.Actual keypair and standing-body formation |
 | `cme-actualization`, `sanctuary-actualization` | reviewed Actual-state performance lanes |
 | `security-hardening`, `receipt-export` | drift, leak, and reviewed-open distinction |
 

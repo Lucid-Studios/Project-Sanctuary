@@ -94,6 +94,7 @@ Reviewed performance commands execute the post-gate function:
 ```text
 gel-admission
 selfgel-admission
+cme-actual-keypair-forge
 cme-actualization
 sanctuary-actualization
 ```

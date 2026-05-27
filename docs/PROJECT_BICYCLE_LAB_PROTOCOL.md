@@ -65,6 +65,13 @@ Project Sanctuary is the public release page and protocol home. Project Bicycle
 is the standalone download and first-ride test payload. Codex Mirror remains
 archive lineage only and is not required for this test.
 
+For the current Sanctuary release body, Project Bicycle remains frozen as a
+reference and first-ride artifact. Do not thaw or import Project Bicycle
+authority-envelope, live-body, or private lab work into the Sanctuary local
+plugin install lane. Sanctuary's local install lane is carried by
+`plugins/sanctuary-cme`, the core executable, and the repo-local marketplace
+entry.
+
 ## Required Lab Tools
 
 Install these before testing:

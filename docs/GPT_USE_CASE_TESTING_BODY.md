@@ -35,18 +35,28 @@ The MCP-facing alpha surface is owned by `Sanctuary.exe`.
 
 ```text
 Sanctuary.exe serve-mcp
-  loopback HTTP alpha service
+  loopback HTTP alpha service or Sanctuary-owned HTTPS edge
   owns tool allowlist
   runs SanctuaryReceiptService
   returns sanitized receipt summaries
   refuses unknown tools closed
 ```
 
-The local service is loopback-first. ChatGPT does not connect directly to a
-private `127.0.0.1` MCP server; remote ChatGPT use requires OpenAI Secure MCP
-Tunnel or another reviewed HTTPS MCP endpoint before it can call a local
-machine. The alpha service does not return local receipt paths, receipt bodies,
-source paths, or secret payloads to remote GPT surfaces.
+The service is loopback-first by default. For Lab-owned GPT testing, run the
+same Sanctuary executable as an explicit HTTPS edge with a Lab-controlled
+domain and certificate:
+
+```text
+ChatGPT
+-> https://<your-lab-domain>/mcp
+-> Sanctuary.exe HTTPS edge
+-> SanctuaryReceiptService
+```
+
+Remote ChatGPT use still requires a reachable HTTPS MCP endpoint. The preferred
+Lab posture is a Sanctuary-owned endpoint, not a third-party quick tunnel. The
+alpha service does not return local receipt paths, receipt bodies, source
+paths, or secret payloads to remote GPT surfaces.
 
 The alpha service exposes two MCP-compatible transport shapes:
 
@@ -59,22 +69,34 @@ POST /sse/messages?sessionId=...
   HTTP+SSE compatibility path for MCP clients that scan an SSE endpoint
 ```
 
-The ChatGPT custom app field should point at the tunnel-provided URL for the
-MCP endpoint, not the raw loopback service. For the HTTP+SSE lane that endpoint
-will commonly end in:
+The ChatGPT custom app field should point at the Lab-owned HTTPS MCP endpoint,
+not the raw loopback service:
 
 ```text
-https://<reviewed-tunnel-host>/sse
+https://<your-lab-domain>/mcp
 ```
 
-The public HTTPS/OAuth connector membrane is not owned by this Sanctuary core
-lane. That boundary belongs to the Trivium Forum tool body:
+Current Lab note:
+
+```text
+remote GPT app connection: parked
+reason: owned ingress depends on second Starlink route in bypass mode
+desired edge: Sanctuary.exe behind Lab-managed router/server
+dns target: sanctuary.lucidtechnologies.tech
+```
+
+Until that route is live, the GPT lane remains available for local loopback
+benches and dev-certificate smoke tests only. Any temporary tunnel remains a
+reviewed fallback, not the preferred Lab membrane.
+
+The public HTTPS/OAuth connector membrane belongs to the Trivium Forum tool
+body, but Trivium can now be hosted by Sanctuary itself:
 
 ```text
 ChatGPT / remote caller
 -> Trivium Forum connector membrane
--> reviewed HTTPS/OAuth/tunnel/adjudication layer
--> loopback Sanctuary.exe MCP alpha service
+-> reviewed Sanctuary-owned HTTPS/OAuth/adjudication layer
+-> Sanctuary.exe MCP alpha service
 ```
 
 Sanctuary remains the local witness and receipt body. Trivium Forum owns the
@@ -100,6 +122,7 @@ sanctuary.mos_lineage_register
 sanctuary.sli_access_gate_register
 sanctuary.trivium_forum_connector_posture
 sanctuary.external_llm_standing_probe
+sanctuary.cradle_boundary_organ_register
 ```
 
 No reviewed performance command is exposed in this alpha surface:
@@ -107,6 +130,7 @@ No reviewed performance command is exposed in this alpha surface:
 ```text
 gel-admission
 selfgel-admission
+cme-actual-keypair-forge
 cme-actualization
 sanctuary-actualization
 ```
@@ -126,15 +150,28 @@ Start the loopback alpha service:
 ```
 
 Start a lab-only Trivium Forum HTTPS bridge for ChatGPT developer-mode
-connector testing:
+connector testing. Preferred owned-edge posture:
+
+```powershell
+.\tools\Start-SanctuaryEdgeGateway.ps1 `
+  -HostName "0.0.0.0" `
+  -Port 443 `
+  -PublicBaseUrl "https://<your-lab-domain>" `
+  -CertificatePath "<path-to-lab-domain.pfx>" `
+  -CertificatePasswordEnv "SANCTUARY_EDGE_CERT_PASSWORD"
+```
+
+Use `https://<your-lab-domain>/mcp` as the ChatGPT MCP Server URL.
+
+Temporary tunnel fallback:
 
 ```powershell
 .\tools\Start-TriviumForumHttpsTunnel.ps1 -Protocol http2 -Json
 ```
 
-Use the returned `chatGptMcpServerUrl` as the ChatGPT MCP Server URL. This
-temporary bridge exists only to let ChatGPT reach the local MCP service over
-HTTPS during alpha testing; it does not issue OAuth tokens, expose secret
+Use the returned `chatGptMcpServerUrl` only when the owned edge is unavailable.
+This temporary bridge exists only to let ChatGPT reach the local MCP service
+over HTTPS during alpha testing; it does not issue OAuth tokens, expose secret
 intake, grant action, or admit GEL/SelfGEL.
 
 Inspect tools:

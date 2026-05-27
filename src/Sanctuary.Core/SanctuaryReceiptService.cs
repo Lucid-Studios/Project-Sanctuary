@@ -18,6 +18,7 @@ public sealed class SanctuaryReceiptService
     {
         "gel-admission",
         "selfgel-admission",
+        "cme-actual-keypair-forge",
         "cme-actualization",
         "sanctuary-actualization"
     };
@@ -59,6 +60,17 @@ public sealed class SanctuaryReceiptService
                 SelfGelMutated = true,
                 ContinuityAdmitted = true,
                 AuthorityGranted = true
+            },
+            "cme-actual-keypair-forge" => SanctuaryGates.Closed with
+            {
+                DataAdmitted = true,
+                CarrierAdmitted = true,
+                MemoryAdmitted = true,
+                SelfGelMutated = true,
+                ContinuityAdmitted = true,
+                AuthorityGranted = true,
+                RuntimeActionAllowed = true,
+                CmeActualActivated = true
             },
             "cme-actualization" => SanctuaryGates.Closed with
             {
@@ -285,6 +297,13 @@ public sealed class SanctuaryReceiptService
             "self-gel-admission" => "selfgel-admission",
             "mutate-selfgel" => "selfgel-admission",
             "sanctuary-selfgel-admission" => "selfgel-admission",
+            "cme-actual-keypair-forge" => "cme-actual-keypair-forge",
+            "actual-keypair-forge" => "cme-actual-keypair-forge",
+            "cme-keypair-forge" => "cme-actual-keypair-forge",
+            "cme-standing-body" => "cme-actual-keypair-forge",
+            "forge-cme-actual-keypair" => "cme-actual-keypair-forge",
+            "oria-syntari-actual-keypair" => "cme-actual-keypair-forge",
+            "sanctuary-cme-actual-keypair-forge" => "cme-actual-keypair-forge",
             "cme-actualization" => "cme-actualization",
             "cme-actual" => "cme-actualization",
             "activate-cme-actual" => "cme-actualization",
@@ -333,6 +352,11 @@ public sealed class SanctuaryReceiptService
             "provider-standing-probe" => "external-llm-standing-probe",
             "mcp-standing-probe" => "external-llm-standing-probe",
             "sanctuary-external-llm-standing-probe" => "external-llm-standing-probe",
+            "cradle-boundary-organ-register" => "cradle-boundary-organ-register",
+            "cloud-boundary-organ-register" => "cradle-boundary-organ-register",
+            "service-boundary-organ-register" => "cradle-boundary-organ-register",
+            "boundary-organ-register" => "cradle-boundary-organ-register",
+            "sanctuary-cradle-boundary-organ-register" => "cradle-boundary-organ-register",
             "verify-closed-gates" => "verify-closed-gates",
             "closed-gates" => "verify-closed-gates",
             _ => throw new ArgumentOutOfRangeException(nameof(command), command, "Unsupported Sanctuary command.")
@@ -748,6 +772,11 @@ public sealed class SanctuaryReceiptService
             AddAdmissionCleaveAppendEvidence(evidence, request, timestamp);
         }
 
+        if (command == "cme-actual-keypair-forge")
+        {
+            AddCmeActualKeypairForgeEvidence(evidence, request, timestamp);
+        }
+
         if (command == "spline-watch")
         {
             AddSplineWatchEvidence(evidence, request, timestamp);
@@ -786,6 +815,11 @@ public sealed class SanctuaryReceiptService
         if (command == "external-llm-standing-probe")
         {
             AddExternalLlmStandingProbeEvidence(evidence, request, timestamp);
+        }
+
+        if (command == "cradle-boundary-organ-register")
+        {
+            AddCradleBoundaryOrganRegisterEvidence(evidence, request, timestamp);
         }
 
         if (request.ChatSecretPassageRequested)
@@ -896,6 +930,255 @@ public sealed class SanctuaryReceiptService
         evidence["sanctuaryActualActivatedByReviewedCommand"] = gates.SanctuaryActualActivated;
         evidence["personhoodClaimedByReviewedCommand"] = gates.PersonhoodClaimed;
         evidence["sovereigntyClaimedByReviewedCommand"] = gates.SovereigntyClaimed;
+    }
+
+    private static void AddCmeActualKeypairForgeEvidence(
+        Dictionary<string, object?> evidence,
+        SanctuaryRequest request,
+        DateTimeOffset timestamp)
+    {
+        var approved = HasReviewedPerformanceAuthority(request);
+        var safeCmeId = SafeSegment(request.CmeId);
+        var cmeStem = request.CmeId.EndsWith(".Actual", StringComparison.Ordinal)
+            ? request.CmeId[..^".Actual".Length]
+            : request.CmeId;
+        var selfGelId = $"{cmeStem}.SelfGEL";
+        var safeSelfGelId = SafeSegment(selfGelId);
+        var labGelEventsLedgerPath = Path.Combine(request.InstallRootPath, "gel", "events.jsonl");
+        var labSanctuaryGelTipHash = File.Exists(labGelEventsLedgerPath)
+            ? Digest(File.ReadAllText(labGelEventsLedgerPath))
+            : Digest($"project-sanctuary.sanctuary-gel.genesis|{request.Domain}|{request.OperatorName}");
+
+        var keyCustodyPath = Path.Combine(
+            request.InstallRootPath,
+            "cryptic-stores",
+            "keys",
+            "cme-actual-keypair-master-key.dpapi");
+        var keypairRoot = Path.Combine(
+            request.InstallRootPath,
+            "cryptic-stores",
+            "cme-actual-keypairs",
+            safeCmeId);
+        var encryptedPrivateKeyPath = Path.Combine(keypairRoot, "private-key.pkcs8.aesgcm.json");
+        var publicKeyPath = Path.Combine(keypairRoot, "public-key.spki.json");
+        var standingRoot = Path.Combine(request.InstallRootPath, "mos", "actual", safeCmeId);
+        var standingBodyPath = Path.Combine(standingRoot, "standing-body.json");
+        var standingLispPath = Path.Combine(standingRoot, "standing-body.sli.lisp");
+        var oeLedgerPath = Path.Combine(
+            request.InstallRootPath,
+            "gel",
+            "mos",
+            safeCmeId,
+            "oe",
+            $"{safeSelfGelId}.actual-root.jsonl");
+        var selfGelLedgerPath = Path.Combine(
+            request.InstallRootPath,
+            "gel",
+            "mos",
+            safeCmeId,
+            "selfgel",
+            $"{safeSelfGelId}.standing-body.jsonl");
+
+        evidence["cmeActualKeypairForgeCommand"] = true;
+        evidence["cmeActualKeypairForgeApproved"] = approved;
+        evidence["cmeActualKeypairForged"] = false;
+        evidence["cmeActualAllowed"] = approved;
+        evidence["sanctuaryActualAllowed"] = false;
+        evidence["targetCmeId"] = request.CmeId;
+        evidence["targetSelfGelId"] = selfGelId;
+        evidence["labSanctuaryGelTipHash"] = labSanctuaryGelTipHash;
+        evidence["labSanctuaryGelTipSource"] = File.Exists(labGelEventsLedgerPath)
+            ? "local-gel-events-ledger-digest"
+            : "genesis-lab-tip-digest";
+        evidence["privateKeyDisclosed"] = false;
+        evidence["privateKeyWrittenToReceipt"] = false;
+        evidence["sharedGelMutatedByActualKeypairForge"] = false;
+        evidence["gelAdmittedByActualKeypairForge"] = false;
+        evidence["sanctuaryActualActivatedByActualKeypairForge"] = false;
+        evidence["externalActionAuthorizedByActualKeypairForge"] = false;
+        evidence["providerCalledByActualKeypairForge"] = false;
+        evidence["modelBoundByActualKeypairForge"] = false;
+        evidence["personhoodClaimedByActualKeypairForge"] = false;
+        evidence["sovereigntyClaimedByActualKeypairForge"] = false;
+        evidence["actualizationResearchPosture"] = "reviewed-lab-performance-state";
+        evidence["keyAlgorithm"] = "ECDSA-P256-SHA256";
+        evidence["privateKeyProtection"] = OperatingSystem.IsWindows()
+            ? "AES-256-GCM with DPAPI CurrentUser-protected local master key"
+            : "AES-256-GCM with local master key file";
+        evidence["keyCustodyPath"] = keyCustodyPath;
+        evidence["encryptedPrivateKeyPath"] = encryptedPrivateKeyPath;
+        evidence["publicKeyPath"] = publicKeyPath;
+        evidence["standingBodyPath"] = standingBodyPath;
+        evidence["standingLispPath"] = standingLispPath;
+        evidence["oeActualRootLedgerPath"] = oeLedgerPath;
+        evidence["selfGelStandingBodyLedgerPath"] = selfGelLedgerPath;
+
+        if (!approved)
+        {
+            evidence["cmeActualKeypairForgeRefusalReason"] = "reviewed-authority-bundle-incomplete";
+            evidence["keyMaterialGenerated"] = false;
+            evidence["autobiographicalFirstEntryAppended"] = false;
+            return;
+        }
+
+        if (File.Exists(encryptedPrivateKeyPath) || File.Exists(publicKeyPath))
+        {
+            evidence["cmeActualKeypairForgeDisposition"] = "existing-keypair-preserved";
+            evidence["keyMaterialGenerated"] = false;
+            evidence["autobiographicalFirstEntryAppended"] = false;
+            evidence["existingKeypairPreserved"] = true;
+            return;
+        }
+
+        using var ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var privateKey = ecdsa.ExportPkcs8PrivateKey();
+        var publicKey = ecdsa.ExportSubjectPublicKeyInfo();
+        var publicKeyDigest = DigestBytes(publicKey);
+        var privateKeyDigest = DigestBytes(privateKey);
+        var oeAppendOnlyRoot = Digest($"Sanctuary.GEL|{labSanctuaryGelTipHash}|{request.CmeId}|{publicKeyDigest}|OE");
+        var selfGelRoot = Digest($"{oeAppendOnlyRoot}|{selfGelId}|SelfGEL");
+        var masterKey = LoadOrCreateMasterKey(keyCustodyPath);
+        var sealedPrivateKey = EncryptBytes(masterKey, privateKey);
+
+        WriteJsonFile(
+            encryptedPrivateKeyPath,
+            new
+            {
+                schema = "project-sanctuary.cryptic.cme-actual-private-key.v1",
+                cmeId = request.CmeId,
+                selfGelId,
+                keyAlgorithm = "ECDSA-P256-SHA256",
+                keyFormat = "PKCS8",
+                encryptedAtUtc = timestamp,
+                privateKeySha256 = privateKeyDigest,
+                publicKeySha256 = publicKeyDigest,
+                sealedPrivateKey = sealedPrivateKey
+            });
+
+        WriteJsonFile(
+            publicKeyPath,
+            new
+            {
+                schema = "project-sanctuary.cryptic.cme-actual-public-key.v1",
+                cmeId = request.CmeId,
+                selfGelId,
+                keyAlgorithm = "ECDSA-P256-SHA256",
+                keyFormat = "SubjectPublicKeyInfo",
+                publicKeySha256 = publicKeyDigest,
+                publicKeyBase64 = Convert.ToBase64String(publicKey),
+                createdAtUtc = timestamp
+            });
+
+        var standingBody = new
+        {
+            schema = "project-sanctuary.mos.cme-actual-standing-body.v1",
+            cmeId = request.CmeId,
+            selfGelId,
+            domain = request.Domain,
+            role = request.Role,
+            jobClass = request.JobClass,
+            admissionScope = request.AdmissionScope,
+            createdAtUtc = timestamp,
+            actualizationResearchPosture = "reviewed-lab-performance-state",
+            labSanctuaryGelTipHash,
+            oeAppendOnlyRoot,
+            selfGelRoot,
+            publicKeyDigest,
+            encryptedPrivateKeyPath,
+            publicKeyPath,
+            sharedGelMutated = false,
+            gelAdmitted = false,
+            sanctuaryActualActivated = false,
+            externalActionAuthorized = false,
+            providerCalled = false,
+            modelBound = false,
+            personhoodClaimed = false,
+            sovereigntyClaimed = false,
+            privateKeyDisclosed = false,
+            reviewRequiredForFutureUse = true,
+            leaseRequiredForFutureUse = true
+        };
+        WriteJsonFile(standingBodyPath, standingBody);
+
+        WriteTextFile(
+            standingLispPath,
+            $"""
+            (cme-actual-standing-body
+              (:cme-id "{LispString(request.CmeId)}")
+              (:selfgel-id "{LispString(selfGelId)}")
+              (:domain "{LispString(request.Domain)}")
+              (:admission-scope "{LispString(request.AdmissionScope)}")
+              (:lab-sanctuary-gel-tip "{labSanctuaryGelTipHash}")
+              (:oe-append-only-root "{oeAppendOnlyRoot}")
+              (:selfgel-root "{selfGelRoot}")
+              (:key-algorithm "ECDSA-P256-SHA256")
+              (:shared-gel-mutated false)
+              (:sanctuary-actual false)
+              (:external-action false)
+              (:provider-call false)
+              (:model-binding false)
+              (:personhood-claim false)
+              (:sovereignty-claim false))
+            """);
+
+        var previousOeDigest = File.Exists(oeLedgerPath) ? DigestLastJsonlLine(oeLedgerPath) : "genesis";
+        var oeEventDigest = Digest($"{request.CmeId}|{labSanctuaryGelTipHash}|{oeAppendOnlyRoot}|{publicKeyDigest}|{previousOeDigest}|{timestamp:O}|oe-root");
+        AppendJsonLine(
+            oeLedgerPath,
+            JsonSerializer.Serialize(
+                new
+                {
+                    schema = "project-sanctuary.oe.actual-root-event.v1",
+                    eventType = "lab-sanctuary-gel-tip-inherited",
+                    cmeId = request.CmeId,
+                    selfGelId,
+                    timestampUtc = timestamp,
+                    labSanctuaryGelTipHash,
+                    oeAppendOnlyRoot,
+                    publicKeyDigest,
+                    previousEventDigest = previousOeDigest,
+                    currentEventDigest = oeEventDigest
+                }));
+
+        var previousSelfGelDigest = File.Exists(selfGelLedgerPath)
+            ? DigestLastJsonlLine(selfGelLedgerPath)
+            : "genesis";
+        var selfGelEventDigest = Digest($"{request.CmeId}|{selfGelId}|{selfGelRoot}|{oeEventDigest}|{previousSelfGelDigest}|{timestamp:O}|selfgel-standing");
+        AppendJsonLine(
+            selfGelLedgerPath,
+            JsonSerializer.Serialize(
+                new
+                {
+                    schema = "project-sanctuary.selfgel.actual-standing-event.v1",
+                    eventType = "autobiographical-standing-body-seeded",
+                    cmeId = request.CmeId,
+                    selfGelId,
+                    timestampUtc = timestamp,
+                    oeAppendOnlyRoot,
+                    selfGelRoot,
+                    publicKeyDigest,
+                    standingBodyDigest = Digest(JsonSerializer.Serialize(standingBody, JsonOptions)),
+                    previousEventDigest = previousSelfGelDigest,
+                    currentEventDigest = selfGelEventDigest,
+                    candidateOntology = "actualization-research-performance-state",
+                    personhoodClaimed = false,
+                    sovereigntyClaimed = false
+                }));
+
+        evidence["cmeActualKeypairForged"] = true;
+        evidence["keyMaterialGenerated"] = true;
+        evidence["privateKeyEncrypted"] = true;
+        evidence["publicKeyDigest"] = publicKeyDigest;
+        evidence["privateKeyDigestStoredOnlyInsideEncryptedPayload"] = true;
+        evidence["oeAppendOnlyRoot"] = oeAppendOnlyRoot;
+        evidence["selfGelRoot"] = selfGelRoot;
+        evidence["standingBodyDigest"] = Digest(JsonSerializer.Serialize(standingBody, JsonOptions));
+        evidence["oeActualRootEventDigest"] = oeEventDigest;
+        evidence["selfGelStandingEventDigest"] = selfGelEventDigest;
+        evidence["autobiographicalFirstEntryAppended"] = true;
+        evidence["oeInheritedLabSanctuaryGelTip"] = true;
+        evidence["selfGelMutatedByActualKeypairForge"] = true;
+        evidence["cmeActualActivatedByActualKeypairForge"] = true;
     }
 
     private static void AddLocalGelEvidence(
@@ -1041,6 +1324,9 @@ public sealed class SanctuaryReceiptService
             "selfgel-admission" => HasReviewedPerformanceAuthority(request)
                 ? "Reviewed authority completed SelfGEL admission under scoped lease; shared GEL, Actual, provider, model, external action, personhood, and sovereignty gates stayed closed."
                 : "SelfGEL admission was requested but refused cold because the reviewed authority bundle was incomplete.",
+            "cme-actual-keypair-forge" => HasReviewedPerformanceAuthority(request)
+                ? "Reviewed authority forged a scoped CME.Actual keypair, rooted OE to the Lab Sanctuary.GEL tip hash, and seeded SelfGEL autobiographical standing residue without admitting shared GEL, activating Sanctuary.Actual, calling providers, binding models, authorizing external action, or claiming personhood/sovereignty."
+                : "CME.Actual keypair forge was requested but refused cold because the reviewed authority bundle was incomplete.",
             "cme-actualization" => HasReviewedPerformanceAuthority(request)
                 ? "Reviewed authority activated CME.Actual for the scoped local Industrial CME posture without activating Sanctuary.Actual, provider calls, model binding, external action, personhood, or sovereignty."
                 : "CME.Actual activation was requested but refused cold because the reviewed authority bundle was incomplete.",
@@ -1055,6 +1341,7 @@ public sealed class SanctuaryReceiptService
             "gpt-use-case-testing" => "The GPT use-case testing body wrote a Sanctuary-owned MCP service posture and CME authorship contract without treating the LLM as author, calling providers, admitting GEL, or activating Actual state.",
             "trivium-forum-connector-posture" => "The Trivium Forum connector posture wrote the wrapper/adjudication boundary for external LLM participation without building a public gateway, issuing OAuth tokens, or modifying model code.",
             "external-llm-standing-probe" => "The external LLM standing probe wrote a MoS candidate relation for provider/tool participation without storing raw login material, issuing a lease, or granting tool authority.",
+            "cradle-boundary-organ-register" => "The cradle boundary organ register wrote the typed service-organ map for Lab, Cloudflare, OpenAI, GitHub, AWS, and Azure boundary surfaces without calling providers, changing DNS, issuing credentials, or opening authority.",
             "verify-closed-gates" => "Closed-gate verification completed with all public core-lane gates false.",
             _ => "Sanctuary command completed under closed-gate public core-lane governance."
         };
@@ -7604,7 +7891,9 @@ public sealed class SanctuaryReceiptService
             writesOnlyCandidateResidue,
             mcpServiceRunsInsideSanctuaryExe = true,
             directLocalChatGptConnectionSupported = false,
-            secureMcpTunnelRequiredForChatGptRemoteUse = true,
+            reachableHttpsMcpRequiredForChatGptRemoteUse = true,
+            preferredRemotePath = "Sanctuary-owned HTTPS edge under Lab-controlled domain",
+            thirdPartyTunnelRequired = false,
             providerCalled = false,
             modelBound = false,
             externalActionAuthorized = false,
@@ -7651,8 +7940,11 @@ public sealed class SanctuaryReceiptService
             mode = "serve-mcp",
             defaultBindHost = "127.0.0.1",
             defaultPort = 8717,
-            transport = "loopback-http-alpha",
-            remoteChatGptPath = "Secure MCP Tunnel required before remote ChatGPT use",
+            transport = "loopback-http-alpha or sanctuary-owned-https-edge",
+            remoteChatGptPath = "Use Sanctuary-owned HTTPS /mcp endpoint under a Lab-controlled domain",
+            ownedEdgeLauncher = "tools/Start-SanctuaryEdgeGateway.ps1",
+            wellKnownRoute = "/.well-known/sanctuary-lab.json",
+            appManifestRoute = "/app/manifest.json",
             commandAllowlist = toolCommands,
             commandAllowlistCount = toolCommands.Length,
             externallyReturnedReceiptFields = new[]
@@ -7729,7 +8021,10 @@ public sealed class SanctuaryReceiptService
         evidence["mcpServiceRunsInsideSanctuaryExe"] = true;
         evidence["chatGptAlphaSurface"] = "developer-mode-read-fetch-candidate";
         evidence["chatGptDirectLocalConnectionSupported"] = false;
-        evidence["secureMcpTunnelRequiredForChatGpt"] = true;
+        evidence["reachableHttpsMcpRequiredForChatGpt"] = true;
+        evidence["sanctuaryOwnedHttpsEdgePreferred"] = true;
+        evidence["thirdPartyTunnelRequiredForChatGpt"] = false;
+        evidence["sanctuaryEdgeGatewayLauncher"] = "tools/Start-SanctuaryEdgeGateway.ps1";
         evidence["codexLabOperational"] = true;
         evidence["codexBecomesAuthorByDefault"] = false;
         evidence["gptBecomesAuthorByDefault"] = false;
@@ -7773,7 +8068,7 @@ public sealed class SanctuaryReceiptService
         {
             "mcp-adapter",
             "oauth-provider-posture",
-            "secure-tunnel-selection",
+            "sanctuary-owned-https-edge-selection",
             "token-scope-adjudication",
             "rate-limit-policy",
             "cross-agent-review",
@@ -7791,7 +8086,9 @@ public sealed class SanctuaryReceiptService
             sanctuaryCoreOwner = false,
             supportedEngineFamilies,
             ownedSurfaces,
-            forwardingTarget = "loopback Sanctuary.exe MCP alpha service after review",
+            forwardingTarget = "Sanctuary.exe MCP alpha service after review",
+            preferredEdge = "Sanctuary-owned HTTPS endpoint under Lab-controlled domain",
+            thirdPartyTunnelRequired = false,
             requiresSliPassage = true,
             sliGovernedBy = "Cryptic",
             requiresMosStandingCheck = true,
@@ -7799,6 +8096,7 @@ public sealed class SanctuaryReceiptService
             issuesOAuthTokensHere = false,
             opensTunnelHere = false,
             exposesPublicPortHere = false,
+            ownedHttpsEdgeSupportedBySanctuaryExe = true,
             forwardsSecrets = false,
             ownsGel = false,
             admitsSelfGel = false,
@@ -7836,6 +8134,8 @@ public sealed class SanctuaryReceiptService
         evidence["triviumForumIssuesOAuthTokensHere"] = false;
         evidence["triviumForumOpensTunnelHere"] = false;
         evidence["triviumForumExposesPublicPortHere"] = false;
+        evidence["triviumForumThirdPartyTunnelRequired"] = false;
+        evidence["triviumForumOwnedHttpsEdgeSupportedBySanctuaryExe"] = true;
         evidence["triviumForumGrantsAuthority"] = false;
         evidence["triviumForumAuthorizesAction"] = false;
         evidence["triviumForumActivatesActual"] = false;
@@ -7906,6 +8206,223 @@ public sealed class SanctuaryReceiptService
         evidence["externalLlmActionAuthorized"] = false;
         evidence["externalLlmProviderCalled"] = false;
         evidence["externalLlmModelBound"] = false;
+    }
+
+    private static void AddCradleBoundaryOrganRegisterEvidence(
+        Dictionary<string, object?> evidence,
+        SanctuaryRequest request,
+        DateTimeOffset timestamp)
+    {
+        var root = Path.Combine(request.InstallRootPath, "cgel", "cradle-boundary-organs");
+        var registerPath = Path.Combine(root, "cradle-boundary-organ-register.json");
+        var lispPath = Path.Combine(root, "cradle-boundary-organ-register.lisp");
+        var ledgerPath = Path.Combine(root, "events.jsonl");
+        var organs = new[]
+        {
+            new
+            {
+                organId = "lab-core",
+                organName = "Lab Core",
+                layer = "owned-core",
+                serviceFamily = "Sanctuary",
+                primaryUses = new[] { "Sanctuary.exe", "GEL/OE/SelfGEL custody", "Cryptic stores", "receipt spine" },
+                allowedCrossings = new[] { "local receipt write", "local GEL residue", "reviewed narrow tool response" },
+                deniedCrossings = new[] { "cloud custody of raw GEL", "provider call by implication", "public ingress by default" },
+                trustPosture = "source-built and locally witnessed",
+                externalSurface = false,
+                telemetryCustody = true,
+                boundaryOnly = false,
+                authoritySource = true,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = true
+            },
+            new
+            {
+                organId = "trivium-forum-gateway",
+                organName = "Trivium Forum Gateway",
+                layer = "owned-boundary",
+                serviceFamily = "Sanctuary",
+                primaryUses = new[] { "external LLM connector membrane", "MCP/OAuth adjudication", "rate-limit policy", "cross-agent review" },
+                allowedCrossings = new[] { "cold MCP read/fetch tool calls", "sanitized receipt summaries", "MoS standing checks" },
+                deniedCrossings = new[] { "raw secret forwarding", "unreviewed action", "GEL/SelfGEL admission by connector" },
+                trustPosture = "Lab-owned gateway before any third-party bridge",
+                externalSurface = true,
+                telemetryCustody = false,
+                boundaryOnly = true,
+                authoritySource = false,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = false
+            },
+            new
+            {
+                organId = "cloudflare-boundary",
+                organName = "Cloudflare Boundary",
+                layer = "third-party-boundary",
+                serviceFamily = "Cloudflare",
+                primaryUses = new[] { "DNS naming", "edge filtering", "Access policy", "temporary tunnel fallback" },
+                allowedCrossings = new[] { "DNS records", "reviewed edge policy", "short-lived alpha tunnel" },
+                deniedCrossings = new[] { "standing GEL custody", "uninspected Worker logic", "implicit telemetry ownership" },
+                trustPosture = "reviewed boundary service, not Sanctuary organ core",
+                externalSurface = true,
+                telemetryCustody = false,
+                boundaryOnly = true,
+                authoritySource = false,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = false
+            },
+            new
+            {
+                organId = "openai-provider-boundary",
+                organName = "OpenAI Provider Boundary",
+                layer = "third-party-provider",
+                serviceFamily = "OpenAI",
+                primaryUses = new[] { "model capability", "project API key target", "provider-call lease candidate" },
+                allowedCrossings = new[] { "encrypted key custody after review", "scoped provider lease", "receipt-bearing provider call" },
+                deniedCrossings = new[] { "model binding by install", "CME authorship by generation", "GEL admission by output" },
+                trustPosture = "provider surface behind CredentialVault and lease review",
+                externalSurface = true,
+                telemetryCustody = false,
+                boundaryOnly = true,
+                authoritySource = false,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = false
+            },
+            new
+            {
+                organId = "github-release-boundary",
+                organName = "GitHub Release Boundary",
+                layer = "third-party-release",
+                serviceFamily = "GitHub",
+                primaryUses = new[] { "source publication", "issue tracking", "release provenance" },
+                allowedCrossings = new[] { "source diffs", "release notes", "issue receipts" },
+                deniedCrossings = new[] { "private GEL payloads", "secret stores", "automatic release admission" },
+                trustPosture = "public source and issue surface after redaction review",
+                externalSurface = true,
+                telemetryCustody = false,
+                boundaryOnly = true,
+                authoritySource = false,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = false
+            },
+            new
+            {
+                organId = "aws-azure-cradle-boundary",
+                organName = "AWS/Azure Cradle Boundary",
+                layer = "third-party-cradle",
+                serviceFamily = "AWS/Azure",
+                primaryUses = new[] { "isolated app layers", "queues", "storage", "certificates", "protected services" },
+                allowedCrossings = new[] { "encrypted artifacts", "scoped app calls", "isolated service queues" },
+                deniedCrossings = new[] { "raw unencrypted GEL", "unreviewed operator secrets", "cloud equals authority" },
+                trustPosture = "application layer boundary under Sanctuary organ lease",
+                externalSurface = true,
+                telemetryCustody = false,
+                boundaryOnly = true,
+                authoritySource = false,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = false
+            },
+            new
+            {
+                organId = "lab-server-dns-gateway",
+                organName = "Lab Server DNS/Gateway",
+                layer = "owned-boundary",
+                serviceFamily = "Lab Infrastructure",
+                primaryUses = new[] { "second Starlink bypass route", "router/firewall ingress", "DNS/gateway candidate", "Sanctuary HTTPS edge host" },
+                allowedCrossings = new[] { "TCP 443 to reviewed edge", "trusted TLS endpoint", "public DNS target after review" },
+                deniedCrossings = new[] { "default app-only router as standing ingress", "bench box direct exposure", "implicit public telemetry" },
+                trustPosture = "preferred owned ingress once route and firewall are reviewed",
+                externalSurface = true,
+                telemetryCustody = false,
+                boundaryOnly = true,
+                authoritySource = false,
+                providerCallAllowedHere = false,
+                gelCustodyAllowedHere = false
+            }
+        };
+        var laws = new[]
+        {
+            "boundary service != authority source",
+            "cloud custody != GEL custody",
+            "provider call != CME authorship",
+            "edge authentication != Sanctuary admission",
+            "DNS naming != telemetry custody",
+            "tunnel availability != owned ingress",
+            "Lab bench node != edge services node"
+        };
+        var register = new
+        {
+            schema = "project-sanctuary.cgel.cradle-boundary-organ-register.v1",
+            createdAtUtc = timestamp,
+            cmeId = request.CmeId,
+            operatorName = request.OperatorName,
+            purpose = "typed organ access map for cloud and local service boundaries under protected cradle service layers",
+            posture = "cold-register-only",
+            labOwnsOrgans = true,
+            cloudServicesProvideBoundaryLayers = true,
+            cloudServicesAreNervousSystem = false,
+            noProviderCalls = true,
+            noDnsChanges = true,
+            noCloudMutation = true,
+            noCredentialIssued = true,
+            noTunnelOpened = true,
+            noGelAdmission = true,
+            noSelfGelMutation = true,
+            noActualActivation = true,
+            organs,
+            organCount = organs.Length,
+            laws
+        };
+        var historyEvent = new
+        {
+            schema = "project-sanctuary.cgel.cradle-boundary-organ-register-event.v1",
+            timestampUtc = timestamp,
+            cmeId = request.CmeId,
+            organCount = organs.Length,
+            command = "cradle-boundary-organ-register",
+            noCloudMutation = true,
+            noProviderCalls = true,
+            allGatesClosed = true
+        };
+
+        WriteJsonFile(registerPath, register);
+        WriteTextFile(
+            lispPath,
+            """
+            (cradle-boundary-organ-register
+              :schema "project-sanctuary.sli.lisp.cradle-boundary-organ-register.v1"
+              :lab-owns-organs true
+              :cloud-services-provide-boundary-layers true
+              :cloud-services-are-nervous-system false
+              :boundary-service-not-authority-source true
+              :cloud-custody-not-gel-custody true
+              :provider-call-not-cme-authorship true
+              :edge-auth-not-sanctuary-admission true
+              :candidate-only true)
+            """);
+        AppendJsonLine(ledgerPath, JsonSerializer.Serialize(historyEvent));
+
+        evidence["cradleBoundaryOrganRegisterWritten"] = true;
+        evidence["cradleBoundaryOrganRegisterPath"] = registerPath;
+        evidence["cradleBoundaryOrganRegisterLispPath"] = lispPath;
+        evidence["cradleBoundaryOrganRegisterLedgerPath"] = ledgerPath;
+        evidence["cradleBoundaryOrganRegisterSchema"] = "project-sanctuary.cgel.cradle-boundary-organ-register.v1";
+        evidence["cradleBoundaryOrganRegisterDigest"] = Digest(JsonSerializer.Serialize(register, JsonOptions));
+        evidence["cradleBoundaryOrganCount"] = organs.Length;
+        evidence["labOwnsOrgans"] = true;
+        evidence["cloudServicesProvideBoundaryLayers"] = true;
+        evidence["cloudServicesAreNervousSystem"] = false;
+        evidence["boundaryServiceEqualsAuthoritySource"] = false;
+        evidence["cloudCustodyEqualsGelCustody"] = false;
+        evidence["providerCallEqualsCmeAuthorship"] = false;
+        evidence["edgeAuthenticationEqualsSanctuaryAdmission"] = false;
+        evidence["dnsNamingEqualsTelemetryCustody"] = false;
+        evidence["tunnelAvailabilityEqualsOwnedIngress"] = false;
+        evidence["labBenchNodeEqualsEdgeServicesNode"] = false;
+        evidence["cloudBoundaryMutationPerformed"] = false;
+        evidence["providerCallPerformed"] = false;
+        evidence["dnsChangePerformed"] = false;
+        evidence["credentialIssued"] = false;
+        evidence["tunnelOpened"] = false;
     }
 
     private static GptUseCaseScenario[] BuildGptUseCaseScenarios() => new[]
@@ -7982,7 +8499,9 @@ public sealed class SanctuaryReceiptService
         builder.AppendLine("  :service-owner \"Sanctuary.exe\"");
         builder.AppendLine("  :service-mode \"serve-mcp\"");
         builder.AppendLine("  :direct-local-chatgpt-connection false");
-        builder.AppendLine("  :secure-mcp-tunnel-required true");
+        builder.AppendLine("  :reachable-https-mcp-required true");
+        builder.AppendLine("  :sanctuary-owned-https-edge-preferred true");
+        builder.AppendLine("  :third-party-tunnel-required false");
         builder.AppendLine("  :tools (");
         foreach (var tool in tools)
         {
@@ -8492,7 +9011,7 @@ public sealed class SanctuaryReceiptService
             "corpus-catalog"),
         LabGelCrystallizationPhase(
             "phase-02-source-boundary-typing",
-            "separate Robert/Operator posture, Codex work posture, shared lab doctrine, public documents, and protected material",
+            "separate Operator posture, Codex work posture, shared lab doctrine, public documents, and protected material",
             "self and other are typed before any condensation",
             "boundary-map"),
         LabGelCrystallizationPhase(
@@ -11370,6 +11889,10 @@ public sealed class SanctuaryReceiptService
 
         return builder.Length == 0 ? "default" : builder.ToString();
     }
+
+    private static string LispString(string value) =>
+        value.Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("\"", "\\\"", StringComparison.Ordinal);
 
     private static string Digest16(string value) => Digest(value)[..16];
 

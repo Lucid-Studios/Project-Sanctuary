@@ -1,18 +1,32 @@
 # Release Control Notice
 
 Date: 2026-04-26
-Updated: 2026-05-19
+Updated: 2026-05-26
 Project: Project Sanctuary
 Maintainer body: Lucid Studios, Department of Agentic Research and Development
 Scope: public repository and public issue tracker surface
-Status: public test-release preparation shell
+Status: public test-release preparation shell with admitted core executable lane
 
 ## Summary
 
 Project Sanctuary is the renamed public release surface for the former OAN Tech
 Stack repository. The repository has been reduced and restyled so it can serve
 as a clean product test-release page for Sanctuary without carrying stale public
-documentation or implementation-bearing material forward by accident.
+documentation or private implementation-bearing material forward by accident.
+
+The current release candidate now admits one minimal executable lane:
+
+```text
+Sanctuary.Core
+Sanctuary.Cli
+Sanctuary.Core.Tests
+Invoke-SanctuaryTool.ps1
+sanctuary-cme Codex plugin surface
+```
+
+This lane exists to build `Sanctuary.exe`, emit cold receipts, verify closed
+gates, and demonstrate the public governance posture. It is not the full
+private Lab body.
 
 Older public documentation, examples, and descriptive strata were removed from
 this repository so they do not confuse future readers or appear to be part of
@@ -26,7 +40,9 @@ left intermingled with the release home.
 The current public tree intentionally retains only:
 
 - root project identity;
+- the admitted core executable lane;
 - Project Bicycle lab-testing protocol;
+- public theory/code/governance/release documentation;
 - contribution and security guidance;
 - public issue and pull request hygiene;
 - release-control notice;
@@ -37,9 +53,9 @@ The current public tree intentionally retains only:
 The current public tree intentionally excludes:
 
 - historical public docs and examples;
-- implementation source;
-- project and solution files;
+- private implementation source outside the admitted core lane;
 - private build, test, release, deployment, and automation scripts;
+- production install or deployment scripts;
 - production deployment instructions;
 - datasets, fixtures, corpora, symbolic payloads, and generated audit material;
 - private topology, corpus lineage, model-specific operations, local paths, and
@@ -101,6 +117,7 @@ Future release candidates must preserve:
 
 ## Non-Claims
 
-This repository's sparse test-release state does not publish an implementation,
-grant runtime authority, assert CME.Actual, assert Sanctuary.Actual, or certify
-production readiness.
+This repository's public test-release state publishes a minimal governed
+instrument body. It does not publish the full Lab ecology, grant runtime
+authority, assert CME.Actual, assert Sanctuary.Actual, create a professional or
+legal authority body, or certify production readiness.

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Sanctuary.Core\Sanctuary.Core.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <AssemblyName>Sanctuary</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+</Project>

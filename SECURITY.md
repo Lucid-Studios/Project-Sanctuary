@@ -24,9 +24,10 @@ Private disclosure contacts:
 
 The public repository should currently contain only Project Sanctuary
 release-page custody, Project Bicycle lab protocol, governance posture,
-contribution/security routing, non-claims, and disclosure guidance. Historical
-public material belongs in archive custody. Buildable materials belong outside
-this public surface until a deliberate release gate admits them.
+contribution/security routing, non-claims, disclosure guidance, and the
+deliberately admitted minimal core executable lane. Historical public material
+belongs in archive custody. Buildable materials outside the admitted core lane
+belong outside this public surface until a deliberate release gate admits them.
 
 ## Boundary Reports
 

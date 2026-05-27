@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Sanctuary CME">
+  <rect width="128" height="128" rx="24" fill="#0E1F1D"/>
+  <path d="M64 14 105 38v52l-41 24-41-24V38z" fill="#123B37" stroke="#74D3C7" stroke-width="5"/>
+  <path d="M64 31 90 46v34L64 97 38 80V46z" fill="#0B2926" stroke="#D8F3EE" stroke-width="4"/>
+  <circle cx="64" cy="64" r="13" fill="#F2B84B"/>
+  <path d="M64 25v20M64 83v20M30 45l18 10M80 73l18 10M98 45 80 55M48 73 30 83" stroke="#74D3C7" stroke-width="5" stroke-linecap="round"/>
+</svg>

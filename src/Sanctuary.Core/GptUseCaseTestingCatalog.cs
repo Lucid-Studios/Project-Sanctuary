@@ -81,6 +81,12 @@ public static class GptUseCaseTestingCatalog
             "external-llm-standing-probe",
             "Write a MoS candidate standing probe for an external LLM provider surface.",
             "fetch",
+            true),
+        new(
+            "sanctuary.cradle_boundary_organ_register",
+            "cradle-boundary-organ-register",
+            "Write the typed cradle boundary organ map for Lab, cloud, provider, DNS, and release surfaces.",
+            "fetch",
             true)
     };
 

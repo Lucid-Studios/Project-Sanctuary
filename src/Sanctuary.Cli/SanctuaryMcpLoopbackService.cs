@@ -1,7 +1,10 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.Security;
 using System.Security.Cryptography;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using Sanctuary.Core;
@@ -20,6 +23,13 @@ internal static class SanctuaryMcpLoopbackService
     {
         var host = ReadOption(args, "--host") ?? ReadOption(args, "--http-host") ?? "127.0.0.1";
         var port = ReadInt(args, "--port", ReadInt(args, "--http-port", 8717));
+        var scheme = (ReadOption(args, "--scheme") ?? "http").Trim().ToLowerInvariant();
+        var publicBaseUrl = ReadOption(args, "--public-base-url") ?? "";
+        var publicBindApproved = ReadBool(args, "--public-bind-approved");
+        var certPath = ReadOption(args, "--cert-path") ?? "";
+        var certPassword = ReadOption(args, "--cert-password")
+            ?? ReadEnvironmentOption(args, "--cert-password-env")
+            ?? "";
         var maxRequests = ReadInt(args, "--max-requests");
         var installRoot = ReadOption(args, "--install-root")
             ?? Path.Combine(Environment.CurrentDirectory, ".local", "install");
@@ -30,10 +40,34 @@ internal static class SanctuaryMcpLoopbackService
         var domain = ReadOption(args, "--domain") ?? "Lab";
         var role = ReadOption(args, "--role") ?? "IndustrialCME";
         var jobClass = ReadOption(args, "--job-class") ?? "GptUseCaseAlpha";
+        var loopbackHost = IsLoopbackHost(host);
 
-        if (!IsLoopbackHost(host))
+        if (!loopbackHost && !publicBindApproved)
         {
-            throw new ArgumentException("Sanctuary MCP alpha service only binds loopback hosts.");
+            throw new ArgumentException("Non-loopback Sanctuary MCP binding requires --public-bind-approved.");
+        }
+
+        if (!loopbackHost && !string.Equals(scheme, "https", StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Non-loopback Sanctuary MCP binding requires --scheme https.");
+        }
+
+        X509Certificate2? serverCertificate = null;
+        if (string.Equals(scheme, "https", StringComparison.Ordinal))
+        {
+            if (string.IsNullOrWhiteSpace(certPath))
+            {
+                throw new ArgumentException("HTTPS Sanctuary MCP binding requires --cert-path.");
+            }
+
+            serverCertificate = new X509Certificate2(
+                certPath,
+                certPassword,
+                X509KeyStorageFlags.UserKeySet);
+        }
+        else if (!string.Equals(scheme, "http", StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Sanctuary MCP binding scheme must be http or https.");
         }
 
         var service = new SanctuaryReceiptService();
@@ -50,14 +84,32 @@ internal static class SanctuaryMcpLoopbackService
             SessionId = "sanctuary-gpt-use-case-service-start"
         });
 
-        using var listener = new TcpListener(IPAddress.Loopback, port);
+        var bindAddress = ResolveBindAddress(host);
+        using var listener = new TcpListener(bindAddress, port);
         listener.Start();
         var boundPort = ((IPEndPoint)listener.LocalEndpoint).Port;
+        var advertisedHost = string.Equals(host, "0.0.0.0", StringComparison.Ordinal) ||
+            string.Equals(host, "::", StringComparison.Ordinal)
+                ? "+"
+                : host;
+        var localBaseUrl = $"{scheme}://{advertisedHost}:{boundPort}";
+        var binding = new McpServiceBinding(
+            scheme,
+            host,
+            boundPort,
+            publicBaseUrl,
+            publicBindApproved,
+            serverCertificate);
 
         Console.WriteLine("Sanctuary MCP alpha service started.");
-        Console.WriteLine($"Endpoint: http://{host}:{boundPort}/");
+        Console.WriteLine($"Endpoint: {localBaseUrl}/");
+        if (!string.IsNullOrWhiteSpace(publicBaseUrl))
+        {
+            Console.WriteLine($"Public MCP URL: {publicBaseUrl.TrimEnd('/')}/mcp");
+        }
+
         Console.WriteLine($"Startup receipt handle: {startupReceipt.ReceiptHandle}");
-        Console.WriteLine("Routes: GET /health, GET /tools, POST /invoke, POST /mcp, GET /sse, POST /sse/messages");
+        Console.WriteLine("Routes: GET /health, GET /tools, GET /.well-known/sanctuary-lab.json, GET /app/manifest.json, POST /invoke, POST /mcp, GET /sse, POST /sse/messages");
         Console.WriteLine("All exposed tools remain cold read/fetch candidate surfaces.");
 
         var handled = 0;
@@ -80,7 +132,8 @@ internal static class SanctuaryMcpLoopbackService
                         cmeId,
                         domain,
                         role,
-                        jobClass);
+                        jobClass,
+                        binding);
                 }
                 catch (IOException)
                 {
@@ -89,6 +142,14 @@ internal static class SanctuaryMcpLoopbackService
                 catch (ObjectDisposedException)
                 {
                     // Client disconnected during a long-lived SSE request.
+                }
+                catch (AuthenticationException exception)
+                {
+                    Console.Error.WriteLine($"Sanctuary edge TLS authentication failed: {exception.Message}");
+                }
+                catch (Exception exception)
+                {
+                    Console.Error.WriteLine($"Sanctuary MCP request failed closed: {exception.Message}");
                 }
             });
         }
@@ -104,9 +165,61 @@ internal static class SanctuaryMcpLoopbackService
         string defaultCmeId,
         string domain,
         string role,
-        string jobClass)
+        string jobClass,
+        McpServiceBinding binding)
     {
-        await using var stream = client.GetStream();
+        await using var networkStream = client.GetStream();
+        if (binding.ServerCertificate is null)
+        {
+            await HandleHttpStreamAsync(
+                networkStream,
+                service,
+                startupReceipt,
+                installRoot,
+                intakeRoot,
+                operatorName,
+                defaultCmeId,
+                domain,
+                role,
+                jobClass,
+                binding);
+            return;
+        }
+
+        await using var tlsStream = new SslStream(networkStream, leaveInnerStreamOpen: false);
+        await tlsStream.AuthenticateAsServerAsync(new SslServerAuthenticationOptions
+        {
+            ServerCertificate = binding.ServerCertificate,
+            EnabledSslProtocols = SslProtocols.None
+        });
+
+        await HandleHttpStreamAsync(
+            tlsStream,
+            service,
+            startupReceipt,
+            installRoot,
+            intakeRoot,
+            operatorName,
+            defaultCmeId,
+            domain,
+            role,
+            jobClass,
+            binding);
+    }
+
+    private static async Task HandleHttpStreamAsync(
+        Stream stream,
+        SanctuaryReceiptService service,
+        SanctuaryReceipt startupReceipt,
+        string installRoot,
+        string intakeRoot,
+        string operatorName,
+        string defaultCmeId,
+        string domain,
+        string role,
+        string jobClass,
+        McpServiceBinding binding)
+    {
         using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
 
         var requestLine = await reader.ReadLineAsync();
@@ -183,13 +296,31 @@ internal static class SanctuaryMcpLoopbackService
 
         if (method == "GET" && path == "/health")
         {
-            await WriteResponseAsync(stream, 200, BuildHealth(startupReceipt));
+            await WriteResponseAsync(stream, 200, BuildHealth(startupReceipt, binding));
             return;
         }
 
         if (method == "GET" && path == "/tools")
         {
-            await WriteResponseAsync(stream, 200, BuildToolsPayload());
+            await WriteResponseAsync(stream, 200, BuildToolsPayload(binding));
+            return;
+        }
+
+        if (method == "GET" && path == "/.well-known/sanctuary-lab.json")
+        {
+            await WriteResponseAsync(stream, 200, BuildLabWellKnown(startupReceipt, binding));
+            return;
+        }
+
+        if (method == "GET" && path == "/app/manifest.json")
+        {
+            await WriteResponseAsync(stream, 200, BuildAppManifest(binding));
+            return;
+        }
+
+        if (method == "GET" && path == "/")
+        {
+            await WriteResponseAsync(stream, 200, BuildRootPayload(binding));
             return;
         }
 
@@ -630,13 +761,21 @@ internal static class SanctuaryMcpLoopbackService
         };
     }
 
-    private static object BuildHealth(SanctuaryReceipt startupReceipt) => new
+    private static object BuildHealth(SanctuaryReceipt startupReceipt, McpServiceBinding binding) => new
     {
         schema = "project-sanctuary.gpt-alpha.health.v1",
-        service = "Sanctuary.exe MCP alpha loopback service",
+        service = binding.PublicBindApproved
+            ? "Sanctuary.exe MCP Lab edge gateway"
+            : "Sanctuary.exe MCP alpha loopback service",
         status = "running",
         owner = "Sanctuary.exe",
         posture = "cold-read-fetch-candidate-only",
+        transport = binding.TransportLabel,
+        host = binding.Host,
+        port = binding.Port,
+        publicBaseUrl = binding.PublicBaseUrl,
+        mcpServerUrl = binding.McpServerUrl,
+        sanctuaryOwnsEdge = binding.PublicBindApproved,
         startupReceipt.ReceiptHandle,
         startupReceipt.OutcomeCode,
         startupReceipt.Disposition,
@@ -649,18 +788,79 @@ internal static class SanctuaryMcpLoopbackService
         actualActivationAllowed = false
     };
 
-    private static object BuildToolsPayload() => new
+    private static object BuildToolsPayload(McpServiceBinding binding) => new
     {
         schema = "project-sanctuary.gpt-alpha.tools.v1",
         serviceOwner = "Sanctuary.exe",
-        transport = "loopback-http-alpha",
-        remoteChatGptUseRequiresSecureMcpTunnel = true,
+        transport = binding.TransportLabel,
+        remoteChatGptUseRequiresHttpsReachableMcp = true,
+        thirdPartyTunnelRequired = false,
+        mcpServerUrl = binding.McpServerUrl,
         tools = GptUseCaseTestingCatalog.SafeToolSurfaces,
         allToolsReadOrFetchOnly = GptUseCaseTestingCatalog.SafeToolSurfaces.All(tool => tool.ReadOrFetchOnly),
         reviewedPerformanceToolsExposed = false,
         secretIntakeToolsExposed = false,
         providerCallToolsExposed = false,
         modelBindingToolsExposed = false
+    };
+
+    private static object BuildLabWellKnown(SanctuaryReceipt startupReceipt, McpServiceBinding binding) => new
+    {
+        schema = "project-sanctuary.trivium-forum.lab-edge.v1",
+        name = "Sanctuary Lab Edge",
+        owner = "Lucid Technologies Department of Agentic Research and Development",
+        serviceOwner = "Sanctuary.exe",
+        transport = binding.TransportLabel,
+        publicBaseUrl = binding.PublicBaseUrl,
+        mcpServerUrl = binding.McpServerUrl,
+        manifestUrl = binding.Url("/app/manifest.json"),
+        healthUrl = binding.Url("/health"),
+        toolsUrl = binding.Url("/tools"),
+        startupReceipt = startupReceipt.ReceiptHandle,
+        thirdPartyTunnelRequired = false,
+        payloadHostedBySanctuary = true,
+        providerCallsAllowed = false,
+        modelBindingAllowed = false,
+        externalActionsAllowed = false,
+        reviewedPerformanceToolsExposed = false,
+        secretPayloadRoutesExposed = false
+    };
+
+    private static object BuildAppManifest(McpServiceBinding binding) => new
+    {
+        schema = "project-sanctuary.chatgpt-app-manifest.v1",
+        name = "Sanctuary Alpha",
+        description = "Lab-facing alpha tool body for Sanctuary receipts and CME provenance.",
+        mcpServerUrl = binding.McpServerUrl,
+        authentication = "No Auth alpha; cold read/fetch tools only",
+        owner = "Lucid Technologies Department of Agentic Research and Development",
+        payloadHostedBySanctuary = true,
+        csp = new
+        {
+            connect_domains = Array.Empty<string>(),
+            resource_domains = Array.Empty<string>(),
+            notes = "No remote UI assets are required for this MCP alpha manifest."
+        },
+        gates = new
+        {
+            providerCallsAllowed = false,
+            modelBindingAllowed = false,
+            externalActionsAllowed = false,
+            reviewedPerformanceToolsExposed = false,
+            secretPayloadRoutesExposed = false,
+            cmeActualToolExposed = false,
+            sanctuaryActualToolExposed = false
+        }
+    };
+
+    private static object BuildRootPayload(McpServiceBinding binding) => new
+    {
+        schema = "project-sanctuary.edge-root.v1",
+        service = "Sanctuary.exe",
+        posture = "cold-read-fetch-candidate-only",
+        mcpServerUrl = binding.McpServerUrl,
+        wellKnownUrl = binding.Url("/.well-known/sanctuary-lab.json"),
+        manifestUrl = binding.Url("/app/manifest.json")
     };
 
     private static object BuildSanitizedToolResult(string tool, SanctuaryReceipt receipt) => new
@@ -770,6 +970,8 @@ internal static class SanctuaryMcpLoopbackService
             $"HTTP/1.1 {statusCode} {statusText}\r\n" +
             "Content-Type: application/json; charset=utf-8\r\n" +
             "Cache-Control: no-store\r\n" +
+            "Content-Security-Policy: default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'\r\n" +
+            "X-Content-Type-Options: nosniff\r\n" +
             $"Content-Length: {responseBytes.Length}\r\n" +
             "Connection: close\r\n\r\n";
         var headerBytes = Encoding.ASCII.GetBytes(header);
@@ -839,6 +1041,34 @@ internal static class SanctuaryMcpLoopbackService
         return null;
     }
 
+    private static string? ReadEnvironmentOption(IReadOnlyList<string> args, string name)
+    {
+        var variableName = ReadOption(args, name);
+        return string.IsNullOrWhiteSpace(variableName)
+            ? null
+            : Environment.GetEnvironmentVariable(variableName);
+    }
+
+    private static bool ReadBool(IReadOnlyList<string> args, string name)
+    {
+        for (var index = 0; index < args.Count; index++)
+        {
+            if (!string.Equals(args[index], name, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (index + 1 < args.Count && bool.TryParse(args[index + 1], out var parsed))
+            {
+                return parsed;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     private static int ReadInt(IReadOnlyList<string> args, string name, int fallback = 0)
     {
         var value = ReadOption(args, name);
@@ -872,6 +1102,29 @@ internal static class SanctuaryMcpLoopbackService
         string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase) ||
         IPAddress.TryParse(host, out var address) && IPAddress.IsLoopback(address);
 
+    private static IPAddress ResolveBindAddress(string host)
+    {
+        if (string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase))
+        {
+            return IPAddress.Loopback;
+        }
+
+        if (string.Equals(host, "0.0.0.0", StringComparison.Ordinal) ||
+            string.Equals(host, "*", StringComparison.Ordinal))
+        {
+            return IPAddress.Any;
+        }
+
+        if (string.Equals(host, "::", StringComparison.Ordinal))
+        {
+            return IPAddress.IPv6Any;
+        }
+
+        return IPAddress.TryParse(host, out var address)
+            ? address
+            : IPAddress.Any;
+    }
+
     private static string Digest(string value)
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(value));
@@ -891,5 +1144,39 @@ internal static class SanctuaryMcpLoopbackService
         public string SessionId { get; } = sessionId;
         public Stream Stream { get; } = stream;
         public SemaphoreSlim WriteLock { get; } = new(1, 1);
+    }
+
+    private sealed record McpServiceBinding(
+        string Scheme,
+        string Host,
+        int Port,
+        string PublicBaseUrl,
+        bool PublicBindApproved,
+        X509Certificate2? ServerCertificate)
+    {
+        public string TransportLabel =>
+            PublicBindApproved ? "sanctuary-owned-https-edge" : "loopback-http-alpha";
+
+        public string LocalBaseUrl
+        {
+            get
+            {
+                var host = string.Equals(Host, "0.0.0.0", StringComparison.Ordinal) ||
+                    string.Equals(Host, "*", StringComparison.Ordinal)
+                        ? "127.0.0.1"
+                        : Host;
+                return $"{Scheme}://{host}:{Port}";
+            }
+        }
+
+        public string EffectiveBaseUrl =>
+            string.IsNullOrWhiteSpace(PublicBaseUrl)
+                ? LocalBaseUrl
+                : PublicBaseUrl.TrimEnd('/');
+
+        public string McpServerUrl => Url("/mcp");
+
+        public string Url(string path) =>
+            $"{EffectiveBaseUrl}/{path.TrimStart('/')}";
     }
 }

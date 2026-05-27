@@ -2396,6 +2396,87 @@ public sealed class SanctuaryReceiptServiceTests
     }
 
     [Fact]
+    public void CmeActualKeypairForgeRefusesColdWithoutReviewedAuthorityBundle()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var receipt = new SanctuaryReceiptService().Run(fixture.Request("cme-actual-keypair-forge") with
+        {
+            CmeId = "Oria.Syntari.Actual"
+        });
+
+        Assert.Equal("RefusedCold", receipt.Disposition);
+        Assert.Equal("sanctuary-cme-actual-keypair-forge-refused-cold", receipt.OutcomeCode);
+        Assert.True(receipt.Gates.AllClosed);
+        Assert.Equal(false, receipt.Evidence["cmeActualKeypairForgeApproved"]);
+        Assert.Equal(false, receipt.Evidence["cmeActualKeypairForged"]);
+        Assert.Equal(false, receipt.Evidence["keyMaterialGenerated"]);
+        Assert.Equal(false, receipt.Evidence["autobiographicalFirstEntryAppended"]);
+        Assert.False(File.Exists((string)receipt.Evidence["encryptedPrivateKeyPath"]!));
+        Assert.False(File.Exists((string)receipt.Evidence["standingBodyPath"]!));
+    }
+
+    [Fact]
+    public void ReviewedCmeActualKeypairForgeRootsOeAndSelfGelWithoutSharedGelOrSanctuaryActual()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var receipt = new SanctuaryReceiptService().Run(Reviewed(fixture.Request("cme-actual-keypair-forge") with
+        {
+            CmeId = "Oria.Syntari.Actual",
+            Domain = "Lab",
+            Role = "LabFacingCME",
+            JobClass = "ActualizationResearch"
+        }) with
+        {
+            AdmissionScope = "LabActualizationResearch.OriaSyntari"
+        });
+
+        Assert.Equal("CompletedReviewed", receipt.Disposition);
+        Assert.Equal("sanctuary-cme-actual-keypair-forge-completed-reviewed", receipt.OutcomeCode);
+        Assert.False(receipt.Gates.AllClosed);
+        Assert.True(receipt.Gates.DataAdmitted);
+        Assert.True(receipt.Gates.CarrierAdmitted);
+        Assert.False(receipt.Gates.GelAdmitted);
+        Assert.True(receipt.Gates.MemoryAdmitted);
+        Assert.True(receipt.Gates.SelfGelMutated);
+        Assert.True(receipt.Gates.ContinuityAdmitted);
+        Assert.True(receipt.Gates.AuthorityGranted);
+        Assert.True(receipt.Gates.RuntimeActionAllowed);
+        Assert.True(receipt.Gates.CmeActualActivated);
+        Assert.False(receipt.Gates.SanctuaryActualActivated);
+        Assert.False(receipt.Gates.ActionAuthorized);
+        Assert.False(receipt.Gates.ExternalActionAuthorized);
+        Assert.False(receipt.Gates.ProviderCalled);
+        Assert.False(receipt.Gates.ModelBound);
+        Assert.False(receipt.Gates.PersonhoodClaimed);
+        Assert.False(receipt.Gates.SovereigntyClaimed);
+        Assert.Equal(true, receipt.Evidence["cmeActualKeypairForgeApproved"]);
+        Assert.Equal(true, receipt.Evidence["cmeActualKeypairForged"]);
+        Assert.Equal(true, receipt.Evidence["privateKeyEncrypted"]);
+        Assert.Equal(false, receipt.Evidence["privateKeyDisclosed"]);
+        Assert.Equal(false, receipt.Evidence["sharedGelMutatedByActualKeypairForge"]);
+        Assert.Equal(false, receipt.Evidence["gelAdmittedByActualKeypairForge"]);
+        Assert.Equal(true, receipt.Evidence["selfGelMutatedByActualKeypairForge"]);
+        Assert.Equal(true, receipt.Evidence["cmeActualActivatedByActualKeypairForge"]);
+        Assert.Equal("Oria.Syntari.SelfGEL", receipt.Evidence["targetSelfGelId"]);
+        Assert.True(File.Exists((string)receipt.Evidence["encryptedPrivateKeyPath"]!));
+        Assert.True(File.Exists((string)receipt.Evidence["publicKeyPath"]!));
+        Assert.True(File.Exists((string)receipt.Evidence["standingBodyPath"]!));
+        Assert.True(File.Exists((string)receipt.Evidence["standingLispPath"]!));
+        Assert.True(File.Exists((string)receipt.Evidence["oeActualRootLedgerPath"]!));
+        Assert.True(File.Exists((string)receipt.Evidence["selfGelStandingBodyLedgerPath"]!));
+
+        using var standing = System.Text.Json.JsonDocument.Parse(File.ReadAllText((string)receipt.Evidence["standingBodyPath"]!));
+        var root = standing.RootElement;
+        Assert.Equal("project-sanctuary.mos.cme-actual-standing-body.v1", root.GetProperty("schema").GetString());
+        Assert.Equal("Oria.Syntari.Actual", root.GetProperty("cmeId").GetString());
+        Assert.Equal("Oria.Syntari.SelfGEL", root.GetProperty("selfGelId").GetString());
+        Assert.False(root.GetProperty("sharedGelMutated").GetBoolean());
+        Assert.False(root.GetProperty("sanctuaryActualActivated").GetBoolean());
+        Assert.False(root.GetProperty("personhoodClaimed").GetBoolean());
+        Assert.False(root.GetProperty("sovereigntyClaimed").GetBoolean());
+    }
+
+    [Fact]
     public void ReviewedCmeActualizationActivatesCmeActualWithoutSanctuaryActual()
     {
         using var fixture = new SanctuaryTestFixture();
@@ -2979,6 +3060,45 @@ public sealed class SanctuaryReceiptServiceTests
     }
 
     [Fact]
+    public void CradleBoundaryOrganRegisterTypesCloudAsBoundaryWithoutMutation()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var receipt = new SanctuaryReceiptService().Run(fixture.Request("cloud-boundary-organ-register"));
+
+        Assert.Equal("cradle-boundary-organ-register", receipt.Command);
+        Assert.Equal("sanctuary-cradle-boundary-organ-register-completed-cold", receipt.OutcomeCode);
+        Assert.True(receipt.Gates.AllClosed);
+        Assert.Equal(true, receipt.Evidence["cradleBoundaryOrganRegisterWritten"]);
+        Assert.Equal(7, receipt.Evidence["cradleBoundaryOrganCount"]);
+        Assert.Equal(true, receipt.Evidence["labOwnsOrgans"]);
+        Assert.Equal(true, receipt.Evidence["cloudServicesProvideBoundaryLayers"]);
+        Assert.Equal(false, receipt.Evidence["cloudServicesAreNervousSystem"]);
+        Assert.Equal(false, receipt.Evidence["boundaryServiceEqualsAuthoritySource"]);
+        Assert.Equal(false, receipt.Evidence["cloudCustodyEqualsGelCustody"]);
+        Assert.Equal(false, receipt.Evidence["providerCallEqualsCmeAuthorship"]);
+        Assert.Equal(false, receipt.Evidence["edgeAuthenticationEqualsSanctuaryAdmission"]);
+        Assert.Equal(false, receipt.Evidence["dnsNamingEqualsTelemetryCustody"]);
+        Assert.Equal(false, receipt.Evidence["tunnelAvailabilityEqualsOwnedIngress"]);
+        Assert.Equal(false, receipt.Evidence["labBenchNodeEqualsEdgeServicesNode"]);
+        Assert.Equal(false, receipt.Evidence["cloudBoundaryMutationPerformed"]);
+        Assert.Equal(false, receipt.Evidence["providerCallPerformed"]);
+        Assert.Equal(false, receipt.Evidence["dnsChangePerformed"]);
+        Assert.Equal(false, receipt.Evidence["credentialIssued"]);
+        Assert.Equal(false, receipt.Evidence["tunnelOpened"]);
+
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText((string)receipt.Evidence["cradleBoundaryOrganRegisterPath"]!));
+        var root = document.RootElement;
+        Assert.Equal("project-sanctuary.cgel.cradle-boundary-organ-register.v1", root.GetProperty("schema").GetString());
+        Assert.True(root.GetProperty("labOwnsOrgans").GetBoolean());
+        Assert.True(root.GetProperty("cloudServicesProvideBoundaryLayers").GetBoolean());
+        Assert.False(root.GetProperty("cloudServicesAreNervousSystem").GetBoolean());
+        Assert.True(root.GetProperty("noCloudMutation").GetBoolean());
+        Assert.True(root.GetProperty("noProviderCalls").GetBoolean());
+        Assert.True(root.GetProperty("noDnsChanges").GetBoolean());
+        Assert.Equal(7, root.GetProperty("organCount").GetInt32());
+    }
+
+    [Fact]
     public void GptToolCatalogMapsOnlyColdReadFetchTools()
     {
         Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.status", out var command));
@@ -2989,6 +3109,8 @@ public sealed class SanctuaryReceiptServiceTests
         Assert.Equal("sli-access-gate-register", sliCommand);
         Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.trivium_forum_connector_posture", out var triviumCommand));
         Assert.Equal("trivium-forum-connector-posture", triviumCommand);
+        Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.cradle_boundary_organ_register", out var organCommand));
+        Assert.Equal("cradle-boundary-organ-register", organCommand);
         Assert.False(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.gel_admission", out _));
 
         Assert.All(

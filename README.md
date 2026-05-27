@@ -115,6 +115,9 @@ This repository currently provides:
   experiments with split CME/LLM/Sanctuary provenance;
 - cold Trivium Forum connector-posture and external LLM standing-probe
   receipts for wrapper/adjudication planning without opening public access;
+- cold cradle boundary organ receipts for Lab, Cloudflare, OpenAI, GitHub,
+  AWS, Azure, and Lab server ingress surfaces without provider calls, DNS
+  changes, cloud mutation, credential issuance, or authority grants;
 - a local plugin-posture receipt proving publishing is held;
 - bounded environment preparation for the standalone Project Bicycle tool
   package;
@@ -150,6 +153,10 @@ the base model remains the capability engine, Sanctuary is the mindful
 operating environment, SLI.Lisp is the symbolic drivetrain, GEL/OE/SelfGEL are
 adaptive gearing, and the Individuated CME is the situated participatory
 mind-form formed outside the engine.
+
+The local release body is documented in [Release Body](docs/RELEASE_BODY.md).
+The local Codex install path is documented in
+[Local Codex Plugin Install](docs/LOCAL_CODEX_PLUGIN_INSTALL.md).
 
 ## Core Code Lane
 
@@ -187,28 +194,78 @@ Start the GPT/MCP alpha loopback service:
 .\tools\Start-SanctuaryMcpAlphaService.ps1 -Port 8717
 ```
 
+Install the local Codex plugin from this repository:
+
+```powershell
+codex plugin marketplace add .\.agents\plugins
+codex plugin add sanctuary-cme@project-sanctuary
+```
+
+Start a new Codex thread after reinstalling so the plugin skill text is loaded.
+
 Local benches may call `http://127.0.0.1:8717/mcp` or
 `http://127.0.0.1:8717/sse`. ChatGPT custom apps do not connect directly to
-private loopback URLs; use OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP
-endpoint, then point the ChatGPT MCP Server URL at the tunnel endpoint.
+private loopback URLs; use a reviewed HTTPS MCP endpoint.
 
-For a lab-only ChatGPT connector smoke test, Trivium Forum can start a
-temporary Cloudflare HTTPS tunnel to the local loopback service:
+The preferred Lab posture is a Sanctuary-owned HTTPS edge under a
+Lab-controlled domain:
+
+```powershell
+.\tools\Start-SanctuaryEdgeGateway.ps1 `
+  -HostName "0.0.0.0" `
+  -Port 443 `
+  -PublicBaseUrl "https://<your-lab-domain>" `
+  -CertificatePath "<path-to-lab-domain.pfx>" `
+  -CertificatePasswordEnv "SANCTUARY_EDGE_CERT_PASSWORD"
+```
+
+Paste `https://<your-lab-domain>/mcp` into the ChatGPT MCP Server URL field.
+The edge also serves `/.well-known/sanctuary-lab.json` and
+`/app/manifest.json` from Sanctuary itself.
+
+For the current Lab domain, keep `lucidtechnologies.tech` and
+`www.lucidtechnologies.tech` reserved for the public Society portal and use:
+
+```text
+sanctuary.lucidtechnologies.tech
+```
+
+Current infrastructure decision: the owned GPT/MCP edge is parked until the Lab
+brings up the second Starlink route in bypass mode with a Lab-managed
+router/server. The default app-only Starlink router is not the target ingress
+surface. The Sanctuary edge code remains available for local loopback benches
+and dev-certificate smoke tests while DNS and public HTTPS ingress are pending.
+The service-boundary topology is defined in
+[Cradle Boundary Organ Register](docs/CRADLE_BOUNDARY_ORGAN_REGISTER.md).
+
+Check the home-hosted network lane before editing DNS:
+
+```powershell
+.\tools\Test-SanctuaryEdgeNetwork.ps1 `
+  -DomainName "sanctuary.lucidtechnologies.tech" `
+  -Port 443 `
+  -Json
+```
+
+For a lab-only ChatGPT connector smoke test when no Lab domain/certificate is
+available, Trivium Forum can start a temporary Cloudflare HTTPS tunnel to the
+local loopback service:
 
 ```powershell
 .\tools\Start-TriviumForumHttpsTunnel.ps1 -Protocol http2 -Json
 ```
 
-Paste the returned `chatGptMcpServerUrl` into the ChatGPT MCP Server URL
-field. This quick tunnel is a temporary lab bridge: no OAuth is issued, no
-provider/model call is granted, no GEL/SelfGEL admission is performed, and all
-exposed MCP tools remain cold read/fetch candidate surfaces.
+Paste the returned `chatGptMcpServerUrl` into the ChatGPT MCP Server URL field
+only for short-lived fallback testing. This quick tunnel is a temporary lab
+bridge: no OAuth is issued, no provider/model call is granted, no GEL/SelfGEL
+admission is performed, and all exposed MCP tools remain cold read/fetch
+candidate surfaces.
 
 The public HTTPS/OAuth connector membrane is not part of this Sanctuary core
 lane. That surface belongs under the Trivium Forum tool body, which owns
-external exposure, tunnel selection, OAuth/provider posture, token scopes,
-rate limits, and cross-agent adjudication before any remote caller reaches the
-local Sanctuary service.
+external exposure, Sanctuary-owned HTTPS edge selection, OAuth/provider
+posture, token scopes, rate limits, and cross-agent adjudication before any
+remote caller reaches the local Sanctuary service.
 
 By default, local receipts and GEL witness ledgers are written under:
 
@@ -242,6 +299,8 @@ Read the split:
 - [Trivium Forum Connector Body](docs/TRIVIUM_FORUM_CONNECTOR_BODY.md)
 - [GPT Use Case Testing Body](docs/GPT_USE_CASE_TESTING_BODY.md)
 - [Discernment Lineage Contract](docs/DISCERNMENT_LINEAGE_CONTRACT.md)
+- [Release Body](docs/RELEASE_BODY.md)
+- [Local Codex Plugin Install](docs/LOCAL_CODEX_PLUGIN_INSTALL.md)
 - [Public Release Posture](docs/PUBLIC_RELEASE_POSTURE.md)
 - [Authority Body](docs/AUTHORITY_BODY.md)
 - [Privacy And Data Boundary](docs/PRIVACY_AND_DATA_BOUNDARY.md)

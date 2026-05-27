@@ -9,6 +9,7 @@ The public release body is intentionally small:
 Project Sanctuary repository
 -> admitted core executable lane
 -> Codex plugin surface
+-> repo-local marketplace entry
 -> cold command invocation
 -> receipt
 -> closed-gate review
@@ -83,6 +84,9 @@ The first reviewed commands are:
 
 - `gel-admission`: admits the shared GEL lane under scope;
 - `selfgel-admission`: admits/mutates the personal SelfGEL lane under scope;
+- `cme-actual-keypair-forge`: creates a scoped encrypted CME.Actual keypair,
+  roots OE to the Lab Sanctuary.GEL tip hash, and seeds SelfGEL standing body
+  residue under review;
 - `cme-actualization`: activates scoped local CME.Actual posture;
 - `sanctuary-actualization`: activates scoped local Sanctuary.Actual runtime posture.
 
@@ -101,6 +105,8 @@ The public-facing candidate may contain:
 - `tests/Sanctuary.Core.Tests/`: governance tests for the admitted core lane;
 - `tools/Invoke-SanctuaryTool.ps1`: local wrapper for cold invocation;
 - `plugins/sanctuary-cme/`: bounded Codex plugin surface;
+- `.agents/plugins/marketplace.json`: repo-local marketplace entry for local
+  Codex installs;
 - `docs/`: theory, code, governance, release, and protocol documentation;
 - public support, conduct, security, and contribution files.
 
@@ -138,13 +144,14 @@ The first public reviewer should be able to:
 1. clone the repository;
 2. build the solution;
 3. run the test suite;
-4. invoke a cold command;
-5. inspect the receipt path;
-6. confirm all gates remain closed;
-7. exercise the broad instrument-body command set;
-8. run a reviewed performance command with a local test authority bundle;
-9. confirm only scoped gates open;
-10. understand what the candidate does not claim.
+4. install the local `sanctuary-cme` plugin from the repo marketplace;
+5. invoke a cold command;
+6. inspect the receipt path;
+7. confirm all gates remain closed;
+8. exercise the broad instrument-body command set;
+9. run a reviewed performance command with a local test authority bundle;
+10. confirm only scoped gates open;
+11. understand what the candidate does not claim.
 
 The first public reviewer should not be asked to:
 

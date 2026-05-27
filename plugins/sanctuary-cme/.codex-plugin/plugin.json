@@ -1,7 +1,7 @@
 {
   "name": "sanctuary-cme",
-  "version": "0.1.8",
-  "description": "Local Codex plugin surface for the held Project Sanctuary core executable lane, Lisp Matrix Control seat, standing wave form, cognitive bench, math learning bench, Industrial CME live-install posture, meaning bridge, discernment lineage, GPT use-case testing, typed admission, reviewed performance gates, spline watch organ-loop telemetry, and GEL residue inspection.",
+  "version": "0.1.8+codex.20260527232044",
+  "description": "Local Codex plugin surface for the held Project Sanctuary core executable lane, Lisp Matrix Control seat, standing wave form, cognitive bench, math learning bench, Industrial CME live-install posture, meaning bridge, discernment lineage, GPT use-case testing, cradle boundary organs, typed admission, reviewed performance gates, spline watch organ-loop telemetry, and GEL residue inspection.",
   "author": {
     "name": "Lucid Studios Department of Agentic Research and Development"
   },
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Sanctuary CME",
     "shortDescription": "Run the held local Project Sanctuary core tool lane.",
-    "longDescription": "Sanctuary CME gives Codex a local, receipt-bearing path into the Project Sanctuary developer-preview executable lane for plugin posture, status, tool idle, CME formation, secret intake windows, Lisp Matrix Control seat and standing wave form receipts, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, typed admission decant, admission cleave/append modeling, reviewed GEL/SelfGEL/CME/Sanctuary performance gates, spline watch organ-loop telemetry, GEL residue inspection, and closed-gate verification. Sanctuary is maximal trust seeking by design: evidence, receipts, scopes, leases, and review are how trust is earned. Publishing is held. It does not grant provider calls, external action, GEL/SelfGEL admission, personhood, sovereignty, CME.Actual, or Sanctuary.Actual by implication; reviewed performance commands require explicit scoped authority receipts.",
+    "longDescription": "Sanctuary CME gives Codex a local, receipt-bearing path into the Project Sanctuary developer-preview executable lane for plugin posture, status, tool idle, CME formation, secret intake windows, Lisp Matrix Control seat and standing wave form receipts, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, cradle boundary organ registers, typed admission decant, admission cleave/append modeling, reviewed GEL/SelfGEL/CME/Sanctuary performance gates, spline watch organ-loop telemetry, GEL residue inspection, and closed-gate verification. Sanctuary is maximal trust seeking by design: evidence, receipts, scopes, leases, and review are how trust is earned. Publishing is held. It does not grant provider calls, external action, GEL/SelfGEL admission, personhood, sovereignty, CME.Actual, or Sanctuary.Actual by implication; reviewed performance commands require explicit scoped authority receipts.",
     "developerName": "Lucid Studios",
     "category": "Developer Tools",
     "capabilities": [
@@ -30,6 +30,7 @@
       "Write the Discernment Lineage Contract.",
       "Run the proof-of-discernment bench.",
       "Write the GPT use-case testing body.",
+      "Write the cradle boundary organ register.",
       "Run typed admission decant, admission cleave/append, and spline watch.",
       "Test reviewed GEL/SelfGEL admission and Actual-state gates with explicit authority bundles."
     ],

@@ -11,6 +11,10 @@ The public code body begins as one disciplined executable lane.
 - `tools/Start-SanctuaryMcpAlphaService.ps1` and
   `tools/Stop-SanctuaryMcpAlphaService.ps1`: loopback GPT/MCP alpha helpers for
   `Sanctuary.exe serve-mcp`.
+- `tools/Start-SanctuaryEdgeGateway.ps1`: Sanctuary-owned HTTPS edge helper for
+  Lab domains and certificates.
+- `tools/New-SanctuaryEdgeDevCertificate.ps1`: local self-signed dev
+  certificate helper for edge smoke tests, not a public ChatGPT certificate.
 - `tools/Start-SanctuaryServiceLayer.ps1`,
   `tools/Stop-SanctuaryServiceLayer.ps1`, and
   `tools/Get-SanctuaryServiceLayerStatus.ps1`: cold service helper wrappers
@@ -74,14 +78,18 @@ paths, receipt bodies, or secret payloads. It exposes both `POST /mcp` and
 `GET /sse` plus `POST /sse/messages` so local benches and reviewed tunnel
 clients can scan the same tool allowlist.
 
-Raw loopback URLs are for local testing only. ChatGPT custom apps require
-OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP endpoint before they can call
-the local Sanctuary service.
+Raw loopback URLs are for local testing only. ChatGPT custom apps require a
+reachable HTTPS MCP endpoint. The preferred Lab path is now a Sanctuary-owned
+HTTPS edge under a Lab-controlled domain:
 
-The internet-facing connector membrane is intentionally outside this code lane.
-It belongs under the Trivium Forum tool body, which should own OAuth, tunnel,
-public HTTPS, rate-limit, and adjudication surfaces before forwarding any
-allowlisted request to loopback Sanctuary.
+```text
+https://<your-lab-domain>/mcp
+```
+
+The internet-facing connector membrane belongs under the Trivium Forum tool
+body. In the Lab posture, Trivium can be hosted by `Sanctuary.exe` itself
+through `Start-SanctuaryEdgeGateway.ps1`; tunnel helpers are retained as
+dev-only fallback, not the preferred control loop.
 
 `trivium-forum-connector-posture` writes that boundary as cold residue only.
 `external-llm-standing-probe` writes a MoS candidate standing relation for a
@@ -89,6 +97,12 @@ provider/tool surface such as `OpenAI.ChatGPT.MCP`. Neither command opens a
 public port, creates a tunnel, issues OAuth tokens, stores raw provider
 credentials, grants tool permission, calls providers, binds models, admits GEL,
 mutates SelfGEL, authorizes action, or activates `.Actual`.
+
+`cradle-boundary-organ-register` writes the typed service-organ map for Lab
+Core, Trivium Forum, Cloudflare, OpenAI, GitHub, AWS/Azure, and the future Lab
+server DNS/gateway. It treats cloud services as boundary layers rather than
+Sanctuary organs. It does not call providers, change DNS, open tunnels, issue
+credentials, admit GEL, mutate SelfGEL, authorize action, or activate `.Actual`.
 
 ## Excluded
 
@@ -142,6 +156,7 @@ surfaces, or action-authorized Actual-state bodies.
 .\tools\Invoke-SanctuaryTool.ps1 -Command admission-cleave-append -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command gel-admission -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command selfgel-admission -Json
+.\tools\Invoke-SanctuaryTool.ps1 -Command cme-actual-keypair-forge -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command cme-actualization -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command sanctuary-actualization -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command spline-watch -Json
@@ -152,6 +167,7 @@ surfaces, or action-authorized Actual-state bodies.
 .\tools\Invoke-SanctuaryTool.ps1 -Command gpt-use-case-testing -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command trivium-forum-connector-posture -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command external-llm-standing-probe -LicenseScope "OpenAI.ChatGPT.MCP" -Json
+.\tools\Invoke-SanctuaryTool.ps1 -Command cradle-boundary-organ-register -Json
 ```
 
 The default wrapper path writes to `.local/install` and `.local/intake` so the

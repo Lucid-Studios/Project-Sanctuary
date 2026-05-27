@@ -13,6 +13,8 @@ as useful, coherent, and safe beyond closed-gate demonstration.
 - [ ] Unrelated dirty worktree state reviewed or excluded.
 - [ ] `.local/`, private payloads, and local install state are untracked or
       ignored.
+- [ ] Project Bicycle remains frozen/reference-only and no live-body Bicycle
+      work has been imported.
 - [ ] No local absolute paths are present.
 - [ ] No secrets, credentials, tokens, keys, account recovery material, or
       private documents are present.
@@ -76,6 +78,10 @@ Confirm the reviewed performance lanes behave correctly:
 - [ ] `selfgel-admission` refuses cold without the complete authority bundle.
 - [ ] `selfgel-admission` opens only scoped SelfGEL gates with the complete
       bundle.
+- [ ] `cme-actual-keypair-forge` refuses cold without the complete authority
+      bundle.
+- [ ] `cme-actual-keypair-forge` creates encrypted key custody, OE root
+      inheritance, and SelfGEL standing residue only with the complete bundle.
 - [ ] `cme-actualization` refuses cold without the complete authority bundle.
 - [ ] `cme-actualization` opens only scoped CME.Actual gates with the complete
       bundle.
@@ -89,6 +95,10 @@ Confirm the reviewed performance lanes behave correctly:
 ## Plugin Gate
 
 - [ ] Plugin metadata names the release accurately.
+- [ ] `.agents/plugins/marketplace.json` points at `./plugins/sanctuary-cme`.
+- [ ] Plugin manifest validates.
+- [ ] Local install instructions name the repo marketplace and new-thread
+      reload requirement.
 - [ ] Plugin commands route through the bounded wrapper.
 - [ ] Plugin description states publishing or authority remains held unless
       separately reviewed.

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -7,6 +8,9 @@ using Sanctuary.Core;
 
 internal static class SanctuaryMcpLoopbackService
 {
+    private const string McpProtocolVersion = "2025-03-26";
+    private static readonly ConcurrentDictionary<string, SseClientSession> SseSessions = new(StringComparer.Ordinal);
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true
@@ -53,25 +57,40 @@ internal static class SanctuaryMcpLoopbackService
         Console.WriteLine("Sanctuary MCP alpha service started.");
         Console.WriteLine($"Endpoint: http://{host}:{boundPort}/");
         Console.WriteLine($"Startup receipt handle: {startupReceipt.ReceiptHandle}");
-        Console.WriteLine("Routes: GET /health, GET /tools, POST /invoke, POST /mcp");
+        Console.WriteLine("Routes: GET /health, GET /tools, POST /invoke, POST /mcp, GET /sse, POST /sse/messages");
         Console.WriteLine("All exposed tools remain cold read/fetch candidate surfaces.");
 
         var handled = 0;
         while (maxRequests <= 0 || handled < maxRequests)
         {
-            using var client = await listener.AcceptTcpClientAsync();
+            var client = await listener.AcceptTcpClientAsync();
             handled++;
-            await HandleClientAsync(
-                client,
-                service,
-                startupReceipt,
-                installRoot,
-                intakeRoot,
-                operatorName,
-                cmeId,
-                domain,
-                role,
-                jobClass);
+            _ = Task.Run(async () =>
+            {
+                using var ownedClient = client;
+                try
+                {
+                    await HandleClientAsync(
+                        ownedClient,
+                        service,
+                        startupReceipt,
+                        installRoot,
+                        intakeRoot,
+                        operatorName,
+                        cmeId,
+                        domain,
+                        role,
+                        jobClass);
+                }
+                catch (IOException)
+                {
+                    // Client disconnected during a long-lived SSE request.
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Client disconnected during a long-lived SSE request.
+                }
+            });
         }
     }
 
@@ -105,7 +124,8 @@ internal static class SanctuaryMcpLoopbackService
         }
 
         var method = parts[0].ToUpperInvariant();
-        var path = parts[1].Split('?', 2)[0].TrimEnd('/');
+        var target = parts[1];
+        var path = target.Split('?', 2)[0].TrimEnd('/');
         if (path.Length == 0)
         {
             path = "/";
@@ -161,6 +181,29 @@ internal static class SanctuaryMcpLoopbackService
             return;
         }
 
+        if (method == "GET" && path == "/sse")
+        {
+            await HandleSseOpenAsync(stream);
+            return;
+        }
+
+        if (method == "POST" && path == "/sse/messages")
+        {
+            await HandleSseMessageAsync(
+                stream,
+                target,
+                service,
+                body,
+                installRoot,
+                intakeRoot,
+                operatorName,
+                defaultCmeId,
+                domain,
+                role,
+                jobClass);
+            return;
+        }
+
         if (method == "POST" && path == "/invoke")
         {
             var invocation = ParseInvocation(body);
@@ -180,21 +223,107 @@ internal static class SanctuaryMcpLoopbackService
 
         if (method == "POST" && path == "/mcp")
         {
-            await HandleMcpJsonRpcAsync(
-                stream,
-                service,
-                body,
-                installRoot,
-                intakeRoot,
-                operatorName,
-                defaultCmeId,
-                domain,
-                role,
-                jobClass);
+            var response = BuildMcpJsonRpcResponse(
+                    service,
+                    body,
+                    installRoot,
+                    intakeRoot,
+                    operatorName,
+                    defaultCmeId,
+                    domain,
+                    role,
+                    jobClass);
+
+            await WriteResponseAsync(stream, 200, response ?? new { accepted = true });
             return;
         }
 
         await WriteResponseAsync(stream, 404, new { error = "route-not-found", failClosed = true });
+    }
+
+    private static async Task HandleSseOpenAsync(Stream stream)
+    {
+        var sessionId = Convert.ToHexString(RandomNumberGenerator.GetBytes(16)).ToLowerInvariant();
+        var session = new SseClientSession(sessionId, stream);
+        if (!SseSessions.TryAdd(sessionId, session))
+        {
+            await WriteResponseAsync(stream, 500, new { error = "sse-session-collision", failClosed = true });
+            return;
+        }
+
+        await WriteRawAsync(
+            stream,
+            "HTTP/1.1 200 OK\r\n" +
+            "Content-Type: text/event-stream; charset=utf-8\r\n" +
+            "Cache-Control: no-store\r\n" +
+            "Connection: keep-alive\r\n\r\n");
+
+        await WriteSseFrameAsync(session, "endpoint", $"/sse/messages?sessionId={Uri.EscapeDataString(sessionId)}", serializeData: false);
+
+        try
+        {
+            while (stream.CanWrite)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(15));
+                await WriteSseCommentAsync(session, $"sanctuary-heartbeat {DateTimeOffset.UtcNow:O}");
+            }
+        }
+        finally
+        {
+            SseSessions.TryRemove(sessionId, out _);
+        }
+    }
+
+    private static async Task HandleSseMessageAsync(
+        Stream stream,
+        string target,
+        SanctuaryReceiptService service,
+        string body,
+        string installRoot,
+        string intakeRoot,
+        string operatorName,
+        string defaultCmeId,
+        string domain,
+        string role,
+        string jobClass)
+    {
+        var sessionId = ReadQueryValue(target, "sessionId") ?? ReadQueryValue(target, "session_id");
+        if (string.IsNullOrWhiteSpace(sessionId) || !SseSessions.TryGetValue(sessionId, out var session))
+        {
+            await WriteResponseAsync(stream, 404, new
+            {
+                error = "sse-session-not-found",
+                failClosed = true,
+                providerCalled = false,
+                modelBound = false,
+                externalActionAuthorized = false
+            });
+            return;
+        }
+
+        var response = BuildMcpJsonRpcResponse(
+            service,
+            body,
+            installRoot,
+            intakeRoot,
+            operatorName,
+            defaultCmeId,
+            domain,
+            role,
+            jobClass);
+
+        if (response is not null)
+        {
+            await WriteSseFrameAsync(session, "message", response);
+        }
+
+        await WriteResponseAsync(stream, 202, new
+        {
+            accepted = true,
+            sessionId,
+            responseEmitted = response is not null,
+            failClosed = false
+        });
     }
 
     private static async Task InvokeToolAsync(
@@ -243,8 +372,7 @@ internal static class SanctuaryMcpLoopbackService
         await WriteResponseAsync(stream, 200, BuildSanitizedToolResult(invocation.Tool, receipt));
     }
 
-    private static async Task HandleMcpJsonRpcAsync(
-        Stream stream,
+    private static object? BuildMcpJsonRpcResponse(
         SanctuaryReceiptService service,
         string body,
         string installRoot,
@@ -260,9 +388,73 @@ internal static class SanctuaryMcpLoopbackService
         var id = root.TryGetProperty("id", out var idElement) ? idElement.Clone() : default(JsonElement?);
         var method = root.TryGetProperty("method", out var methodElement) ? methodElement.GetString() : "";
 
+        if (string.Equals(method, "notifications/initialized", StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        if (string.Equals(method, "initialize", StringComparison.Ordinal))
+        {
+            return new
+            {
+                jsonrpc = "2.0",
+                id,
+                result = new
+                {
+                    protocolVersion = McpProtocolVersion,
+                    capabilities = new
+                    {
+                        tools = new { }
+                    },
+                    serverInfo = new
+                    {
+                        name = "Sanctuary Tool",
+                        version = "0.1.0-alpha"
+                    },
+                    instructions = "Cold read/fetch candidate-only Project Sanctuary alpha. Unknown tools fail closed. No provider calls, model binding, external actions, GEL admission, SelfGEL mutation, CME.Actual, or Sanctuary.Actual."
+                }
+            };
+        }
+
+        if (string.Equals(method, "ping", StringComparison.Ordinal))
+        {
+            return new
+            {
+                jsonrpc = "2.0",
+                id,
+                result = new { }
+            };
+        }
+
+        if (string.Equals(method, "resources/list", StringComparison.Ordinal))
+        {
+            return new
+            {
+                jsonrpc = "2.0",
+                id,
+                result = new
+                {
+                    resources = Array.Empty<object>()
+                }
+            };
+        }
+
+        if (string.Equals(method, "prompts/list", StringComparison.Ordinal))
+        {
+            return new
+            {
+                jsonrpc = "2.0",
+                id,
+                result = new
+                {
+                    prompts = Array.Empty<object>()
+                }
+            };
+        }
+
         if (string.Equals(method, "tools/list", StringComparison.Ordinal))
         {
-            await WriteResponseAsync(stream, 200, new
+            return new
             {
                 jsonrpc = "2.0",
                 id,
@@ -280,12 +472,12 @@ internal static class SanctuaryMcpLoopbackService
                                 sessionId = new { type = "string" },
                                 cmeId = new { type = "string" },
                                 benchRunCount = new { type = "integer", minimum = 1, maximum = 240 }
-                            }
+                            },
+                            additionalProperties = false
                         }
                     })
                 }
-            });
-            return;
+            };
         }
 
         if (string.Equals(method, "tools/call", StringComparison.Ordinal))
@@ -309,7 +501,7 @@ internal static class SanctuaryMcpLoopbackService
 
             if (!GptUseCaseTestingCatalog.TryMapToolToCommand(invocation.Tool, out var command))
             {
-                await WriteResponseAsync(stream, 200, new
+                return new
                 {
                     jsonrpc = "2.0",
                     id,
@@ -325,8 +517,7 @@ internal static class SanctuaryMcpLoopbackService
                             externalActionAuthorized = false
                         }
                     }
-                });
-                return;
+                };
             }
 
             var receipt = service.Run(new SanctuaryRequest
@@ -345,7 +536,7 @@ internal static class SanctuaryMcpLoopbackService
                 BenchRunCount = BuildBenchRunCount(command, invocation.BenchRunCount)
             });
             var result = BuildSanitizedToolResult(invocation.Tool, receipt);
-            await WriteResponseAsync(stream, 200, new
+            return new
             {
                 jsonrpc = "2.0",
                 id,
@@ -361,11 +552,10 @@ internal static class SanctuaryMcpLoopbackService
                     },
                     structuredContent = result
                 }
-            });
-            return;
+            };
         }
 
-        await WriteResponseAsync(stream, 200, new
+        return new
         {
             jsonrpc = "2.0",
             id,
@@ -375,7 +565,7 @@ internal static class SanctuaryMcpLoopbackService
                 message = "method-not-supported",
                 data = new { failClosed = true }
             }
-        });
+        };
     }
 
     private static object BuildHealth(SanctuaryReceipt startupReceipt) => new
@@ -525,6 +715,42 @@ internal static class SanctuaryMcpLoopbackService
         await stream.WriteAsync(responseBytes);
     }
 
+    private static async Task WriteRawAsync(Stream stream, string value)
+    {
+        var bytes = Encoding.UTF8.GetBytes(value);
+        await stream.WriteAsync(bytes);
+        await stream.FlushAsync();
+    }
+
+    private static async Task WriteSseFrameAsync(SseClientSession session, string eventName, object payload, bool serializeData = true)
+    {
+        var data = serializeData ? JsonSerializer.Serialize(payload, JsonOptions) : payload.ToString() ?? "";
+        var frame = $"event: {eventName}\n" +
+                    $"data: {data.Replace("\r", "", StringComparison.Ordinal).Replace("\n", "\ndata: ", StringComparison.Ordinal)}\n\n";
+        await session.WriteLock.WaitAsync();
+        try
+        {
+            await WriteRawAsync(session.Stream, frame);
+        }
+        finally
+        {
+            session.WriteLock.Release();
+        }
+    }
+
+    private static async Task WriteSseCommentAsync(SseClientSession session, string comment)
+    {
+        await session.WriteLock.WaitAsync();
+        try
+        {
+            await WriteRawAsync(session.Stream, $": {comment.Replace("\r", "", StringComparison.Ordinal).Replace("\n", " ", StringComparison.Ordinal)}\n\n");
+        }
+        finally
+        {
+            session.WriteLock.Release();
+        }
+    }
+
     private static string? ReadString(JsonElement root, string name) =>
         root.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
             ? value.GetString()
@@ -557,6 +783,29 @@ internal static class SanctuaryMcpLoopbackService
         return int.TryParse(value, out var parsed) ? parsed : fallback;
     }
 
+    private static string? ReadQueryValue(string target, string name)
+    {
+        var question = target.IndexOf('?', StringComparison.Ordinal);
+        if (question < 0 || question == target.Length - 1)
+        {
+            return null;
+        }
+
+        foreach (var pair in target[(question + 1)..].Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var parts = pair.Split('=', 2);
+            var key = Uri.UnescapeDataString(parts[0]);
+            if (!string.Equals(key, name, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return parts.Length == 2 ? Uri.UnescapeDataString(parts[1].Replace('+', ' ')) : "";
+        }
+
+        return null;
+    }
+
     private static bool IsLoopbackHost(string host) =>
         string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase) ||
         IPAddress.TryParse(host, out var address) && IPAddress.IsLoopback(address);
@@ -573,5 +822,12 @@ internal static class SanctuaryMcpLoopbackService
         public string SessionId { get; init; } = "";
         public string CmeId { get; init; } = "";
         public int? BenchRunCount { get; init; }
+    }
+
+    private sealed class SseClientSession(string sessionId, Stream stream)
+    {
+        public string SessionId { get; } = sessionId;
+        public Stream Stream { get; } = stream;
+        public SemaphoreSlim WriteLock { get; } = new(1, 1);
     }
 }

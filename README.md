@@ -108,8 +108,8 @@ This repository currently provides:
 - a Discernment Lineage Contract and proof-of-discernment bench for
   choice-morphology evidence without selfhood inflation;
 - a GPT use-case testing body and loopback `Sanctuary.exe serve-mcp` alpha
-  surface for cold read/fetch tool experiments with split CME/LLM/Sanctuary
-  provenance;
+  surface with `/mcp` and `/sse` MCP transport lanes for cold read/fetch tool
+  experiments with split CME/LLM/Sanctuary provenance;
 - a local plugin-posture receipt proving publishing is held;
 - bounded environment preparation for the standalone Project Bicycle tool
   package;
@@ -181,6 +181,11 @@ Start the GPT/MCP alpha loopback service:
 ```powershell
 .\tools\Start-SanctuaryMcpAlphaService.ps1 -Port 8717
 ```
+
+Local benches may call `http://127.0.0.1:8717/mcp` or
+`http://127.0.0.1:8717/sse`. ChatGPT custom apps do not connect directly to
+private loopback URLs; use OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP
+endpoint, then point the ChatGPT MCP Server URL at the tunnel endpoint.
 
 By default, local receipts and GEL witness ledgers are written under:
 

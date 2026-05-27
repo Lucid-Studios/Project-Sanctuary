@@ -42,10 +42,30 @@ Sanctuary.exe serve-mcp
   refuses unknown tools closed
 ```
 
-The local service is loopback-first. Remote ChatGPT use requires an approved
-tunnel path before it can call a local machine. The alpha service does not
-return local receipt paths, receipt bodies, source paths, or secret payloads to
-remote GPT surfaces.
+The local service is loopback-first. ChatGPT does not connect directly to a
+private `127.0.0.1` MCP server; remote ChatGPT use requires OpenAI Secure MCP
+Tunnel or another reviewed HTTPS MCP endpoint before it can call a local
+machine. The alpha service does not return local receipt paths, receipt bodies,
+source paths, or secret payloads to remote GPT surfaces.
+
+The alpha service exposes two MCP-compatible transport shapes:
+
+```text
+POST /mcp
+  JSON-RPC request/response path for local benches and tunnel clients
+
+GET /sse
+POST /sse/messages?sessionId=...
+  HTTP+SSE compatibility path for MCP clients that scan an SSE endpoint
+```
+
+The ChatGPT custom app field should point at the tunnel-provided URL for the
+MCP endpoint, not the raw loopback service. For the HTTP+SSE lane that endpoint
+will commonly end in:
+
+```text
+https://<reviewed-tunnel-host>/sse
+```
 
 ## Exposed Alpha Tools
 
@@ -90,6 +110,24 @@ Inspect tools:
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:8717/tools
+```
+
+Run a local MCP JSON-RPC tool scan:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8717/mcp `
+  -Method Post `
+  -ContentType 'application/json' `
+  -Body '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+```
+
+Run a local MCP initialize handshake:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8717/mcp `
+  -Method Post `
+  -ContentType 'application/json' `
+  -Body '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"local-bench","version":"0.1"}}}'
 ```
 
 Invoke a cold tool:

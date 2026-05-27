@@ -187,6 +187,12 @@ Local benches may call `http://127.0.0.1:8717/mcp` or
 private loopback URLs; use OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP
 endpoint, then point the ChatGPT MCP Server URL at the tunnel endpoint.
 
+The public HTTPS/OAuth connector membrane is not part of this Sanctuary core
+lane. That surface belongs under the Trivium Forum tool body, which owns
+external exposure, tunnel selection, OAuth/provider posture, token scopes,
+rate limits, and cross-agent adjudication before any remote caller reaches the
+local Sanctuary service.
+
 By default, local receipts and GEL witness ledgers are written under:
 
 ```text

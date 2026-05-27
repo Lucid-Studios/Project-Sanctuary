@@ -60,6 +60,24 @@ This command writes the posture only. It does not open a public port, create a
 tunnel, issue OAuth tokens, call providers, bind models, grant authority, or
 authorize action.
 
+## Lab HTTPS Bridge
+
+The alpha lab bridge is explicit and temporary:
+
+```powershell
+.\tools\Start-TriviumForumHttpsTunnel.ps1 -Protocol http2 -Json
+```
+
+The launcher verifies the local `Sanctuary.exe serve-mcp` loopback service,
+starts a Cloudflare quick tunnel, records tunnel state under
+`.local/trivium-forum/tunnel`, and returns a `chatGptMcpServerUrl` suitable for
+ChatGPT developer-mode connector testing.
+
+This is not the final production connector membrane. It does not issue OAuth
+tokens, create a named production tunnel, grant provider/model access, admit
+GEL/SelfGEL, or activate Actual states. It only bridges HTTPS to the cold MCP
+tool allowlist for lab validation.
+
 An external provider relation can be staged as a candidate standing record:
 
 ```powershell

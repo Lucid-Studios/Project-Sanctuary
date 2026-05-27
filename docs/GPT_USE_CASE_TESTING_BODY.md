@@ -67,6 +67,21 @@ will commonly end in:
 https://<reviewed-tunnel-host>/sse
 ```
 
+The public HTTPS/OAuth connector membrane is not owned by this Sanctuary core
+lane. That boundary belongs to the Trivium Forum tool body:
+
+```text
+ChatGPT / remote caller
+-> Trivium Forum connector membrane
+-> reviewed HTTPS/OAuth/tunnel/adjudication layer
+-> loopback Sanctuary.exe MCP alpha service
+```
+
+Sanctuary remains the local witness and receipt body. Trivium Forum owns the
+external exposure question: tunnel selection, OAuth provider posture, token
+scope adjudication, rate limits, public connector policy, and cross-agent
+review before any remote caller reaches the local service.
+
 ## Exposed Alpha Tools
 
 The initial GPT lane exposes only cold read/fetch candidate surfaces:

@@ -78,6 +78,11 @@ Raw loopback URLs are for local testing only. ChatGPT custom apps require
 OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP endpoint before they can call
 the local Sanctuary service.
 
+The internet-facing connector membrane is intentionally outside this code lane.
+It belongs under the Trivium Forum tool body, which should own OAuth, tunnel,
+public HTTPS, rate-limit, and adjudication surfaces before forwarding any
+allowlisted request to loopback Sanctuary.
+
 ## Excluded
 
 This lane does not import the full private lab ecology, historical mixed

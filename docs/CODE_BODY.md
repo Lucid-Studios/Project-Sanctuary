@@ -70,7 +70,13 @@ Sanctuary witnesses provenance.
 
 The alpha service is owned by `Sanctuary.exe`, exposes only cold read/fetch
 candidate tools, and returns sanitized receipt summaries rather than local
-paths, receipt bodies, or secret payloads.
+paths, receipt bodies, or secret payloads. It exposes both `POST /mcp` and
+`GET /sse` plus `POST /sse/messages` so local benches and reviewed tunnel
+clients can scan the same tool allowlist.
+
+Raw loopback URLs are for local testing only. ChatGPT custom apps require
+OpenAI Secure MCP Tunnel or a reviewed HTTPS MCP endpoint before they can call
+the local Sanctuary service.
 
 ## Excluded
 

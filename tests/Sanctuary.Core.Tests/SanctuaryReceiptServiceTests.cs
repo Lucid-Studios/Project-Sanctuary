@@ -2872,10 +2872,123 @@ public sealed class SanctuaryReceiptServiceTests
     }
 
     [Fact]
+    public void MosLineageRegisterWritesCrypticRootMantleWithoutAuthority()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var receipt = new SanctuaryReceiptService().Run(fixture.Request("mantle-of-sovereign"));
+
+        Assert.Equal("mos-lineage-register", receipt.Command);
+        Assert.Equal("sanctuary-mos-lineage-register-completed-cold", receipt.OutcomeCode);
+        Assert.True(receipt.Gates.AllClosed);
+        Assert.Equal(true, receipt.Evidence["mosLineageRegisterWritten"]);
+        Assert.Equal(true, receipt.Evidence["mosRootOfCryptic"]);
+        Assert.Equal(true, receipt.Evidence["mosRecordsEveryBirthedMceOrCme"]);
+        Assert.Equal(false, receipt.Evidence["mosAuthorityGranted"]);
+        Assert.Equal(false, receipt.Evidence["mosActionAuthorized"]);
+        Assert.Equal(false, receipt.Evidence["mosPersonhoodClaimed"]);
+        Assert.Equal(false, receipt.Evidence["mosSovereigntyClaimed"]);
+
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText((string)receipt.Evidence["mosLineageRecordPath"]!));
+        var root = document.RootElement;
+        Assert.Equal("project-sanctuary.cryptic.mos-lineage-register.v1", root.GetProperty("schema").GetString());
+        Assert.True(root.GetProperty("recordsEveryBirthedMceOrCmeInTypedSubset").GetBoolean());
+        Assert.False(root.GetProperty("rawOAuthTokenStored").GetBoolean());
+        Assert.False(root.GetProperty("authorityGranted").GetBoolean());
+    }
+
+    [Fact]
+    public void SliAccessGateRegisterKeepsMcpAndAuthoritySeparate()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var receipt = new SanctuaryReceiptService().Run(fixture.Request("symbolic-language-interconnect"));
+
+        Assert.Equal("sli-access-gate-register", receipt.Command);
+        Assert.Equal("sanctuary-sli-access-gate-register-completed-cold", receipt.OutcomeCode);
+        Assert.True(receipt.Gates.AllClosed);
+        Assert.Equal(true, receipt.Evidence["sliAccessGateRegisterWritten"]);
+        Assert.Equal(true, receipt.Evidence["sliGovernedByCryptic"]);
+        Assert.Equal(true, receipt.Evidence["sliMostSecureAccessGate"]);
+        Assert.Equal(false, receipt.Evidence["mcpCallEqualsSliPassage"]);
+        Assert.Equal(false, receipt.Evidence["sliPassageEqualsAuthority"]);
+        Assert.Equal(false, receipt.Evidence["symbolicTranslationEqualsIdentity"]);
+        Assert.Equal(false, receipt.Evidence["sliToolPermissionGranted"]);
+
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText((string)receipt.Evidence["sliAccessGatePath"]!));
+        var root = document.RootElement;
+        Assert.Equal("project-sanctuary.cryptic.sli-access-gate.v1", root.GetProperty("schema").GetString());
+        Assert.Equal("Cryptic", root.GetProperty("governedBy").GetString());
+        Assert.True(root.GetProperty("controlsMcpMeaningPassage").GetBoolean());
+        Assert.False(root.GetProperty("toolPermissionGranted").GetBoolean());
+    }
+
+    [Fact]
+    public void TriviumForumConnectorPostureStaysOutsideSanctuaryCore()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var receipt = new SanctuaryReceiptService().Run(fixture.Request("trivium-forum"));
+
+        Assert.Equal("trivium-forum-connector-posture", receipt.Command);
+        Assert.Equal("sanctuary-trivium-forum-connector-posture-completed-cold", receipt.OutcomeCode);
+        Assert.True(receipt.Gates.AllClosed);
+        Assert.Equal(true, receipt.Evidence["triviumForumConnectorPostureWritten"]);
+        Assert.Equal(true, receipt.Evidence["triviumForumWrapsExternalLlms"]);
+        Assert.Equal(false, receipt.Evidence["triviumForumModifiesProviderModelCode"]);
+        Assert.Equal(true, receipt.Evidence["triviumForumRequiresSliPassage"]);
+        Assert.Equal(true, receipt.Evidence["triviumForumRequiresMosStandingCheck"]);
+        Assert.Equal(false, receipt.Evidence["triviumForumIssuesOAuthTokensHere"]);
+        Assert.Equal(false, receipt.Evidence["triviumForumOpensTunnelHere"]);
+        Assert.Equal(false, receipt.Evidence["triviumForumGrantsAuthority"]);
+
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText((string)receipt.Evidence["triviumForumConnectorPosturePath"]!));
+        var root = document.RootElement;
+        Assert.Equal("project-sanctuary.trivium-forum.connector-posture.v1", root.GetProperty("schema").GetString());
+        Assert.True(root.GetProperty("publicConnectorMembraneOwner").GetBoolean());
+        Assert.False(root.GetProperty("sanctuaryCoreOwner").GetBoolean());
+    }
+
+    [Fact]
+    public void ExternalLlmStandingProbeStoresOnlyCandidateStanding()
+    {
+        using var fixture = new SanctuaryTestFixture();
+        var request = fixture.Request("provider-standing-probe") with
+        {
+            LicenseScope = "OpenAI.ChatGPT.MCP",
+            RegisteredEmail = "operator@example.invalid"
+        };
+        var receipt = new SanctuaryReceiptService().Run(request);
+
+        Assert.Equal("external-llm-standing-probe", receipt.Command);
+        Assert.Equal("sanctuary-external-llm-standing-probe-completed-cold", receipt.OutcomeCode);
+        Assert.True(receipt.Gates.AllClosed);
+        Assert.Equal(true, receipt.Evidence["externalLlmStandingProbeWritten"]);
+        Assert.Equal("OpenAI.ChatGPT.MCP", receipt.Evidence["externalLlmProviderSurface"]);
+        Assert.Equal(true, receipt.Evidence["externalLlmAccountIdentityHashPresent"]);
+        Assert.Equal(false, receipt.Evidence["externalLlmRawLoginStored"]);
+        Assert.Equal(false, receipt.Evidence["externalLlmRawTokenStored"]);
+        Assert.Equal(false, receipt.Evidence["externalLlmLeaseIssued"]);
+        Assert.Equal(false, receipt.Evidence["externalLlmToolPermissionGranted"]);
+        Assert.Equal(false, receipt.Evidence["externalLlmProviderCalled"]);
+        Assert.Equal(false, receipt.Evidence["externalLlmModelBound"]);
+
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText((string)receipt.Evidence["externalLlmStandingProbePath"]!));
+        var root = document.RootElement;
+        Assert.Equal("project-sanctuary.mos.external-llm-standing-probe.v1", root.GetProperty("schema").GetString());
+        Assert.True(root.GetProperty("accountIdentityHashPresent").GetBoolean());
+        Assert.False(root.GetProperty("rawOAuthTokenStored").GetBoolean());
+        Assert.False(root.GetProperty("leaseIssued").GetBoolean());
+    }
+
+    [Fact]
     public void GptToolCatalogMapsOnlyColdReadFetchTools()
     {
         Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.status", out var command));
         Assert.Equal("status", command);
+        Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.mos_lineage_register", out var mosCommand));
+        Assert.Equal("mos-lineage-register", mosCommand);
+        Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.sli_access_gate_register", out var sliCommand));
+        Assert.Equal("sli-access-gate-register", sliCommand);
+        Assert.True(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.trivium_forum_connector_posture", out var triviumCommand));
+        Assert.Equal("trivium-forum-connector-posture", triviumCommand);
         Assert.False(GptUseCaseTestingCatalog.TryMapToolToCommand("sanctuary.gel_admission", out _));
 
         Assert.All(

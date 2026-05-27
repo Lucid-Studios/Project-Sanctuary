@@ -57,6 +57,30 @@ public static class GptUseCaseTestingCatalog
             "gpt-use-case-testing",
             "Write the GPT use-case testing body and CME authorship contract.",
             "fetch",
+            true),
+        new(
+            "sanctuary.mos_lineage_register",
+            "mos-lineage-register",
+            "Write the MoS Mantle of Sovereign lineage register as candidate standing residue.",
+            "fetch",
+            true),
+        new(
+            "sanctuary.sli_access_gate_register",
+            "sli-access-gate-register",
+            "Write the Cryptic-governed SLI access-gate contract without opening passage authority.",
+            "fetch",
+            true),
+        new(
+            "sanctuary.trivium_forum_connector_posture",
+            "trivium-forum-connector-posture",
+            "Write the Trivium Forum connector posture for external LLM MCP participation.",
+            "fetch",
+            true),
+        new(
+            "sanctuary.external_llm_standing_probe",
+            "external-llm-standing-probe",
+            "Write a MoS candidate standing probe for an external LLM provider surface.",
+            "fetch",
             true)
     };
 

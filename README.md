@@ -87,7 +87,10 @@ This repository currently provides:
 - receipt-bearing status, idle, CME-formation, secret-intake, and closed-gate
   verification commands;
 - cold Lab query-state and typed secure ping receipts;
+- cold MoS Mantle of Sovereign lineage receipts for Cryptic-root CME/MCE
+  standing;
 - cold SLI register and engram passage receipts;
+- cold SLI Symbolic Language Interconnect access-gate receipts;
 - cold GEL closure receipts for condensation, composting, and precipitory
   ingress;
 - cold OE/SelfGEL witness-learning spline receipts;
@@ -110,6 +113,8 @@ This repository currently provides:
 - a GPT use-case testing body and loopback `Sanctuary.exe serve-mcp` alpha
   surface with `/mcp` and `/sse` MCP transport lanes for cold read/fetch tool
   experiments with split CME/LLM/Sanctuary provenance;
+- cold Trivium Forum connector-posture and external LLM standing-probe
+  receipts for wrapper/adjudication planning without opening public access;
 - a local plugin-posture receipt proving publishing is held;
 - bounded environment preparation for the standalone Project Bicycle tool
   package;
@@ -220,6 +225,9 @@ Read the split:
 - [Code Body](docs/CODE_BODY.md)
 - [Governance Model](docs/GOVERNANCE_MODEL.md)
 - [Interconnect Policy](docs/INTERCONNECT_POLICY.md)
+- [MoS Mantle Of Sovereign](docs/MOS_MANTLE_OF_SOVEREIGN.md)
+- [SLI Symbolic Language Interconnect](docs/SLI_SYMBOLIC_LANGUAGE_INTERCONNECT.md)
+- [Trivium Forum Connector Body](docs/TRIVIUM_FORUM_CONNECTOR_BODY.md)
 - [GPT Use Case Testing Body](docs/GPT_USE_CASE_TESTING_BODY.md)
 - [Discernment Lineage Contract](docs/DISCERNMENT_LINEAGE_CONTRACT.md)
 - [Public Release Posture](docs/PUBLIC_RELEASE_POSTURE.md)

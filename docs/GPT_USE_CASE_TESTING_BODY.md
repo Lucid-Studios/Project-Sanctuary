@@ -96,6 +96,10 @@ sanctuary.discernment_lineage
 sanctuary.proof_of_discernment
 sanctuary.math_learning_bench_limited
 sanctuary.gpt_use_case_testing
+sanctuary.mos_lineage_register
+sanctuary.sli_access_gate_register
+sanctuary.trivium_forum_connector_posture
+sanctuary.external_llm_standing_probe
 ```
 
 No reviewed performance command is exposed in this alpha surface:

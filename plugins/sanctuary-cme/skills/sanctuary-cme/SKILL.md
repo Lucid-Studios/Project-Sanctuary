@@ -1,14 +1,16 @@
 ---
 name: sanctuary-cme
-description: Use when operating Project Sanctuary's developer-preview core executable lane through Codex for plugin posture, status, tool-idle, CME formation, secret intake windows, lab query state, typed secure ping, service heartbeat, bounded refinement tickets, job-slice guard receipts, lease-check receipts, receipt export, install floor checks, issue resolver receipts, domain register receipts, core target receipts, swarm refinement receipts, Lisp Control Matrix receipts, Lisp Matrix Control seat receipts, resonance chamber probes, universal form registers, domain morphism registers, capability composition probes, career spline probes, SelfGEL fibre registers, work posture preload probes, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, pre-personified Industrial rendering receipts, typed admission decants, admission cleave/append models, reviewed GEL/SelfGEL/CME/Sanctuary performance commands, spline watch organ-loop telemetry, and closed-gate verification.
+description: Use when operating Project Sanctuary's developer-preview core executable lane through Codex for plugin posture, status, tool-idle, CME formation, secret intake windows, lab query state, typed secure ping, MoS lineage registers, SLI access-gate registers, Trivium Forum connector posture, external LLM standing probes, service heartbeat, bounded refinement tickets, job-slice guard receipts, lease-check receipts, receipt export, install floor checks, issue resolver receipts, domain register receipts, core target receipts, swarm refinement receipts, Lisp Control Matrix receipts, Lisp Matrix Control seat receipts, resonance chamber probes, universal form registers, domain morphism registers, capability composition probes, career spline probes, SelfGEL fibre registers, work posture preload probes, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, pre-personified Industrial rendering receipts, typed admission decants, admission cleave/append models, reviewed GEL/SelfGEL/CME/Sanctuary performance commands, spline watch organ-loop telemetry, and closed-gate verification.
 ---
 
 # Sanctuary CME
 
 Use this skill when the user asks Codex to run the Sanctuary core lane, inspect
 receipts, prepare CME formation, stage a local secret intake window, prepare a
-Lab query-state membrane, stage a typed secure ping, check the install floor,
-run an issue resolver receipt, write the domain register, write the core target
+Lab query-state membrane, stage a typed secure ping, write the MoS lineage
+register, write the Cryptic-governed SLI access-gate register, write the
+Trivium Forum connector posture, write an external LLM standing probe, check
+the install floor, run an issue resolver receipt, write the domain register, write the core target
 register, write the Hundo Swarm refinement register, write a held bounded
 refinement ticket, write a held job-slice guard receipt, write a held
 lease-check receipt, run the local cognitive bench, run the local math learning
@@ -46,7 +48,9 @@ telemetry, or verify closed gates.
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command secret-intake-window -SecretLane Regional -SecretKind BusinessLicenseWashingtonState -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command lab-query-state -RoamingHttp $true -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command typed-secure-ping -RegisteredEmail "operator@example.invalid" -SecurePingNonce "external-nonce" -RegisteredAccountConfirmed $true -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command mos-lineage-register -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command sli-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command sli-access-gate-register -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command engram-passage -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gel-closure -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command witness-learning -Json
@@ -88,6 +92,8 @@ telemetry, or verify closed gates.
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command discernment-lineage -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command proof-of-discernment -BenchRunCount 3000 -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gpt-use-case-testing -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command trivium-forum-connector-posture -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command external-llm-standing-probe -LicenseScope "OpenAI.ChatGPT.MCP" -Json
 ```
 
 Reviewed commands refuse cold unless they include:

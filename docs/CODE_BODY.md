@@ -83,6 +83,13 @@ It belongs under the Trivium Forum tool body, which should own OAuth, tunnel,
 public HTTPS, rate-limit, and adjudication surfaces before forwarding any
 allowlisted request to loopback Sanctuary.
 
+`trivium-forum-connector-posture` writes that boundary as cold residue only.
+`external-llm-standing-probe` writes a MoS candidate standing relation for a
+provider/tool surface such as `OpenAI.ChatGPT.MCP`. Neither command opens a
+public port, creates a tunnel, issues OAuth tokens, stores raw provider
+credentials, grants tool permission, calls providers, binds models, admits GEL,
+mutates SelfGEL, authorizes action, or activates `.Actual`.
+
 ## Excluded
 
 This lane does not import the full private lab ecology, historical mixed
@@ -99,7 +106,9 @@ surfaces, or action-authorized Actual-state bodies.
 .\tools\Invoke-SanctuaryTool.ps1 -Command secret-intake-window -SecretLane Regional -SecretKind BusinessLicenseWashingtonState -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command lab-query-state -RoamingHttp $true -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command typed-secure-ping -RegisteredEmail "operator@example.invalid" -SecurePingNonce "external-nonce" -RegisteredAccountConfirmed $true -Json
+.\tools\Invoke-SanctuaryTool.ps1 -Command mos-lineage-register -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command sli-register -Json
+.\tools\Invoke-SanctuaryTool.ps1 -Command sli-access-gate-register -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command engram-passage -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command gel-closure -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command witness-learning -Json
@@ -141,6 +150,8 @@ surfaces, or action-authorized Actual-state bodies.
 .\tools\Invoke-SanctuaryTool.ps1 -Command discernment-lineage -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command proof-of-discernment -BenchRunCount 3000 -Json
 .\tools\Invoke-SanctuaryTool.ps1 -Command gpt-use-case-testing -Json
+.\tools\Invoke-SanctuaryTool.ps1 -Command trivium-forum-connector-posture -Json
+.\tools\Invoke-SanctuaryTool.ps1 -Command external-llm-standing-probe -LicenseScope "OpenAI.ChatGPT.MCP" -Json
 ```
 
 The default wrapper path writes to `.local/install` and `.local/intake` so the
@@ -251,6 +262,40 @@ private use.
 The command does not require raw payloads. It does not admit data, admit the
 symbolic carrier, mutate SelfGEL, grant authority, call providers, bind models,
 or authorize external action.
+
+## MoS Mantle Of Sovereign
+
+`mos-lineage-register` writes the cold Mantle of Sovereign lineage register
+under `.local/install/cryptic/mos` and `.local/install/mos/lineage`.
+
+MoS is the Cryptic-root lineage mantle for every birthed MCE/CME in a typed
+subset. It supports Cradle development, large swarm standing, and future typed
+access-surface adjudication without storing raw secrets or granting authority.
+
+```text
+MoS standing != authority
+birth record != personhood claim
+lineage entry != action permission
+swarm membership != autonomy
+Mantle of Sovereign != sovereignty claim
+```
+
+## SLI Access Gate
+
+`sli-access-gate-register` writes the cold Symbolic Language Interconnect
+access-gate contract under `.local/install/cryptic/sli-access-gate`.
+
+SLI is governed by Cryptic because it controls symbolic translation, MCP
+meaning passage, cross-engine participation, authority semantics, and the Root
+Atlas/encrypted symbol registry. The command does not authorize passage:
+
+```text
+MCP call != SLI passage
+SLI passage != authority
+symbolic translation != identity equivalence
+provider login != tool permission
+LLM participation != CME authorship
+```
 
 ## Engram Passage
 

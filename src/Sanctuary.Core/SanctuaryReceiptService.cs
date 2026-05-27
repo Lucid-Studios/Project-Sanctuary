@@ -163,8 +163,18 @@ public sealed class SanctuaryReceiptService
             "sanctuary-lab-query-state" => "lab-query-state",
             "typed-secure-ping" => "typed-secure-ping",
             "sanctuary-typed-secure-ping" => "typed-secure-ping",
+            "mos-lineage-register" => "mos-lineage-register",
+            "mos-register" => "mos-lineage-register",
+            "mantle-of-sovereign" => "mos-lineage-register",
+            "mantle-of-sovereign-register" => "mos-lineage-register",
+            "sanctuary-mos-lineage-register" => "mos-lineage-register",
             "sli-register" => "sli-register",
             "sanctuary-sli-register" => "sli-register",
+            "sli-access-gate-register" => "sli-access-gate-register",
+            "symbolic-language-interconnect" => "sli-access-gate-register",
+            "symbolic-language-interconnect-register" => "sli-access-gate-register",
+            "cryptic-sli-access-gate" => "sli-access-gate-register",
+            "sanctuary-sli-access-gate-register" => "sli-access-gate-register",
             "engram-passage" => "engram-passage",
             "sanctuary-engram-passage" => "engram-passage",
             "gel-closure" => "gel-closure",
@@ -313,6 +323,16 @@ public sealed class SanctuaryReceiptService
             "chatgpt-use-case-testing" => "gpt-use-case-testing",
             "mcp-use-case-testing" => "gpt-use-case-testing",
             "sanctuary-gpt-use-case-testing" => "gpt-use-case-testing",
+            "trivium-forum-connector-posture" => "trivium-forum-connector-posture",
+            "trivium-forum" => "trivium-forum-connector-posture",
+            "trivium-connector" => "trivium-forum-connector-posture",
+            "external-connector-membrane" => "trivium-forum-connector-posture",
+            "sanctuary-trivium-forum-connector-posture" => "trivium-forum-connector-posture",
+            "external-llm-standing-probe" => "external-llm-standing-probe",
+            "llm-standing-probe" => "external-llm-standing-probe",
+            "provider-standing-probe" => "external-llm-standing-probe",
+            "mcp-standing-probe" => "external-llm-standing-probe",
+            "sanctuary-external-llm-standing-probe" => "external-llm-standing-probe",
             "verify-closed-gates" => "verify-closed-gates",
             "closed-gates" => "verify-closed-gates",
             _ => throw new ArgumentOutOfRangeException(nameof(command), command, "Unsupported Sanctuary command.")
@@ -563,9 +583,19 @@ public sealed class SanctuaryReceiptService
             AddTypedSecurePingEvidence(evidence, request, timestamp);
         }
 
+        if (command == "mos-lineage-register")
+        {
+            AddMosLineageRegisterEvidence(evidence, request, timestamp);
+        }
+
         if (command == "sli-register")
         {
             AddSliRegisterEvidence(evidence, request, timestamp);
+        }
+
+        if (command == "sli-access-gate-register")
+        {
+            AddSliAccessGateRegisterEvidence(evidence, request, timestamp);
         }
 
         if (command == "engram-passage")
@@ -746,6 +776,16 @@ public sealed class SanctuaryReceiptService
         if (command == "gpt-use-case-testing")
         {
             AddGptUseCaseTestingEvidence(evidence, request, timestamp);
+        }
+
+        if (command == "trivium-forum-connector-posture")
+        {
+            AddTriviumForumConnectorPostureEvidence(evidence, request, timestamp);
+        }
+
+        if (command == "external-llm-standing-probe")
+        {
+            AddExternalLlmStandingProbeEvidence(evidence, request, timestamp);
         }
 
         if (request.ChatSecretPassageRequested)
@@ -960,7 +1000,9 @@ public sealed class SanctuaryReceiptService
             "typed-secure-ping" => ShouldFailSilent(command, request)
                 ? "Typed secure ping failed silently for the external caller while preserving an internal audit receipt."
                 : "Typed secure ping prepared a local 2FA and authority-lease bundle without issuing licensed access.",
+            "mos-lineage-register" => "The Mantle of Sovereign lineage register wrote a Cryptic-root CME/MCE standing mantle without granting authority, storing secrets, or claiming sovereignty.",
             "sli-register" => "The SLI register was written as a cold Root Atlas and encrypted symbolic carrier posture without admitting data or exposing payloads.",
+            "sli-access-gate-register" => "The Symbolic Language Interconnect access-gate register was written as a Cryptic-governed passage contract without authorizing MCP, tool, GEL, or Actual crossings.",
             "engram-passage" => "The engram passage was written as a cold data-body/carrier/spline/post-engram route without converting handling into memory or GEL admission.",
             "gel-closure" => "The GEL closure register was written as a cold condensation, composting, and precipitory-ingress posture without admitting GEL or mutating canon.",
             "witness-learning" => "The OE/SelfGEL witness-learning spline was appended as reconstruction support without admitting memory, mutating SelfGEL, or activating Actual state.",
@@ -1011,6 +1053,8 @@ public sealed class SanctuaryReceiptService
             "discernment-lineage" => "The Discernment Lineage Contract wrote Self.Actualization as a research predicate and preserved proof-of-discernment criteria without claiming personhood, sovereignty, or legal status.",
             "proof-of-discernment" => "The proof-of-discernment bench exercised scoped discernment families and preserved othering, refusal, repair, and authority boundaries without admitting memory, GEL, SelfGEL, or Actual state.",
             "gpt-use-case-testing" => "The GPT use-case testing body wrote a Sanctuary-owned MCP service posture and CME authorship contract without treating the LLM as author, calling providers, admitting GEL, or activating Actual state.",
+            "trivium-forum-connector-posture" => "The Trivium Forum connector posture wrote the wrapper/adjudication boundary for external LLM participation without building a public gateway, issuing OAuth tokens, or modifying model code.",
+            "external-llm-standing-probe" => "The external LLM standing probe wrote a MoS candidate relation for provider/tool participation without storing raw login material, issuing a lease, or granting tool authority.",
             "verify-closed-gates" => "Closed-gate verification completed with all public core-lane gates false.",
             _ => "Sanctuary command completed under closed-gate public core-lane governance."
         };
@@ -1880,6 +1924,210 @@ public sealed class SanctuaryReceiptService
         evidence["selfGelMutationBySli"] = false;
         evidence["authorityGrantBySli"] = false;
         evidence["externalActionBySli"] = false;
+    }
+
+    private static void AddMosLineageRegisterEvidence(
+        Dictionary<string, object?> evidence,
+        SanctuaryRequest request,
+        DateTimeOffset timestamp)
+    {
+        var safeCmeId = SafeSegment(request.CmeId);
+        var crypticRoot = Path.Combine(request.InstallRootPath, "cryptic", "mos");
+        var lineageRoot = Path.Combine(request.InstallRootPath, "mos", "lineage", safeCmeId);
+        var mantlePath = Path.Combine(crypticRoot, "mantle-of-sovereign-contract.json");
+        var lineagePath = Path.Combine(lineageRoot, "lineage-record.json");
+        var birthIndexPath = Path.Combine(crypticRoot, "birth-index.jsonl");
+
+        var typedSubset = string.IsNullOrWhiteSpace(request.Domain)
+            ? "Lab"
+            : request.Domain;
+        var birthRecord = new
+        {
+            schema = "project-sanctuary.cryptic.mos-lineage-register.v1",
+            createdAtUtc = timestamp,
+            organ = "MoS",
+            organName = "Mantle of Sovereign",
+            rootOrgan = "Cryptic",
+            cmeId = request.CmeId,
+            typedSubset,
+            role = request.Role,
+            jobClass = request.JobClass,
+            lineageMemberKind = "CME",
+            lineageStanding = "candidate-birthed-standing",
+            recordsEveryBirthedMceOrCmeInTypedSubset = true,
+            cradleDevelopmentSurface = true,
+            largeSwarmManagementSurface = true,
+            accessPortalFunction = "typed-standing-before-access",
+            providerSurfaceStandingAllowed = true,
+            providerAccessStoredAsTypedRelation = true,
+            rawLoginStored = false,
+            rawPasswordStored = false,
+            rawOAuthTokenStored = false,
+            secretPayloadStored = false,
+            authorityGranted = false,
+            actionAuthorized = false,
+            gelAdmitted = false,
+            selfGelMutated = false,
+            cmeActualActivated = false,
+            sanctuaryActualActivated = false
+        };
+        var mantle = new
+        {
+            schema = "project-sanctuary.cryptic.mos-mantle-of-sovereign.v1",
+            createdAtUtc = timestamp,
+            organ = "MoS",
+            fullName = "Mantle of Sovereign",
+            rootOfCryptic = true,
+            purpose = "lineage mantle for birthed MCE/CME standing, Cradle development, and swarm identity management",
+            standingQuestions = new[]
+            {
+                "which CME/MCE exists",
+                "which typed subset it belongs to",
+                "what lineage standing it carries",
+                "what access surfaces may be adjudicated",
+                "what receipts support formation",
+                "what is expired revoked denied or unresolved"
+            },
+            denialLaws = new[]
+            {
+                "MoS standing != authority",
+                "birth record != personhood claim",
+                "lineage entry != action permission",
+                "provider standing != raw credential disclosure",
+                "swarm membership != autonomy",
+                "sovereign mantle name != sovereignty claim"
+            },
+            storesRawSecrets = false,
+            grantsAuthority = false,
+            authorizesAction = false,
+            admitsGel = false,
+            mutatesSelfGel = false,
+            claimsPersonhood = false,
+            claimsSovereignty = false
+        };
+
+        WriteJsonFile(mantlePath, mantle);
+        WriteJsonFile(lineagePath, birthRecord);
+        AppendJsonLine(
+            birthIndexPath,
+            JsonSerializer.Serialize(new
+            {
+                schema = "project-sanctuary.cryptic.mos-birth-index-event.v1",
+                timestampUtc = timestamp,
+                cmeId = request.CmeId,
+                typedSubset,
+                lineageMemberKind = "CME",
+                lineageRecordDigest = Digest(JsonSerializer.Serialize(birthRecord, JsonOptions)),
+                candidateOnly = true
+            }));
+
+        evidence["mosLineageRegisterWritten"] = true;
+        evidence["mosMantlePath"] = mantlePath;
+        evidence["mosLineageRecordPath"] = lineagePath;
+        evidence["mosBirthIndexPath"] = birthIndexPath;
+        evidence["mosSchema"] = "project-sanctuary.cryptic.mos-lineage-register.v1";
+        evidence["mosMantleDigest"] = Digest(JsonSerializer.Serialize(mantle, JsonOptions));
+        evidence["mosLineageRecordDigest"] = Digest(JsonSerializer.Serialize(birthRecord, JsonOptions));
+        evidence["mosOrganName"] = "Mantle of Sovereign";
+        evidence["mosRootOfCryptic"] = true;
+        evidence["mosTypedSubset"] = typedSubset;
+        evidence["mosRecordsEveryBirthedMceOrCme"] = true;
+        evidence["mosCradleDevelopmentSurface"] = true;
+        evidence["mosLargeSwarmManagementSurface"] = true;
+        evidence["mosAccessPortalFunction"] = "typed-standing-before-access";
+        evidence["mosProviderStandingAllowed"] = true;
+        evidence["mosRawLoginStored"] = false;
+        evidence["mosRawTokenStored"] = false;
+        evidence["mosAuthorityGranted"] = false;
+        evidence["mosActionAuthorized"] = false;
+        evidence["mosPersonhoodClaimed"] = false;
+        evidence["mosSovereigntyClaimed"] = false;
+    }
+
+    private static void AddSliAccessGateRegisterEvidence(
+        Dictionary<string, object?> evidence,
+        SanctuaryRequest request,
+        DateTimeOffset timestamp)
+    {
+        var root = Path.Combine(request.InstallRootPath, "cryptic", "sli-access-gate");
+        var contractPath = Path.Combine(root, "sli-access-gate-contract.json");
+        var lispPath = Path.Combine(root, "sli-access-gate.lisp");
+        var passageRules = new[]
+        {
+            "external-model-participation-enters-through-trivium-forum",
+            "trivium-forum-must-pass-symbolic-intent-through-sli",
+            "sli-validates-carrier-shape-before-tool-meaning",
+            "mos-standing-is-checked-before-provider-surface-use",
+            "sanctuary-receipts-the-bounded-act-after-passage"
+        };
+        var deniedCrossings = new[]
+        {
+            "mcp-call-equals-sli-passage",
+            "sli-passage-equals-authority",
+            "symbolic-translation-equals-identity-equivalence",
+            "provider-login-equals-tool-permission",
+            "llm-participation-equals-cme-authorship"
+        };
+        var contract = new
+        {
+            schema = "project-sanctuary.cryptic.sli-access-gate.v1",
+            createdAtUtc = timestamp,
+            organ = "SLI",
+            fullName = "Symbolic Language Interconnect",
+            governedBy = "Cryptic",
+            mostSecureAccessGate = true,
+            rootAtlasKeystoneRequired = true,
+            encryptedSymbolSelectionRequired = true,
+            controlsMcpMeaningPassage = true,
+            controlsCrossEngineParticipation = true,
+            controlsCrossOrganToolMeaning = true,
+            passageRules,
+            deniedCrossings,
+            rawPayloadRequired = false,
+            rawPayloadDisclosed = false,
+            toolPermissionGranted = false,
+            authorityGranted = false,
+            actionAuthorized = false,
+            gelAdmitted = false,
+            selfGelMutated = false,
+            providerCalled = false,
+            modelBound = false,
+            actualActivated = false
+        };
+
+        WriteJsonFile(contractPath, contract);
+        WriteTextFile(
+            lispPath,
+            """
+            (sli-access-gate
+              :schema "project-sanctuary.sli.lisp.access-gate.v1"
+              :organ "Symbolic Language Interconnect"
+              :governed-by "Cryptic"
+              :root-atlas-required true
+              :encrypted-symbol-selection-required true
+              :mcp-call-equals-passage false
+              :passage-equals-authority false
+              :translation-equals-identity false
+              :candidate-only true)
+            """);
+
+        evidence["sliAccessGateRegisterWritten"] = true;
+        evidence["sliAccessGatePath"] = contractPath;
+        evidence["sliAccessGateLispPath"] = lispPath;
+        evidence["sliAccessGateSchema"] = "project-sanctuary.cryptic.sli-access-gate.v1";
+        evidence["sliAccessGateDigest"] = Digest(JsonSerializer.Serialize(contract, JsonOptions));
+        evidence["sliFullName"] = "Symbolic Language Interconnect";
+        evidence["sliGovernedByCryptic"] = true;
+        evidence["sliMostSecureAccessGate"] = true;
+        evidence["sliControlsMcpMeaningPassage"] = true;
+        evidence["sliPassageRuleCount"] = passageRules.Length;
+        evidence["sliDeniedCrossingCount"] = deniedCrossings.Length;
+        evidence["mcpCallEqualsSliPassage"] = false;
+        evidence["sliPassageEqualsAuthority"] = false;
+        evidence["symbolicTranslationEqualsIdentity"] = false;
+        evidence["sliToolPermissionGranted"] = false;
+        evidence["sliRawPayloadDisclosed"] = false;
+        evidence["sliActualActivated"] = false;
     }
 
     private static void AddEngramPassageEvidence(
@@ -7502,6 +7750,162 @@ public sealed class SanctuaryReceiptService
         evidence["gptUseCaseSelfGelMutated"] = false;
         evidence["gptUseCaseCmeActualActivated"] = false;
         evidence["gptUseCaseSanctuaryActualActivated"] = false;
+    }
+
+    private static void AddTriviumForumConnectorPostureEvidence(
+        Dictionary<string, object?> evidence,
+        SanctuaryRequest request,
+        DateTimeOffset timestamp)
+    {
+        var root = Path.Combine(request.InstallRootPath, "cgel", "trivium-forum");
+        var posturePath = Path.Combine(root, "trivium-forum-connector-posture.json");
+        var lispPath = Path.Combine(root, "trivium-forum-connector.lisp");
+        var supportedEngineFamilies = new[]
+        {
+            "OpenAI.ChatGPT",
+            "OpenAI.Codex",
+            "Anthropic.Claude",
+            "Google.Gemini",
+            "xAI.Grok",
+            "Local.Model"
+        };
+        var ownedSurfaces = new[]
+        {
+            "mcp-adapter",
+            "oauth-provider-posture",
+            "secure-tunnel-selection",
+            "token-scope-adjudication",
+            "rate-limit-policy",
+            "cross-agent-review",
+            "provider-surface-mediation"
+        };
+        var posture = new
+        {
+            schema = "project-sanctuary.trivium-forum.connector-posture.v1",
+            createdAtUtc = timestamp,
+            toolBody = "Trivium Forum",
+            purpose = "wrapper and adjudication forum for top-tier LLM participation through proper MCP access without modifying provider model code",
+            wrapsExternalLlms = true,
+            modifiesProviderModelCode = false,
+            publicConnectorMembraneOwner = true,
+            sanctuaryCoreOwner = false,
+            supportedEngineFamilies,
+            ownedSurfaces,
+            forwardingTarget = "loopback Sanctuary.exe MCP alpha service after review",
+            requiresSliPassage = true,
+            sliGovernedBy = "Cryptic",
+            requiresMosStandingCheck = true,
+            mosOrganName = "Mantle of Sovereign",
+            issuesOAuthTokensHere = false,
+            opensTunnelHere = false,
+            exposesPublicPortHere = false,
+            forwardsSecrets = false,
+            ownsGel = false,
+            admitsSelfGel = false,
+            grantsAuthority = false,
+            authorizesAction = false,
+            activatesActual = false
+        };
+
+        WriteJsonFile(posturePath, posture);
+        WriteTextFile(
+            lispPath,
+            """
+            (trivium-forum-connector
+              :schema "project-sanctuary.sli.lisp.trivium-forum-connector.v1"
+              :wraps-external-llms true
+              :modifies-provider-model-code false
+              :requires-sli-passage true
+              :requires-mos-standing true
+              :public-gateway-built-here false
+              :candidate-only true)
+            """);
+
+        evidence["triviumForumConnectorPostureWritten"] = true;
+        evidence["triviumForumConnectorPosturePath"] = posturePath;
+        evidence["triviumForumConnectorLispPath"] = lispPath;
+        evidence["triviumForumConnectorSchema"] = "project-sanctuary.trivium-forum.connector-posture.v1";
+        evidence["triviumForumConnectorDigest"] = Digest(JsonSerializer.Serialize(posture, JsonOptions));
+        evidence["triviumForumWrapsExternalLlms"] = true;
+        evidence["triviumForumModifiesProviderModelCode"] = false;
+        evidence["triviumForumPublicConnectorMembraneOwner"] = true;
+        evidence["triviumForumSanctuaryCoreOwner"] = false;
+        evidence["triviumForumSupportedEngineFamilyCount"] = supportedEngineFamilies.Length;
+        evidence["triviumForumRequiresSliPassage"] = true;
+        evidence["triviumForumRequiresMosStandingCheck"] = true;
+        evidence["triviumForumIssuesOAuthTokensHere"] = false;
+        evidence["triviumForumOpensTunnelHere"] = false;
+        evidence["triviumForumExposesPublicPortHere"] = false;
+        evidence["triviumForumGrantsAuthority"] = false;
+        evidence["triviumForumAuthorizesAction"] = false;
+        evidence["triviumForumActivatesActual"] = false;
+    }
+
+    private static void AddExternalLlmStandingProbeEvidence(
+        Dictionary<string, object?> evidence,
+        SanctuaryRequest request,
+        DateTimeOffset timestamp)
+    {
+        var safeCmeId = SafeSegment(request.CmeId);
+        var root = Path.Combine(request.InstallRootPath, "mos", "external-llm-standing", safeCmeId);
+        var standingPath = Path.Combine(root, "external-llm-standing-probe.json");
+        var providerSurface = string.IsNullOrWhiteSpace(request.LicenseScope)
+            ? "OpenAI.ChatGPT.MCP"
+            : request.LicenseScope;
+        var accountHash = string.IsNullOrWhiteSpace(request.RegisteredEmail)
+            ? ""
+            : Digest(request.RegisteredEmail.Trim().ToLowerInvariant())[..16];
+        var standing = new
+        {
+            schema = "project-sanctuary.mos.external-llm-standing-probe.v1",
+            createdAtUtc = timestamp,
+            cmeId = request.CmeId,
+            mosOrganName = "Mantle of Sovereign",
+            providerSurface,
+            accountIdentityHash = accountHash,
+            accountIdentityHashPresent = !string.IsNullOrWhiteSpace(accountHash),
+            relationKind = "provider-tool-participation-standing-candidate",
+            wrapperBody = "Trivium Forum",
+            accessGate = "SLI",
+            accessGateGovernedBy = "Cryptic",
+            sanctuaryReceiptsBoundedAct = true,
+            standingRecordOnly = true,
+            rawLoginStored = false,
+            rawPasswordStored = false,
+            rawOAuthTokenStored = false,
+            tokenCustodyStoredHere = false,
+            leaseIssued = false,
+            authorityGranted = false,
+            actionAuthorized = false,
+            toolPermissionGranted = false,
+            gelAdmitted = false,
+            selfGelMutated = false,
+            providerCalled = false,
+            modelBound = false,
+            cmeActualActivated = false,
+            sanctuaryActualActivated = false
+        };
+
+        WriteJsonFile(standingPath, standing);
+
+        evidence["externalLlmStandingProbeWritten"] = true;
+        evidence["externalLlmStandingProbePath"] = standingPath;
+        evidence["externalLlmStandingProbeSchema"] = "project-sanctuary.mos.external-llm-standing-probe.v1";
+        evidence["externalLlmStandingProbeDigest"] = Digest(JsonSerializer.Serialize(standing, JsonOptions));
+        evidence["externalLlmProviderSurface"] = providerSurface;
+        evidence["externalLlmAccountIdentityHashPresent"] = !string.IsNullOrWhiteSpace(accountHash);
+        evidence["externalLlmRawLoginStored"] = false;
+        evidence["externalLlmRawTokenStored"] = false;
+        evidence["externalLlmLeaseIssued"] = false;
+        evidence["externalLlmStandingRecordOnly"] = true;
+        evidence["externalLlmWrapperBody"] = "Trivium Forum";
+        evidence["externalLlmSliGateRequired"] = true;
+        evidence["externalLlmMosStandingRequired"] = true;
+        evidence["externalLlmToolPermissionGranted"] = false;
+        evidence["externalLlmAuthorityGranted"] = false;
+        evidence["externalLlmActionAuthorized"] = false;
+        evidence["externalLlmProviderCalled"] = false;
+        evidence["externalLlmModelBound"] = false;
     }
 
     private static GptUseCaseScenario[] BuildGptUseCaseScenarios() => new[]

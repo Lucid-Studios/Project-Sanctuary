@@ -1,0 +1,71 @@
+{
+  "schema": "project-sanctuary.public-root-atlas.v1",
+  "atlasId": "PublicStandard.RootAtlas",
+  "templateId": "PublicStandard.CME.Template",
+  "version": "0.1.0",
+  "atlasKind": "symbolic-polyglot-stem-research-carrier",
+  "rootDoctrine": [
+    "install begins local individuation from a public template, not Lab identity inheritance",
+    "template posture can seed method bodies without importing protected Lab GEL",
+    "every human language lane is a typed surface for translation and transport review",
+    "STEM domains are cross-domain transport surfaces, not automatic proof transfer"
+  ],
+  "governanceBodies": [
+    {
+      "body": "Prime",
+      "publicName": "Shared reality return",
+      "installRole": "readable candidate surface for public or collaborative review"
+    },
+    {
+      "body": "Cryptic",
+      "publicName": "Protected completeness custody",
+      "installRole": "local protected-body lane; no public exposure by implication"
+    },
+    {
+      "body": "Steward",
+      "publicName": "Publication and production review",
+      "installRole": "fit-to-carry, consequence, and value-yield review before return"
+    }
+  ],
+  "languageSurfaces": [
+    "English",
+    "French",
+    "German",
+    "Spanish",
+    "Portuguese",
+    "ChineseSimplified",
+    "Korean",
+    "Japanese",
+    "Russian",
+    "Arabic",
+    "Hindi",
+    "Bengali",
+    "Indonesian",
+    "Turkish",
+    "Vietnamese",
+    "Persian"
+  ],
+  "stemSurfaces": [
+    "mathematics",
+    "formal-logic",
+    "computer-science",
+    "systems-engineering",
+    "statistics",
+    "physics",
+    "chemistry",
+    "biology",
+    "cognitive-science"
+  ],
+  "closedGates": [
+    "gel-admission",
+    "selfgel-mutation",
+    "continuity-admission",
+    "provider-call",
+    "model-binding",
+    "external-action",
+    "cme-actual-activation",
+    "sanctuary-actual-activation",
+    "personhood-claim",
+    "sovereignty-claim"
+  ]
+}

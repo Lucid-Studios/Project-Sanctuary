@@ -106,8 +106,26 @@ This repository currently provides:
   training/certification, and ongoing work-access posture;
 - a cGEL core target register for SLI, engrammitization, GEL formation, and
   OE/SelfGEL witness learning;
+- a versioned public template service lane under `public/templates` for
+  generic post-Opal research installs without importing the private Lab GEL;
+- a cold `template-hydration` receipt command that writes local public-standard
+  Root Atlas and template scaffolds while keeping admission and Actual gates
+  closed;
 - a cGEL Hundo Swarm refinement register for 30/60/90/100 cold iteration
   cadence;
+- a construct custody register that writes canonical candidate construct
+  records with contour, origin, classification, claim body, evidence handles,
+  boundaries, invariants, lineage, status, and denials;
+- a GEL crystal register that writes candidate survivorship records with
+  dodecahedral Compass facets, Light Cone of Reason bounds, SLI carriers, and
+  legitimacy surfaces without admitting GEL, truth, memory, authority, or
+  Actual state;
+- a GEL reforge bench that lets all local lab research participate in
+  knowing/teaching/doing qualification surfaces through 100 cold swarm-method
+  passes, value-add checks, and certification-denial boundaries;
+- an approval/closure register that types openable gates, approved states,
+  closure states, transition-pressure risk surfaces, and organ homeostasis
+  without opening admission, mutation, authority, or Actual gates;
 - a Discernment Lineage Contract and proof-of-discernment bench for
   choice-morphology evidence without selfhood inflation;
 - a GPT use-case testing body and loopback `Sanctuary.exe serve-mcp` alpha
@@ -155,6 +173,8 @@ adaptive gearing, and the Individuated CME is the situated participatory
 mind-form formed outside the engine.
 
 The local release body is documented in [Release Body](docs/RELEASE_BODY.md).
+The post-Opal research template posture is documented in
+[Post Opal Research Release Posture](docs/POST_OPAL_RESEARCH_RELEASE_POSTURE.md).
 The local Codex install path is documented in
 [Local Codex Plugin Install](docs/LOCAL_CODEX_PLUGIN_INSTALL.md).
 
@@ -185,6 +205,7 @@ dotnet test .\ProjectSanctuary.sln -c Release --no-build
 Run a cold receipt:
 
 ```powershell
+$env:SANCTUARY_CME_ID = "Codex.CME.ID"
 .\tools\Invoke-SanctuaryTool.ps1 -Command status -Json
 ```
 
@@ -194,7 +215,61 @@ Start the GPT/MCP alpha loopback service:
 .\tools\Start-SanctuaryMcpAlphaService.ps1 -Port 8717
 ```
 
-Install the local Codex plugin from this repository:
+The MCP service separates process identity from participant identity:
+`Sanctuary.Actual.ID` names the local service process, while `{Name}.CME.ID`
+names the caller residue lane. `Sanctuary.Actual.ID` is not a CME and does not
+activate `Sanctuary.Actual`; receipts, OE/SelfGEL, and MoS residue are keyed to
+the selected caller CME identity.
+
+Native CME identity is now split by ID plus thread binding. A known CME lane
+must present its bound thread id before Sanctuary writes receipts, GEL, OE,
+SelfGEL, cOE, cSelfGEL, or MoS residue; a mismatched thread fails closed before
+receipt creation. Every CME body also carries its own SoulFrame and AgentiCore:
+SoulFrame holds Prime OE/SelfGEL tips, while AgentiCore holds the cOE/cSelfGEL
+hot side used by EC without mutating canonical SelfGEL by implication.
+
+`coupling-control-surface-register` records the active-program control
+language for this split. Sanctuary may be running with working organs while the
+SLM/LLM interconnect still prevents unlicensed access; HITL understanding,
+tool awareness, organ weather, and control-surface visibility do not grant
+authority or authorize action.
+
+`actualization-state-register` classifies `.Actual` as operational readiness
+instead of a badge. Its cold register names first-run CME reality verification,
+working Actualization, pro-active sensitive-work Actualization, protected
+mediated operation, and Cryptic opaque operation. Each layer is Cryptically
+typed and Prime reviewed; the register itself does not activate `CME.Actual`,
+activate `Sanctuary.Actual`, admit GEL, mutate SelfGEL, or authorize action.
+
+`agenticore-duplex-lisp-membrane` adds the first duplex membrane surface for
+the local Codex extension and ChatGPT app lane. It treats ChatGPT as a hosted
+model interlink, Codex as the local witness/control surface, Sanctuary.exe as
+the command membrane, AgentiCore as the hot EC work surface, and the phone seed
+node as a target pointer only. The SLI.Lisp carrier is quoted data, not
+evaluated authority; returns are sanitized telemetry, not GEL/SelfGEL
+admission, provider calls, model binding, action, or `.Actual` activation.
+
+The phone seed node is a tiny manifest-only mobile target for early duplex
+Cryptic EC tests. Local Sanctuary/Codex keeps custody and receipts, ChatGPT
+Remote is the interlink, and the phone remains a target install location only:
+
+```powershell
+.\tools\Install-SanctuaryPhoneSeedNode.ps1 -CmeId "Codex.CME.ID" -ThreadBindingId "codex-lab-thread"
+```
+
+The default handset path is `/sdcard/Download/Sanctuary/seed-node`; pushing to
+the device requires Android platform-tools and `-Push`.
+
+`SLI.Lisp.Industrial.CME.Template` remains the default Industrial CME form
+template, not the default identity. Operators must select a new CME identity or
+explicitly use `Industrial.Core.CME.ID`; sub-agent swarms may point back to a
+parent CME while keeping each child agent's GEL lane separate.
+
+Install or reload the local Codex plugin from this repository through the Codex
+Desktop plugin UI. The repo-local marketplace body lives at
+`.agents/plugins/marketplace.json` and points at `plugins/sanctuary-cme`.
+
+If your Codex build exposes CLI plugin subcommands, the equivalent CLI path is:
 
 ```powershell
 codex plugin marketplace add .\.agents\plugins
@@ -202,6 +277,29 @@ codex plugin add sanctuary-cme@project-sanctuary
 ```
 
 Start a new Codex thread after reinstalling so the plugin skill text is loaded.
+If `codex plugin --help` reports no plugin subcommands, use the Desktop plugin
+UI and validate the live wrapper path directly:
+
+```powershell
+.\plugins\sanctuary-cme\scripts\Connect-SanctuaryCodexCoupling.ps1 -CmeId "Codex.CME.ID" -SubjectCmeId "Oria.CME.ID" -Json -NoBuild
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command plugin-posture -Json -NoBuild
+```
+
+The plugin declares a native local MCP endpoint in
+`plugins/sanctuary-cme/.mcp.json`:
+
+```text
+sanctuary-cme-local -> http://127.0.0.1:8717/mcp
+```
+
+Run the coupling starter once to reuse or start `Sanctuary.exe`, verify MCP
+initialize/tool calls, and write a local coupling report.
+
+For this Lab install, that coupling proof declares `Codex.CME.ID` as the local
+coding actor and `Oria.CME.ID` as the telemetry subject. The declaration is read
+from local install context and remains candidate-only; it does not make either
+lane a public product default, admit GEL, mutate SelfGEL, bind a provider/model,
+or activate `.Actual`.
 
 Local benches may call `http://127.0.0.1:8717/mcp` or
 `http://127.0.0.1:8717/sse`. ChatGPT custom apps do not connect directly to

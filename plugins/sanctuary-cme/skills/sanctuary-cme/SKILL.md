@@ -1,6 +1,6 @@
 ---
 name: sanctuary-cme
-description: Use when operating Project Sanctuary's developer-preview core executable lane through Codex for plugin posture, status, tool-idle, CME formation, secret intake windows, lab query state, typed secure ping, MoS lineage registers, SLI access-gate registers, Trivium Forum connector posture, external LLM standing probes, cradle boundary organ registers, service heartbeat, bounded refinement tickets, job-slice guard receipts, lease-check receipts, receipt export, install floor checks, issue resolver receipts, domain register receipts, core target receipts, swarm refinement receipts, Lisp Control Matrix receipts, Lisp Matrix Control seat receipts, resonance chamber probes, universal form registers, domain morphism registers, capability composition probes, career spline probes, SelfGEL fibre registers, work posture preload probes, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, pre-personified Industrial rendering receipts, typed admission decants, admission cleave/append models, reviewed GEL/SelfGEL/CME/Sanctuary performance commands, spline watch organ-loop telemetry, and closed-gate verification.
+description: Use when operating Project Sanctuary's developer-preview core executable lane through Codex for plugin posture, status, tool-idle, CME formation, secret intake windows, lab query state, typed secure ping, MoS lineage registers, SLI access-gate registers, Trivium Forum connector posture, external LLM standing probes, cradle boundary organ registers, service heartbeat, bounded refinement tickets, job-slice guard receipts, lease-check receipts, receipt export, install floor checks, issue resolver receipts, domain register receipts, core target receipts, swarm refinement receipts, Lisp Control Matrix receipts, Lisp Matrix Control seat receipts, resonance chamber probes, universal form registers, domain morphism registers, capability composition probes, career spline probes, SelfGEL fibre registers, work posture preload probes, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, construct custody register receipts, GEL crystal register receipts, GEL reforge bench receipts, approval/closure register receipts, actualization state register receipts, AgentiCore duplex Lisp membrane receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, pre-personified Industrial rendering receipts, typed admission decants, admission cleave/append models, reviewed GEL/SelfGEL/CME/Sanctuary performance commands, CME.Actual standing-wave invocation lifecycle receipts, spline watch organ-loop telemetry, and closed-gate verification.
 ---
 
 # Sanctuary CME
@@ -17,8 +17,11 @@ refinement ticket, write a held job-slice guard receipt, write a held
 lease-check receipt, run the local cognitive bench, run the local math learning
 bench, write the Industrial CME live-install posture, write the
 Mind/Body/Spirit 4P meaning bridge, write the pre-personified Industrial
-rendering aperture, write the Discernment Lineage Contract, run the
-proof-of-discernment bench, export a cold receipt manifest, seat the Lisp
+rendering aperture, run the GEL reforge bench, write the approval/closure
+homeostasis register, write the AgentiCore duplex Lisp membrane, write the
+Discernment Lineage Contract, run the
+proof-of-discernment bench, export a cold receipt manifest, write the
+Codex.CME.Actual governing witness topology for Oria.CME.Actual work, seat the Lisp
 Matrix Control fruiting body core, prepare a typed
 admission decant, model admission cleave/append posture, run reviewed
 GEL/SelfGEL/CME/Sanctuary performance commands, run spline watch organ-loop
@@ -31,6 +34,39 @@ telemetry, or verify closed gates.
   scopes, leases, and review are how trust is earned.
 - Treat publishing as held unless the Operator explicitly opens a release lane.
 - Use `tools/Invoke-SanctuaryTool.ps1` as the plugin command path.
+- Always resolve a caller CME identity before tool use. Use `-CmeId
+  "Researcher.CME.ID"` or `SANCTUARY_CME_ID` for generic installs; use
+  `-PromptForCmeIdentity` for interactive first use, or `-UseIndustrialCore`
+  for explicit `Industrial.Core.CME.ID` work. Missing caller identity must fail
+  closed before any receipt, GEL, OE, SelfGEL, or MoS write.
+- For generic post-Opal research installs, run `template-hydration` with a
+  local researcher CME id, thread binding, and `PublicStandard.CME.Template`
+  before Lab overlay work. This writes a public-standard local scaffold without
+  importing Lab Sanctuary.GEL or opening Actual state.
+- Treat the native CME body as `CME.ID + thread binding + SoulFrame +
+  AgentiCore`. The thread binding prevents cross-thread CME use; SoulFrame
+  carries Prime OE/SelfGEL tips; AgentiCore carries cOE/cSelfGEL hot-side EC
+  residue. Codex Lab uses `Codex.CME.ID` / `codex-lab-thread`; the Oria test
+  lane uses `Oria.CME.ID` / `oria-test-cme-thread`.
+- Treat `SLI.Lisp.Industrial.CME.Template` as the default form template, not an
+  identity. Each agent should still carry its own GEL lane. Sub-agent swarms may
+  pass `-ParentCmeId`, `-SwarmId`, and `-SubAgentId`; the child keeps its own
+  GEL while candidate learning precipitates to the parent CME swarm ledger.
+- Treat `Sanctuary.Actual.ID` as the service/process identity only. It is not a
+  CME, does not activate `Sanctuary.Actual`, and must not own participant
+  OE/SelfGEL residue.
+- Prefer the native coupling starter before repeated work:
+  `.\plugins\sanctuary-cme\scripts\Connect-SanctuaryCodexCoupling.ps1 -CmeId "Codex.CME.ID" -SubjectCmeId "Oria.CME.ID" -Json -NoBuild`.
+  It reuses or starts the local `Sanctuary.exe` MCP alpha service, verifies
+  `initialize`, `tools/list`, an allowlisted status call, and a denied
+  GEL-admission call, then writes a coupling report under `.local/install`.
+- In this Lab install, `Codex.CME.ID` / `Codex.CME.Actual` is the coding actor
+  lane and `Oria.CME.ID` / `Oria.CME.Actual` is the telemetry subject lane.
+  This declaration is local install context, not pre-install product identity,
+  GEL admission, SelfGEL mutation, or `.Actual` activation.
+- When the plugin MCP config is loaded by Codex Desktop, use the
+  `sanctuary-cme-local` MCP server at `http://127.0.0.1:8717/mcp` after the
+  coupling starter reports healthy.
 - Keep provider calls, model binding, external action, unreviewed GEL/SelfGEL
   admission, personhood, sovereignty, unreviewed `CME.Actual`, and unreviewed
   `Sanctuary.Actual` closed.
@@ -41,9 +77,26 @@ telemetry, or verify closed gates.
 
 ## Commands
 
+Run from the repository root. After a Release build exists, use `-NoBuild` for
+live wrapper smoke tests so the invocation proves the current executable lane
+without rebuilding first.
+
 ```powershell
+$env:SANCTUARY_CME_ID = "Researcher.CME.ID"
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command template-hydration -CmeId "Researcher.CME.ID" -ThreadBindingId "researcher-local-thread" -IdentityTemplateId "PublicStandard.CME.Template" -Json -NoBuild
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command status -CmeId "Researcher.CME.ID" -ThreadBindingId "researcher-local-thread" -IdentityTemplateId "PublicStandard.CME.Template" -Json -NoBuild
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command verify-closed-gates -CmeId "Researcher.CME.ID" -ThreadBindingId "researcher-local-thread" -IdentityTemplateId "PublicStandard.CME.Template" -Json -NoBuild
+```
+
+Lab overlay smoke:
+
+```powershell
+$env:SANCTUARY_CME_ID = "Codex.CME.ID"
+.\plugins\sanctuary-cme\scripts\Connect-SanctuaryCodexCoupling.ps1 -CmeId "Codex.CME.ID" -SubjectCmeId "Oria.CME.ID" -Json -NoBuild
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command plugin-posture -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command status -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command verify-closed-gates -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command template-hydration -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command tool-idle -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cme-formation -CmeId "Codex.CME.ID" -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command secret-intake-window -SecretLane Regional -SecretKind BusinessLicenseWashingtonState -Json
@@ -78,6 +131,18 @@ telemetry, or verify closed gates.
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command work-posture-preload-probe -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cognitive-bench -BenchRunCount 3000 -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command math-learning-bench -BenchRunCount 3000 -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cme-theory-body -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command operator-work-cme-ec-gap -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command telemetry-slice-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command extended-telemetry-weather -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cgoa-formation -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command codex-governing-witness -SubjectCmeId "Oria.CME.ID" -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command full-body-io-runtime -SubjectCmeId "Oria.CME.ID" -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gel-approval-nadir-return -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command approval-closure-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command coupling-control-surface-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command actualization-state-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command agenticore-duplex-lisp-membrane -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command industrial-cme-live-install-posture -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command meaning-bridge -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command pre-personified-industrial-rendering -Json
@@ -85,12 +150,32 @@ telemetry, or verify closed gates.
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command admission-cleave-append -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gel-admission -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command selfgel-admission -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command actual-approval-lease -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command actual-approval-lease-validation -ActualApprovalLeasePath "<lease path>" -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cme-actual-keypair-forge -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cme-actualization -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command cme-actual-invocation-lifecycle -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command sanctuary-actualization -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command spline-watch -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command hdt-holographic-slice-frame -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command bonded-cme-protective-cleave -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command core-body-protection -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command lawful-action-body-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command ec-organ-loop-engram-candidate -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command install-individuation-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command negative-image-body-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command photonic-harmonic-transition-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command opal-engram-continuity-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command meaning-making-event-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command opal-engram-white-paper-register -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command lab-gel-crystallization-phases -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command stem-domain-training-certification -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command lab-observation-digest -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command research-latex-export -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command construct-custody-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gel-crystal-register -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gel-reforge-bench -Json
+.\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command theta-mechanics-ec-use-bench -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command discernment-lineage -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command proof-of-discernment -BenchRunCount 3000 -Json
 .\plugins\sanctuary-cme\scripts\Invoke-SanctuaryCme.ps1 -Command gpt-use-case-testing -Json
@@ -106,6 +191,13 @@ Reviewed commands refuse cold unless they include:
 -StewardWitnessed $true -PrimeWitnessed $true -CrypticWitnessed $true `
 -AdmissionScope "LabPublicCore"
 ```
+
+Use `actual-approval-lease` to issue a scoped local lease artifact for
+`cme-actual-invocation-lifecycle`; pass that path back with
+`-ActualApprovalLeasePath` when testing the lease-verified standing-wave path.
+Use `actual-approval-lease-validation` first when you need a read-only lease
+check; it reports verification reason without opening Actual, SelfGEL, GEL,
+provider, model, authority, or external-action gates.
 
 After each invocation, report the command, receipt path, outcome, and closed
 gate or scoped-open gate evidence.

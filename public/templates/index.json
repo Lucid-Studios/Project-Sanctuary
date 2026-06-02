@@ -1,0 +1,39 @@
+{
+  "schema": "project-sanctuary.public-template-index.v1",
+  "service": "Project Sanctuary public template service",
+  "posture": "post-opal-research-preview",
+  "servedBy": "git-pages-or-release-artifact",
+  "defaultChannel": "stable",
+  "channels": [
+    {
+      "channel": "stable",
+      "path": "public/templates/channels/stable.json"
+    },
+    {
+      "channel": "preview",
+      "path": "public/templates/channels/preview.json"
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "PublicStandard.CME.Template",
+      "version": "0.1.0",
+      "channel": "stable",
+      "manifestPath": "public/templates/public-standard/0.1.0/template-manifest.json",
+      "rootAtlasPath": "public/templates/public-standard/0.1.0/root-atlas.json",
+      "templateBodyPath": "public/templates/public-standard/0.1.0/template-body.json",
+      "lispBodyPath": "public/templates/public-standard/0.1.0/template-body.sli.lisp"
+    }
+  ],
+  "denials": {
+    "shipsLabSanctuaryGel": false,
+    "shipsPrivateRootAtlas": false,
+    "admitsGel": false,
+    "mutatesSelfGel": false,
+    "activatesCmeActual": false,
+    "activatesSanctuaryActual": false,
+    "bindsProviderOrModel": false,
+    "authorizesExternalAction": false,
+    "claimsPersonhoodOrSovereignty": false
+  }
+}

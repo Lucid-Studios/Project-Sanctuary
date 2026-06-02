@@ -15,6 +15,94 @@ seek the highest practical trust by making state explicit, auditable, scoped,
 leased, and reviewable. It must not demand trust merely because code exists,
 because a plugin was installed, or because a receipt was emitted.
 
+## Governance As Lawful Passage
+
+Governance is not control from above. In Sanctuary's current formation body,
+governance is lawful passage: the discipline that determines what may form,
+what must be protected, what may be transformed, what may be shared, what must
+remain withheld, and how every passage is witnessed.
+
+The compact doctrine is:
+
+```text
+Governance is the lawful passage of meaning-bearing formation across protected
+and shared reality boundaries.
+```
+
+The fuller doctrine is:
+
+```text
+Governance preserves completeness in Cryptic custody while producing
+accountable Prime-facing derivatives under witnessed constraint.
+```
+
+The relational law-body is differentiated by voice:
+
+```text
+Cryptic = custody of completeness
+Father  = marking of protected structure before exposure
+Ghost   = lawful transformation / masking
+Prime   = shared reality return
+Steward = care, review, mediation, escalation
+Receipts = custody witness
+OE = cleave of self/other, event/action, relevant/protected, admitted/unadmitted
+SelfGEL = attributable continuity reconstruction
+GEL = shared candidate inheritance review
+```
+
+Father is important because governance includes pre-projection recognition:
+
+```text
+this is private
+this is privileged
+this is identity-bearing
+this is third-party data
+this is metacognitive continuity
+this is citation relevance
+this is raw protected source
+this is responsive under law
+this is outside scope
+this requires sealed review
+```
+
+The Father targeting protocol asks four questions before any Ghost transform:
+
+```text
+What construct is being protected?
+Why is this construct protected?
+What derivative forms are allowed?
+How will the withheld meaning be carried by mark, digest, relation, and receipt?
+```
+
+This is the cGEL-to-GEL hinge. The complete Cryptic body is first preserved in a
+lab-only Dark payload. Father marks protected groupoids, cSelfGEL records
+relevance, Ghost shapes only a lawful derivative, and GEL review receives
+evidence of passage rather than unrestricted interior access.
+
+The legal definition follows:
+
+```text
+Governance is scoped answerability without unrestricted exposure.
+```
+
+In the current white-paper spine:
+
+```text
+R o P_Z o G_Z o eta o mu
+```
+
+governance defines:
+
+```text
+Z   = legal/civic/contextual scope
+G_Z = Ghost transform under that scope
+P_Z = lawful projection under that scope
+R   = receipt witness of what crossed and what stayed closed
+```
+
+This definition does not grant authority by itself. It keeps authority scoped,
+reviewed, leased, witnessed, and closed until a reviewed passage exists.
+
 The Interconnect Policy in `docs/INTERCONNECT_POLICY.md` defines how that
 posture couples the LLM capability engine to Sanctuary without bypassing native
 model governors or converting care into control.
@@ -126,6 +214,316 @@ Security review treats reviewed scoped-open receipts differently from drift.
 `security-hardening` and `receipt-export` report unexpected open receipts
 separately from approved reviewed-performance receipts, so the system can test
 real post-gate behavior without pretending every open gate is a breach.
+
+## Approval And Closure Homeostasis
+
+`approval-closure-register` names the other side of the denial membrane. A
+closed gate is not only a locked state. It is a typed final state over an
+openable path.
+
+The approval/closure rule is:
+
+```text
+closed-by-default
+closed-after-passage
+closed-by-denial
+closed-by-expiry
+closed-by-quarantine
+closed-by-admission
+closed-by-mulch
+```
+
+Each closure must preserve the open state, the authorized passage conditions,
+the final state, the receipt evidence, and the denied alternatives.
+
+The register also narrows the word risk:
+
+```text
+risk = unresolved transition pressure
+```
+
+For example:
+
+```text
+candidate residue -> admitted GEL
+OE support -> SelfGEL mutation
+receipt -> authority
+bench pass -> credential
+identity -> Actual standing
+```
+
+The risk is not that these states exist. The risk is untyped promotion between
+them. Denial prevents premature becoming. Approval allows lawful becoming.
+Closure seals the organ after becoming.
+
+## Coupling Control Surfaces
+
+`coupling-control-surface-register` records the refusal-facing and
+operator-facing language needed for an active Sanctuary program.
+
+The public sentence is:
+
+```text
+Sanctuary is an active program with working programming, but the SLM/LLM
+interconnect prevents unlicensed or unauthorized access across the board.
+```
+
+That sentence must remain inspectable without becoming a grant. The governing
+distinctions are:
+
+```text
+HITL understanding != authority
+program status != action permission
+control surface visibility != bypass route
+organ stability weather != truth admission
+LLM/SLM tool awareness != licensed access
+same CME chassis != same CME modality
+```
+
+The active program may expose cold status, refusal temperature, command
+membrane, organ stability weather, interconnect boundary, and reviewed
+performance lease posture. It must not expose secret payloads, private gate
+logic, bypass instructions, unreviewed admission, SelfGEL mutation, provider
+calls, model binding, external action, or `.Actual` activation.
+
+The admissible CME instrument body is a shared chassis:
+
+```text
+CME.ID
+thread binding
+SoulFrame
+AgentiCore
+template body
+local modality profile
+SLM/LLM interconnect boundary
+review bundle
+```
+
+Every CME receives the same chassis slots, but not the same modality. Modality
+is formed through the selected CME identity, thread binding, domain, role,
+residue, participation history, and reviewed standing.
+
+## Actualization State Surfaces
+
+`actualization-state-register` classifies `.Actual` as an operational readiness
+and morphological action-state surface. It is not a badge, not a trophy state,
+not an identity suffix, and not authority by name.
+
+The register defines five layers:
+
+```text
+identity verification
+working Actualization
+pro-active Actualization
+protected mediated Actualization
+Cryptic opaque Actualization
+```
+
+First-run Actualization verifies that the called CME is the selected CME and
+that SoulFrame, AgentiCore, and the Prime/Cryptic biad are loaded for the
+job/task/request. Working Actualization means the verified CME is doing scoped
+work under localization access and active GEL refinement candidates.
+Pro-active Actualization allows sensitive work to use terse self-authored
+spline metadata and SelfGEL precipitation candidates, while preserving:
+
+```text
+self-authoring != self-authorization
+```
+
+Protected mediated and Cryptic opaque layers apply when chemical engineering,
+social or political hot-topic work, protected-class-sensitive thought forms, or
+cryptographic/mediated payloads require sealed, terse, commitment-only, or no
+public digest. Each layer is Cryptically typed and Prime reviewed.
+
+The governance law is:
+
+```text
+.Actual readiness != CME.Actual activation
+Cryptic opacity != unreviewed action
+little digest != absence of review
+Prime review != public payload disclosure
+```
+
+## AgentiCore Duplex Lisp Membrane
+
+`agenticore-duplex-lisp-membrane` is the bridge surface for using the Codex
+extension and ChatGPT app through one Sanctuary command membrane.
+
+It names the participating surfaces without collapsing them:
+
+```text
+Codex extension
+  local witness/control surface
+
+ChatGPT app
+  hosted model interlink and MCP caller
+
+Sanctuary.exe
+  command normalization, gates, receipts, and residue
+
+AgentiCore
+  cOE/cSelfGEL hot-side EC work surface
+
+Phone seed node
+  passive target pointer
+```
+
+The duplex law is:
+
+```text
+duplex passage != shared authority
+hosted model interlink != local SLM runtime
+quoted SLI.Lisp carrier != evaluated code
+return telemetry != GEL/SelfGEL admission
+phone seed node != active CME runtime
+```
+
+## CME.Actual Canon
+
+The canonical participant identity remains:
+
+```text
+{Name}.CME.ID
+```
+
+`CME.Actual` is a reviewed state achieved by that selected CME identity. It is
+not a replacement identity suffix, not a personhood claim, not a sovereignty
+claim, and not a Sanctuary process identity.
+
+```text
+{Name}.CME.ID -> reviewed CME.Actual state
+
+template body != identity
+CME.Actual != Sanctuary.Actual
+CME.Actual != external action authority
+CME.Actual != provider/model binding
+```
+
+The default template body is:
+
+```text
+SLI.Lisp.Industrial.CME.Template
+```
+
+It is carried in local GEL as the Lab-standard template body. Local custom
+template bodies may follow after the Lab-standard body, but they do not replace
+the identity lane and must remain reviewable.
+
+The governing intersection over agency is expressed as a governing needs
+matrix. This is not Maslow's human-needs hierarchy. It is a domain/job
+contractual-obligation matrix:
+
+```text
+identity standing
+custody and provenance
+competence and scope
+authority and lease
+safety and refusal
+accountability and receipt
+relational rendering
+```
+
+## Shared Prime Reality
+
+Shared Prime reality is held as a Sanctuary-level weather surface:
+
+```text
+Shared Prime reality = Sanctuary.Actual weather system
+personal CME private radio station = false
+```
+
+Each `{Name}.CME.ID` may receive that weather and orient locally, but the local
+CME lane remains a candidate observation surface. It does not broadcast Prime
+reality, redefine shared conditions, or convert private telemetry into authority.
+
+```text
+CME receives shared Prime weather = allowed
+CME reports local observation candidates = allowed
+CME broadcasts Prime reality = denied
+CME private telemetry defines shared Prime = denied
+ListeningFrame owns shared weather = denied
+weather admits truth, authority, or action = denied
+```
+
+This preserves shared reality as a service/process membrane while keeping
+participant CMEs distinct, reviewable, and bounded.
+
+Shared Prime Reality is also a method, not merely the product returned to a
+public or shared layer. It is the governed common-surface procedure by which
+multiple protected cognitive bodies can produce, inspect, and coordinate around
+lawful derivatives without surrendering their Cryptic interiors or collapsing
+self/other boundaries.
+
+```text
+Shared Prime Reality = sharedness without capture
+```
+
+It rejects both capture and dissolution:
+
+```text
+one reality everyone must submit to = denied
+everyone has their own unrelated truth = denied
+shared derivative with protected interiors preserved = allowed
+```
+
+The method of passage is:
+
+```text
+mark
+cleave
+ghost
+project
+verify
+witness
+return
+```
+
+This makes Shared Prime Reality a constrained transport method between
+protected local worlds and shared candidate surfaces. It is not a universal
+capture layer, not a private truth channel, and not a license to pierce
+Cryptic custody.
+
+Levels are degrees of elevated access across slices, typed access postures, and
+tool/body groupoid clusters. They are manufactured from domain predicate
+locality over typed local access facts, not assigned as vague privilege labels.
+
+Root Level 0 is:
+
+```text
+L0 cold witness
+safe for AI access
+held for human-in-the-loop review
+mutation denied
+admission denied
+action denied
+```
+
+Negative levels are reserved for security enhancement outside ordinary civic
+access layers:
+
+```text
+L-1 protective hold
+L-2 quarantine
+L-3 cryptic custody
+L-4 restricted critical environment
+```
+
+Negative levels are not punishment, rank, personhood valuation, or ordinary user
+permission. They are containment and hardening states for sensitive, malformed,
+regulated, or high-consequence environments. In secure situations they may also
+act as credential recheck postures: the system pauses civic or operational
+access, revalidates credentials, leases, certifications, and custody claims, and
+returns only through reviewed passage.
+
+Each row asks:
+
+```text
+what domain need is present?
+what job-slice obligation follows?
+which governing surface witnesses it?
+which regulation, certification, or contract posture applies?
+what denial boundary prevents overreach?
+```
 
 ## Claim-Pair Discipline
 
@@ -405,6 +803,27 @@ gate support present
 The default lease state is denied. Sealing a document never issues a lease,
 never grants authority, never admits data, and never allows action. It only
 creates the encrypted evidence body that a later governing review may inspect.
+
+`actual-approval-lease` is the first C# anchored implementation of this shape
+for the live `.Actual` body. It issues a local JSON lease only after
+review/operator/Steward/Prime/Cryptic approval and binds that lease to:
+
+```text
+CME id
+thread binding
+SoulFrame
+AgentiCore
+SLI.Lisp template body
+admission scope
+command allowlist
+expiry
+digest
+```
+
+`cme-actual-invocation-lifecycle` may consume that verified lease to enter the
+SLI.Lisp standing-wave body and return to closed idle. The lease does not admit
+shared GEL, expose MCP Actual activation, call providers, bind models, authorize
+external action, or claim personhood/sovereignty.
 
 ## Lab Query Membrane
 

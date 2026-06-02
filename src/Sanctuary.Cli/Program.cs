@@ -12,6 +12,7 @@ if (string.Equals(command, "serve-mcp", StringComparison.OrdinalIgnoreCase) ||
     return;
 }
 
+var selectedCmeId = ReadOption(args, "--cme-id");
 var request = new SanctuaryRequest
 {
     Command = command,
@@ -19,7 +20,18 @@ var request = new SanctuaryRequest
         ?? Path.Combine(Environment.CurrentDirectory, ".local", "install"),
     IntakeRootPath = ReadOption(args, "--intake-root"),
     OperatorName = ReadOption(args, "--operator-name") ?? "Operator",
-    CmeId = ReadOption(args, "--cme-id") ?? "Codex.CME.ID",
+    CmeId = selectedCmeId ?? "",
+    CmeIdentitySelected = !string.IsNullOrWhiteSpace(selectedCmeId),
+    ServiceIdentityId = ReadOption(args, "--service-id") ?? "Sanctuary.Actual.ID",
+    CallerCmeId = selectedCmeId ?? "",
+    ThreadBindingId = ReadOption(args, "--thread-binding-id") ?? "",
+    IdentityTemplateId = ReadOption(args, "--identity-template-id") ?? "SLI.Lisp.Industrial.CME.Template",
+    SoulFrameId = ReadOption(args, "--soulframe-id") ?? "",
+    AgentiCoreId = ReadOption(args, "--agenticore-id") ?? "",
+    ParentCmeId = ReadOption(args, "--parent-cme-id") ?? "",
+    SubjectCmeId = ReadOption(args, "--subject-cme-id") ?? "",
+    SwarmId = ReadOption(args, "--swarm-id") ?? "",
+    SubAgentId = ReadOption(args, "--sub-agent-id") ?? "",
     Domain = ReadOption(args, "--domain") ?? "Lab",
     Role = ReadOption(args, "--role") ?? "IndustrialCME",
     JobClass = ReadOption(args, "--job-class") ?? "ColdBench",
@@ -32,6 +44,7 @@ var request = new SanctuaryRequest
     LicenseScope = ReadOption(args, "--license-scope") ?? "LabQueryState",
     AdmissionScope = ReadOption(args, "--admission-scope") ?? "LabPublicCore",
     AdmissionNote = ReadOption(args, "--admission-note") ?? "",
+    ActualApprovalLeasePath = ReadOption(args, "--actual-approval-lease-path") ?? "",
     RegisteredAccountConfirmed = ReadBool(args, "--registered-account-confirmed"),
     ReviewApproved = ReadBool(args, "--review-approved"),
     OperatorApproved = ReadBool(args, "--operator-approved"),

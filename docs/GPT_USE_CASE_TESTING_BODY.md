@@ -117,6 +117,24 @@ sanctuary.meaning_bridge
 sanctuary.discernment_lineage
 sanctuary.proof_of_discernment
 sanctuary.math_learning_bench_limited
+sanctuary.bridge_morphism_test
+sanctuary.cme_theory_body
+sanctuary.operator_work_cme_ec_gap
+sanctuary.telemetry_slice_register
+sanctuary.extended_telemetry_weather
+sanctuary.cgoa_formation
+sanctuary.codex_governing_witness
+sanctuary.full_body_io_runtime
+sanctuary.gel_approval_nadir_return
+sanctuary.approval_closure_register
+sanctuary.coupling_control_surface_register
+sanctuary.actualization_state_register
+sanctuary.stem_domain_training_certification
+sanctuary.lab_observation_digest
+sanctuary.research_latex_export
+sanctuary.construct_custody_register
+sanctuary.gel_crystal_register
+sanctuary.gel_reforge_bench
 sanctuary.gpt_use_case_testing
 sanctuary.mos_lineage_register
 sanctuary.sli_access_gate_register
@@ -197,6 +215,21 @@ Invoke-RestMethod http://127.0.0.1:8717/mcp `
   -ContentType 'application/json' `
   -Body '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"local-bench","version":"0.1"}}}'
 ```
+
+The ChatGPT app alpha is currently a tool-only Apps SDK posture. Sanctuary
+advertises MCP tools with input schemas, output schemas, read-only/destructive
+annotations, and invocation metadata; widget resources remain absent until a
+read-only receipt/weather console is intentionally added with CSP.
+
+The duplex membrane tool is:
+
+```text
+sanctuary.agenticore_duplex_lisp_membrane
+```
+
+It writes `agenticore-duplex-lisp-membrane` candidate residue for the
+Codex-extension/ChatGPT-app bridge without provider calls, model binding,
+external action, GEL admission, SelfGEL mutation, or Actual activation.
 
 Invoke a cold tool:
 

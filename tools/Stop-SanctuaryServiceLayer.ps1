@@ -2,10 +2,16 @@ param(
     [string] $InstallRoot = "",
     [string] $IntakeRoot = "",
     [string] $OperatorName = "Operator",
-    [string] $CmeId = "Codex.CME.ID",
+    [string] $CmeId = "",
+    [string] $ServiceIdentityId = "Sanctuary.Actual.ID",
+    [string] $IdentityTemplateId = "SLI.Lisp.Industrial.CME.Template",
+    [string] $SubjectCmeId = "",
+    [string] $ThreadBindingId = "",
     [string] $Domain = "Lab",
     [string] $Role = "IndustrialCME",
     [string] $JobClass = "ColdBench",
+    [switch] $PromptForCmeIdentity,
+    [switch] $UseIndustrialCore,
     [switch] $Json,
     [switch] $NoBuild
 )
@@ -20,6 +26,12 @@ $toolPath = Join-Path $PSScriptRoot "Invoke-SanctuaryTool.ps1"
     -IntakeRoot $IntakeRoot `
     -OperatorName $OperatorName `
     -CmeId $CmeId `
+    -ServiceIdentityId $ServiceIdentityId `
+    -IdentityTemplateId $IdentityTemplateId `
+    -SubjectCmeId $SubjectCmeId `
+    -ThreadBindingId $ThreadBindingId `
+    -PromptForCmeIdentity:$PromptForCmeIdentity `
+    -UseIndustrialCore:$UseIndustrialCore `
     -Domain $Domain `
     -Role $Role `
     -JobClass $JobClass `

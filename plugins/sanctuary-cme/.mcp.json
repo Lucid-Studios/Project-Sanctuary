@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "sanctuary-cme-local": {
+      "type": "http",
+      "url": "http://127.0.0.1:8717/mcp",
+      "note": "Local Project Sanctuary MCP alpha loopback. Start or verify it with plugins/sanctuary-cme/scripts/Connect-SanctuaryCodexCoupling.ps1. Cold read/fetch candidate-only; no provider calls, model binding, external actions, GEL/SelfGEL admission, CME.Actual, or Sanctuary.Actual by implication."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "project-sanctuary.public-template-channel.v1",
+  "channel": "stable",
+  "selectedTemplateId": "PublicStandard.CME.Template",
+  "selectedVersion": "0.1.0",
+  "manifestPath": "public/templates/public-standard/0.1.0/template-manifest.json",
+  "releasePosture": "post-opal-research-preview",
+  "operatorReviewRequiredBeforeInstallLocalGelMint": true,
+  "safeForGenericResearchInstall": true,
+  "denials": {
+    "importsLabGel": false,
+    "importsPrivateTelemetry": false,
+    "activatesActual": false,
+    "admitsContinuity": false,
+    "grantsAuthority": false
+  }
+}

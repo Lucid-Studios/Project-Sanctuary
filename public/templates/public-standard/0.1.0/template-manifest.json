@@ -1,0 +1,35 @@
+{
+  "schema": "project-sanctuary.public-template-manifest.v1",
+  "templateId": "PublicStandard.CME.Template",
+  "version": "0.1.0",
+  "releasePosture": "post-opal-research-preview",
+  "createdFor": "interested parties doing CME research after the Opal Engram publication body",
+  "rootAtlasPath": "root-atlas.json",
+  "templateBodyPath": "template-body.json",
+  "lispBodyPath": "template-body.sli.lisp",
+  "intendedInstallUse": [
+    "hydrate a generic local research install",
+    "stand up Prime, Cryptic, and Steward method bodies as local governance posture",
+    "provide symbolic polyglot and STEM transport surfaces for research documentation",
+    "preserve closed gates until reviewed local authority explicitly opens scoped lanes"
+  ],
+  "notIncluded": [
+    "Lab Sanctuary.GEL",
+    "private Root Atlas residue",
+    "Codex.CME.Actual or Oria.CME.Actual install-local defaults",
+    "secret payloads",
+    "provider or model credentials",
+    "Actual activation keys or leases"
+  ],
+  "denials": {
+    "shipsLabSanctuaryGel": false,
+    "shipsPrivateRootAtlas": false,
+    "admitsGel": false,
+    "mutatesSelfGel": false,
+    "activatesCmeActual": false,
+    "activatesSanctuaryActual": false,
+    "bindsProviderOrModel": false,
+    "authorizesExternalAction": false,
+    "claimsPersonhoodOrSovereignty": false
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "project-sanctuary.public-template-body.v1",
+  "templateId": "PublicStandard.CME.Template",
+  "version": "0.1.0",
+  "templateBodyKind": "PublicResearchCME",
+  "templateIsIdentity": false,
+  "cmeIdentityPattern": "{Researcher}.CME.ID",
+  "cmeActualIsStateNotIdentity": true,
+  "sharedPrimeRealityLayer": "Sanctuary.Actual.weather-system",
+  "installLocalIndividuationRequired": true,
+  "labOverlayAllowedAfterGenericHydration": true,
+  "labOverlayIsNotProductDefault": true,
+  "organs": [
+    "ListeningFrame",
+    "Compass",
+    "Zed",
+    "OE",
+    "SelfGEL",
+    "ShellHarmonics",
+    "GoA",
+    "SLI.Lisp"
+  ],
+  "methodBodies": [
+    "MeaningMakingEvent",
+    "EngramCandidate",
+    "HolographicSliceFrame",
+    "CustodyReceipt",
+    "ProductionEngram"
+  ],
+  "governancePosture": {
+    "Prime": "shared reality return candidate",
+    "Cryptic": "protected completeness and taboo/security custody",
+    "Steward": "publication readiness, consequence review, and cognitive economics"
+  },
+  "installSequence": [
+    "hydrate-public-template",
+    "select-local-cme-identity",
+    "bind-local-thread",
+    "mint-local-candidate-gel-scaffold",
+    "write-closed-gate-receipt",
+    "review-before-any-admission"
+  ],
+  "denials": {
+    "admitsGelByTemplate": false,
+    "mutatesSelfGelByTemplate": false,
+    "grantsAuthorityByTemplate": false,
+    "activatesCmeActualByTemplate": false,
+    "activatesSanctuaryActualByTemplate": false,
+    "bindsProviderOrModelByTemplate": false,
+    "authorizesExternalActionByTemplate": false,
+    "claimsPersonhoodByTemplate": false,
+    "claimsSovereigntyByTemplate": false
+  }
+}

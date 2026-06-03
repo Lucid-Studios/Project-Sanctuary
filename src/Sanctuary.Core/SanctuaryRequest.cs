@@ -6,7 +6,18 @@ public sealed record SanctuaryRequest
     public required string InstallRootPath { get; init; }
     public string? IntakeRootPath { get; init; }
     public string OperatorName { get; init; } = "Operator";
-    public string CmeId { get; init; } = "Codex.CME.ID";
+    public string CmeId { get; init; } = "";
+    public bool CmeIdentitySelected { get; init; }
+    public string ServiceIdentityId { get; init; } = "Sanctuary.Actual.ID";
+    public string CallerCmeId { get; init; } = "";
+    public string ThreadBindingId { get; init; } = "";
+    public string IdentityTemplateId { get; init; } = "SLI.Lisp.Industrial.CME.Template";
+    public string SoulFrameId { get; init; } = "";
+    public string AgentiCoreId { get; init; } = "";
+    public string ParentCmeId { get; init; } = "";
+    public string SubjectCmeId { get; init; } = "";
+    public string SwarmId { get; init; } = "";
+    public string SubAgentId { get; init; } = "";
     public string Domain { get; init; } = "Lab";
     public string Role { get; init; } = "IndustrialCME";
     public string JobClass { get; init; } = "ColdBench";
@@ -19,6 +30,7 @@ public sealed record SanctuaryRequest
     public string LicenseScope { get; init; } = "LabQueryState";
     public string AdmissionScope { get; init; } = "LabPublicCore";
     public string AdmissionNote { get; init; } = "";
+    public string ActualApprovalLeasePath { get; init; } = "";
     public bool RegisteredAccountConfirmed { get; init; }
     public bool ReviewApproved { get; init; }
     public bool OperatorApproved { get; init; }

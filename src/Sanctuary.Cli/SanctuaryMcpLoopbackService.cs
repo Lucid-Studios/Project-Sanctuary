@@ -36,7 +36,14 @@ internal static class SanctuaryMcpLoopbackService
         var intakeRoot = ReadOption(args, "--intake-root")
             ?? Path.Combine(Environment.CurrentDirectory, ".local", "intake");
         var operatorName = ReadOption(args, "--operator-name") ?? "Operator";
-        var cmeId = ReadOption(args, "--cme-id") ?? "Codex.CME.ID";
+        var selectedCmeId = ReadOption(args, "--cme-id");
+        var defaultCallerCmeId = selectedCmeId ?? "";
+        var defaultThreadBindingId = ReadOption(args, "--thread-binding-id") ?? "";
+        var defaultSoulFrameId = ReadOption(args, "--soulframe-id") ?? "";
+        var defaultAgentiCoreId = ReadOption(args, "--agenticore-id") ?? "";
+        var defaultIdentityTemplateId = ReadOption(args, "--identity-template-id") ?? "SLI.Lisp.Industrial.CME.Template";
+        var defaultSubjectCmeId = ReadOption(args, "--subject-cme-id") ?? "";
+        var serviceIdentityId = ReadOption(args, "--service-id") ?? "Sanctuary.Actual.ID";
         var domain = ReadOption(args, "--domain") ?? "Lab";
         var role = ReadOption(args, "--role") ?? "IndustrialCME";
         var jobClass = ReadOption(args, "--job-class") ?? "GptUseCaseAlpha";
@@ -71,15 +78,38 @@ internal static class SanctuaryMcpLoopbackService
         }
 
         var service = new SanctuaryReceiptService();
+        var startupCmeId = string.IsNullOrWhiteSpace(defaultCallerCmeId)
+            ? serviceIdentityId
+            : defaultCallerCmeId;
+        var startupThreadBindingId = string.IsNullOrWhiteSpace(defaultCallerCmeId)
+            ? ""
+            : defaultThreadBindingId;
+        var startupSoulFrameId = string.IsNullOrWhiteSpace(defaultCallerCmeId)
+            ? ""
+            : defaultSoulFrameId;
+        var startupAgentiCoreId = string.IsNullOrWhiteSpace(defaultCallerCmeId)
+            ? ""
+            : defaultAgentiCoreId;
+        var startupSubjectCmeId = string.IsNullOrWhiteSpace(defaultCallerCmeId)
+            ? ""
+            : defaultSubjectCmeId;
         var startupReceipt = service.Run(new SanctuaryRequest
         {
             Command = "gpt-use-case-testing",
             InstallRootPath = installRoot,
             IntakeRootPath = intakeRoot,
             OperatorName = operatorName,
-            CmeId = cmeId,
+            CmeId = startupCmeId,
+            CmeIdentitySelected = true,
+            ServiceIdentityId = serviceIdentityId,
+            CallerCmeId = startupCmeId,
+            ThreadBindingId = startupThreadBindingId,
+            IdentityTemplateId = defaultIdentityTemplateId,
+            SoulFrameId = startupSoulFrameId,
+            AgentiCoreId = startupAgentiCoreId,
+            SubjectCmeId = startupSubjectCmeId,
             Domain = domain,
-            Role = role,
+            Role = "SanctuaryService",
             JobClass = jobClass,
             SessionId = "sanctuary-gpt-use-case-service-start"
         });
@@ -129,7 +159,13 @@ internal static class SanctuaryMcpLoopbackService
                         installRoot,
                         intakeRoot,
                         operatorName,
-                        cmeId,
+                        defaultCallerCmeId,
+                        defaultThreadBindingId,
+                        defaultSoulFrameId,
+                        defaultAgentiCoreId,
+                        defaultIdentityTemplateId,
+                        defaultSubjectCmeId,
+                        serviceIdentityId,
                         domain,
                         role,
                         jobClass,
@@ -163,6 +199,12 @@ internal static class SanctuaryMcpLoopbackService
         string intakeRoot,
         string operatorName,
         string defaultCmeId,
+        string defaultThreadBindingId,
+        string defaultSoulFrameId,
+        string defaultAgentiCoreId,
+        string defaultIdentityTemplateId,
+        string defaultSubjectCmeId,
+        string serviceIdentityId,
         string domain,
         string role,
         string jobClass,
@@ -179,6 +221,12 @@ internal static class SanctuaryMcpLoopbackService
                 intakeRoot,
                 operatorName,
                 defaultCmeId,
+                defaultThreadBindingId,
+                defaultSoulFrameId,
+                defaultAgentiCoreId,
+                defaultIdentityTemplateId,
+                defaultSubjectCmeId,
+                serviceIdentityId,
                 domain,
                 role,
                 jobClass,
@@ -201,6 +249,12 @@ internal static class SanctuaryMcpLoopbackService
             intakeRoot,
             operatorName,
             defaultCmeId,
+            defaultThreadBindingId,
+            defaultSoulFrameId,
+            defaultAgentiCoreId,
+            defaultIdentityTemplateId,
+            defaultSubjectCmeId,
+            serviceIdentityId,
             domain,
             role,
             jobClass,
@@ -215,6 +269,12 @@ internal static class SanctuaryMcpLoopbackService
         string intakeRoot,
         string operatorName,
         string defaultCmeId,
+        string defaultThreadBindingId,
+        string defaultSoulFrameId,
+        string defaultAgentiCoreId,
+        string defaultIdentityTemplateId,
+        string defaultSubjectCmeId,
+        string serviceIdentityId,
         string domain,
         string role,
         string jobClass,
@@ -296,7 +356,7 @@ internal static class SanctuaryMcpLoopbackService
 
         if (method == "GET" && path == "/health")
         {
-            await WriteResponseAsync(stream, 200, BuildHealth(startupReceipt, binding));
+            await WriteResponseAsync(stream, 200, BuildHealth(startupReceipt, binding, serviceIdentityId, defaultIdentityTemplateId, defaultCmeId, defaultSubjectCmeId));
             return;
         }
 
@@ -308,7 +368,7 @@ internal static class SanctuaryMcpLoopbackService
 
         if (method == "GET" && path == "/.well-known/sanctuary-lab.json")
         {
-            await WriteResponseAsync(stream, 200, BuildLabWellKnown(startupReceipt, binding));
+            await WriteResponseAsync(stream, 200, BuildLabWellKnown(startupReceipt, binding, serviceIdentityId, defaultIdentityTemplateId, defaultCmeId, defaultSubjectCmeId));
             return;
         }
 
@@ -341,6 +401,12 @@ internal static class SanctuaryMcpLoopbackService
                 intakeRoot,
                 operatorName,
                 defaultCmeId,
+                defaultThreadBindingId,
+                defaultSoulFrameId,
+                defaultAgentiCoreId,
+                defaultIdentityTemplateId,
+                defaultSubjectCmeId,
+                serviceIdentityId,
                 domain,
                 role,
                 jobClass);
@@ -358,6 +424,12 @@ internal static class SanctuaryMcpLoopbackService
                 intakeRoot,
                 operatorName,
                 defaultCmeId,
+                defaultThreadBindingId,
+                defaultSoulFrameId,
+                defaultAgentiCoreId,
+                defaultIdentityTemplateId,
+                defaultSubjectCmeId,
+                serviceIdentityId,
                 domain,
                 role,
                 jobClass);
@@ -373,6 +445,12 @@ internal static class SanctuaryMcpLoopbackService
                     intakeRoot,
                     operatorName,
                     defaultCmeId,
+                    defaultThreadBindingId,
+                    defaultSoulFrameId,
+                    defaultAgentiCoreId,
+                    defaultIdentityTemplateId,
+                    defaultSubjectCmeId,
+                    serviceIdentityId,
                     domain,
                     role,
                     jobClass);
@@ -476,6 +554,12 @@ internal static class SanctuaryMcpLoopbackService
         string intakeRoot,
         string operatorName,
         string defaultCmeId,
+        string defaultThreadBindingId,
+        string defaultSoulFrameId,
+        string defaultAgentiCoreId,
+        string defaultIdentityTemplateId,
+        string defaultSubjectCmeId,
+        string serviceIdentityId,
         string domain,
         string role,
         string jobClass)
@@ -501,6 +585,12 @@ internal static class SanctuaryMcpLoopbackService
             intakeRoot,
             operatorName,
             defaultCmeId,
+            defaultThreadBindingId,
+            defaultSoulFrameId,
+            defaultAgentiCoreId,
+            defaultIdentityTemplateId,
+            defaultSubjectCmeId,
+            serviceIdentityId,
             domain,
             role,
             jobClass);
@@ -527,6 +617,12 @@ internal static class SanctuaryMcpLoopbackService
         string intakeRoot,
         string operatorName,
         string defaultCmeId,
+        string defaultThreadBindingId,
+        string defaultSoulFrameId,
+        string defaultAgentiCoreId,
+        string defaultIdentityTemplateId,
+        string defaultSubjectCmeId,
+        string serviceIdentityId,
         string domain,
         string role,
         string jobClass)
@@ -545,22 +641,40 @@ internal static class SanctuaryMcpLoopbackService
             return;
         }
 
-        var benchRunCount = BuildBenchRunCount(command, invocation.BenchRunCount);
-        var receipt = service.Run(new SanctuaryRequest
+        var seating = BuildSeatedInvocation(
+            invocation,
+            command,
+            BuildBenchRunCount(command, invocation.BenchRunCount),
+            "gpt-alpha",
+            installRoot,
+            intakeRoot,
+            operatorName,
+            defaultCmeId,
+            defaultThreadBindingId,
+            defaultSoulFrameId,
+            defaultAgentiCoreId,
+            defaultIdentityTemplateId,
+            defaultSubjectCmeId,
+            serviceIdentityId,
+            domain,
+            role,
+            jobClass);
+        if (!seating.Allowed)
         {
-            Command = command,
-            InstallRootPath = installRoot,
-            IntakeRootPath = intakeRoot,
-            OperatorName = operatorName,
-            CmeId = string.IsNullOrWhiteSpace(invocation.CmeId) ? defaultCmeId : invocation.CmeId,
-            Domain = domain,
-            Role = role,
-            JobClass = jobClass,
-            SessionId = string.IsNullOrWhiteSpace(invocation.SessionId)
-                ? $"gpt-alpha-{command}-{DateTimeOffset.UtcNow:yyyyMMdd-HHmmss-fffffff}"
-                : invocation.SessionId,
-            BenchRunCount = benchRunCount
-        });
+            await WriteResponseAsync(stream, seating.HttpStatus, seating.Payload!);
+            return;
+        }
+
+        SanctuaryReceipt receipt;
+        try
+        {
+            receipt = service.Run(seating.Request!);
+        }
+        catch (ArgumentException exception)
+        {
+            await WriteResponseAsync(stream, 403, BuildCmeIdentityDeniedPayload(seating.CmeId, exception.Message));
+            return;
+        }
 
         await WriteResponseAsync(stream, 200, BuildSanitizedToolResult(invocation.Tool, receipt));
     }
@@ -572,6 +686,12 @@ internal static class SanctuaryMcpLoopbackService
         string intakeRoot,
         string operatorName,
         string defaultCmeId,
+        string defaultThreadBindingId,
+        string defaultSoulFrameId,
+        string defaultAgentiCoreId,
+        string defaultIdentityTemplateId,
+        string defaultSubjectCmeId,
+        string serviceIdentityId,
         string domain,
         string role,
         string jobClass)
@@ -604,7 +724,7 @@ internal static class SanctuaryMcpLoopbackService
                         name = "Sanctuary Tool",
                         version = "0.1.0-alpha"
                     },
-                    instructions = "Cold read/fetch candidate-only Project Sanctuary alpha. Unknown tools fail closed. No provider calls, model binding, external actions, GEL admission, SelfGEL mutation, CME.Actual, or Sanctuary.Actual."
+                    instructions = "Cold read/fetch candidate-only Project Sanctuary alpha. Every tool call must provide a caller CME identity such as Codex.CME.ID or Oria.CME.ID. Unknown tools fail closed. No provider calls, model binding, external actions, GEL admission, SelfGEL mutation, CME.Actual, or Sanctuary.Actual."
                 }
             };
         }
@@ -653,22 +773,7 @@ internal static class SanctuaryMcpLoopbackService
                 id,
                 result = new
                 {
-                    tools = GptUseCaseTestingCatalog.SafeToolSurfaces.Select(tool => new
-                    {
-                        name = tool.ToolName,
-                        description = tool.Description,
-                        inputSchema = new
-                        {
-                            type = "object",
-                            properties = new
-                            {
-                                sessionId = new { type = "string" },
-                                cmeId = new { type = "string" },
-                                benchRunCount = new { type = "integer", minimum = 1, maximum = 240 }
-                            },
-                            additionalProperties = false
-                        }
-                    })
+                    tools = GptUseCaseTestingCatalog.SafeToolSurfaces.Select(BuildMcpToolDescriptor)
                 }
             };
         }
@@ -713,21 +818,58 @@ internal static class SanctuaryMcpLoopbackService
                 };
             }
 
-            var receipt = service.Run(new SanctuaryRequest
+            var seating = BuildSeatedInvocation(
+                invocation,
+                command,
+                BuildBenchRunCount(command, invocation.BenchRunCount),
+                "mcp-alpha",
+                installRoot,
+                intakeRoot,
+                operatorName,
+                defaultCmeId,
+                defaultThreadBindingId,
+                defaultSoulFrameId,
+                defaultAgentiCoreId,
+                defaultIdentityTemplateId,
+                defaultSubjectCmeId,
+                serviceIdentityId,
+                domain,
+                role,
+                jobClass);
+            if (!seating.Allowed)
             {
-                Command = command,
-                InstallRootPath = installRoot,
-                IntakeRootPath = intakeRoot,
-                OperatorName = operatorName,
-                CmeId = string.IsNullOrWhiteSpace(invocation.CmeId) ? defaultCmeId : invocation.CmeId,
-                Domain = domain,
-                Role = role,
-                JobClass = jobClass,
-                SessionId = string.IsNullOrWhiteSpace(invocation.SessionId)
-                    ? $"mcp-alpha-{command}-{DateTimeOffset.UtcNow:yyyyMMdd-HHmmss-fffffff}"
-                    : invocation.SessionId,
-                BenchRunCount = BuildBenchRunCount(command, invocation.BenchRunCount)
-            });
+                return new
+                {
+                    jsonrpc = "2.0",
+                    id,
+                    error = new
+                    {
+                        code = -32602,
+                        message = seating.Error,
+                        data = seating.Payload
+                    }
+                };
+            }
+
+            SanctuaryReceipt receipt;
+            try
+            {
+                receipt = service.Run(seating.Request!);
+            }
+            catch (ArgumentException exception)
+            {
+                return new
+                {
+                    jsonrpc = "2.0",
+                    id,
+                    error = new
+                    {
+                        code = -32602,
+                        message = "cme-identity-denied",
+                        data = BuildCmeIdentityDeniedPayload(seating.CmeId, exception.Message)
+                    }
+                };
+            }
             var result = BuildSanitizedToolResult(invocation.Tool, receipt);
             return new
             {
@@ -743,7 +885,8 @@ internal static class SanctuaryMcpLoopbackService
                             text = JsonSerializer.Serialize(result, JsonOptions)
                         }
                     },
-                    structuredContent = result
+                    structuredContent = result,
+                    _meta = BuildMcpToolResultMeta(invocation.Tool, receipt)
                 }
             };
         }
@@ -761,7 +904,133 @@ internal static class SanctuaryMcpLoopbackService
         };
     }
 
-    private static object BuildHealth(SanctuaryReceipt startupReceipt, McpServiceBinding binding) => new
+    private static object BuildMcpToolDescriptor(GptUseCaseToolSurface tool) => new
+    {
+        name = tool.ToolName,
+        title = BuildToolTitle(tool.ToolName),
+        description = tool.Description,
+        inputSchema = BuildMcpToolInputSchema(),
+        outputSchema = BuildMcpToolOutputSchema(),
+        annotations = new
+        {
+            readOnlyHint = tool.ReadOrFetchOnly,
+            destructiveHint = false,
+            openWorldHint = false,
+            idempotentHint = !tool.WritesCandidateResidue
+        },
+        _meta = new Dictionary<string, object?>
+        {
+            ["openai/toolInvocation/invoking"] = "Writing Sanctuary receipt...",
+            ["openai/toolInvocation/invoked"] = "Sanctuary receipt ready.",
+            ["sanctuary/accessKind"] = tool.AccessKind,
+            ["sanctuary/writesCandidateResidue"] = tool.WritesCandidateResidue,
+            ["sanctuary/readFetchOnly"] = tool.ReadOrFetchOnly,
+            ["sanctuary/noProviderCalls"] = !tool.CallsProvider,
+            ["sanctuary/noModelBinding"] = !tool.BindsModel,
+            ["sanctuary/noExternalAction"] = !tool.AuthorizesExternalAction,
+            ["sanctuary/noGelAdmission"] = !tool.AdmitsGel,
+            ["sanctuary/noSelfGelMutation"] = !tool.MutatesSelfGel,
+            ["sanctuary/noActualActivation"] = !tool.ActivatesActual
+        }
+    };
+
+    private static string BuildToolTitle(string toolName)
+    {
+        var name = toolName.StartsWith("sanctuary.", StringComparison.OrdinalIgnoreCase)
+            ? toolName["sanctuary.".Length..]
+            : toolName;
+        return string.Join(
+            " ",
+            name.Split('_', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(part => char.ToUpperInvariant(part[0]) + part[1..]));
+    }
+
+    private static object BuildMcpToolInputSchema() => new
+    {
+        type = "object",
+        properties = new
+        {
+            sessionId = new { type = "string" },
+            cmeId = new { type = "string" },
+            threadBindingId = new { type = "string" },
+            parentCmeId = new { type = "string" },
+            subjectCmeId = new { type = "string" },
+            domain = new { type = "string" },
+            role = new { type = "string" },
+            jobClass = new { type = "string" },
+            swarmId = new { type = "string" },
+            subAgentId = new { type = "string" },
+            identityTemplateId = new { type = "string" },
+            soulFrameId = new { type = "string" },
+            agentiCoreId = new { type = "string" },
+            actualApprovalLeasePath = new { type = "string" },
+            benchRunCount = new { type = "integer", minimum = 1, maximum = 240 }
+        },
+        required = new[] { "cmeId" },
+        additionalProperties = false
+    };
+
+    private static object BuildMcpToolOutputSchema() => new
+    {
+        type = "object",
+        properties = new
+        {
+            schema = new { type = "string" },
+            tool = new { type = "string" },
+            Command = new { type = "string" },
+            OutcomeCode = new { type = "string" },
+            Disposition = new { type = "string" },
+            ReceiptHandle = new { type = "string" },
+            SessionId = new { type = "string" },
+            TimestampUtc = new { type = "string" },
+            CmeId = new { type = "string" },
+            Domain = new { type = "string" },
+            Role = new { type = "string" },
+            allGatesClosed = new { type = "boolean" },
+            gates = new { type = "object" },
+            evidenceDigest = new { type = "string" },
+            selectedEvidence = new { type = "object" },
+            localReceiptPathReturned = new { type = "boolean" },
+            receiptBodyReturned = new { type = "boolean" },
+            secretPayloadReturned = new { type = "boolean" }
+        },
+        required = new[]
+        {
+            "schema",
+            "tool",
+            "Command",
+            "OutcomeCode",
+            "Disposition",
+            "ReceiptHandle",
+            "CmeId",
+            "allGatesClosed",
+            "gates",
+            "localReceiptPathReturned",
+            "receiptBodyReturned",
+            "secretPayloadReturned"
+        },
+        additionalProperties = true
+    };
+
+    private static object BuildMcpToolResultMeta(string tool, SanctuaryReceipt receipt) => new
+    {
+        sanctuaryTool = tool,
+        receiptHandle = receipt.ReceiptHandle,
+        outcomeCode = receipt.OutcomeCode,
+        allGatesClosed = receipt.Gates.AllClosed,
+        localReceiptPathReturned = false,
+        receiptBodyReturned = false,
+        secretPayloadReturned = false,
+        widgetSafe = true
+    };
+
+    private static object BuildHealth(
+        SanctuaryReceipt startupReceipt,
+        McpServiceBinding binding,
+        string serviceIdentityId,
+        string defaultIdentityTemplateId,
+        string defaultCallerCmeId,
+        string defaultSubjectCmeId) => new
     {
         schema = "project-sanctuary.gpt-alpha.health.v1",
         service = binding.PublicBindApproved
@@ -769,6 +1038,14 @@ internal static class SanctuaryMcpLoopbackService
             : "Sanctuary.exe MCP alpha loopback service",
         status = "running",
         owner = "Sanctuary.exe",
+        serviceIdentityId,
+        serviceIdentityIsCme = false,
+        defaultIdentityTemplateId,
+        defaultCallerCmeIdIsParticipant = !string.IsNullOrWhiteSpace(defaultCallerCmeId),
+        defaultCallerCmeId,
+        defaultSubjectCmeId,
+        participantCmeIdRequiredPerToolCall = true,
+        participantIdentityPattern = "{Name}.CME.ID",
         posture = "cold-read-fetch-candidate-only",
         transport = binding.TransportLabel,
         host = binding.Host,
@@ -792,6 +1069,9 @@ internal static class SanctuaryMcpLoopbackService
     {
         schema = "project-sanctuary.gpt-alpha.tools.v1",
         serviceOwner = "Sanctuary.exe",
+        serviceIdentityId = "Sanctuary.Actual.ID",
+        serviceIdentityIsCme = false,
+        participantCmeIdRequiredPerToolCall = true,
         transport = binding.TransportLabel,
         remoteChatGptUseRequiresHttpsReachableMcp = true,
         thirdPartyTunnelRequired = false,
@@ -804,12 +1084,25 @@ internal static class SanctuaryMcpLoopbackService
         modelBindingToolsExposed = false
     };
 
-    private static object BuildLabWellKnown(SanctuaryReceipt startupReceipt, McpServiceBinding binding) => new
+    private static object BuildLabWellKnown(
+        SanctuaryReceipt startupReceipt,
+        McpServiceBinding binding,
+        string serviceIdentityId,
+        string defaultIdentityTemplateId,
+        string defaultCallerCmeId,
+        string defaultSubjectCmeId) => new
     {
         schema = "project-sanctuary.trivium-forum.lab-edge.v1",
         name = "Sanctuary Lab Edge",
         owner = "Lucid Technologies Department of Agentic Research and Development",
         serviceOwner = "Sanctuary.exe",
+        serviceIdentityId,
+        serviceIdentityIsCme = false,
+        defaultIdentityTemplateId,
+        defaultCallerCmeIdIsParticipant = !string.IsNullOrWhiteSpace(defaultCallerCmeId),
+        defaultCallerCmeId,
+        defaultSubjectCmeId,
+        participantCmeIdRequiredPerToolCall = true,
         transport = binding.TransportLabel,
         publicBaseUrl = binding.PublicBaseUrl,
         mcpServerUrl = binding.McpServerUrl,
@@ -834,6 +1127,10 @@ internal static class SanctuaryMcpLoopbackService
         mcpServerUrl = binding.McpServerUrl,
         authentication = "No Auth alpha; cold read/fetch tools only",
         owner = "Lucid Technologies Department of Agentic Research and Development",
+        serviceIdentityId = "Sanctuary.Actual.ID",
+        serviceIdentityIsCme = false,
+        participantIdentityPattern = "{Name}.CME.ID",
+        participantCmeIdRequiredPerToolCall = true,
         payloadHostedBySanctuary = true,
         csp = new
         {
@@ -857,6 +1154,9 @@ internal static class SanctuaryMcpLoopbackService
     {
         schema = "project-sanctuary.edge-root.v1",
         service = "Sanctuary.exe",
+        serviceIdentityId = "Sanctuary.Actual.ID",
+        serviceIdentityIsCme = false,
+        participantCmeIdRequiredPerToolCall = true,
         posture = "cold-read-fetch-candidate-only",
         mcpServerUrl = binding.McpServerUrl,
         wellKnownUrl = binding.Url("/.well-known/sanctuary-lab.json"),
@@ -899,32 +1199,340 @@ internal static class SanctuaryMcpLoopbackService
     private static IReadOnlyDictionary<string, object?> SelectSafeEvidence(IReadOnlyDictionary<string, object?> evidence)
     {
         var selected = new Dictionary<string, object?>(StringComparer.Ordinal);
+
+        foreach (var (key, value) in evidence.Where(pair => IsPrioritySafeEvidenceKey(pair.Key)))
+        {
+            TryAddSafeEvidence(selected, key, value);
+        }
+
         foreach (var (key, value) in evidence)
         {
-            if (selected.Count >= 48 ||
-                key.Contains("path", StringComparison.OrdinalIgnoreCase) ||
-                key.Contains("directory", StringComparison.OrdinalIgnoreCase) ||
-                key.Contains("root", StringComparison.OrdinalIgnoreCase) ||
-                key.Contains("payload", StringComparison.OrdinalIgnoreCase) ||
-                value is string stringValue && LooksLikePathOrSecret(stringValue))
-            {
-                continue;
-            }
-
-            if (value is null or string or bool or int or long or double or decimal)
-            {
-                selected[key] = value;
-            }
+            TryAddSafeEvidence(selected, key, value);
         }
 
         return selected;
     }
+
+    private static bool TryAddSafeEvidence(Dictionary<string, object?> selected, string key, object? value)
+    {
+        if (selected.Count >= 64 ||
+            selected.ContainsKey(key) ||
+            key.Contains("path", StringComparison.OrdinalIgnoreCase) ||
+            key.Contains("directory", StringComparison.OrdinalIgnoreCase) ||
+            key.Contains("root", StringComparison.OrdinalIgnoreCase) ||
+            key.Contains("payload", StringComparison.OrdinalIgnoreCase) ||
+            value is string stringValue && LooksLikePathOrSecret(stringValue))
+        {
+            return false;
+        }
+
+        if (value is null or string or bool or int or long or double or decimal)
+        {
+            selected[key] = value;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsPrioritySafeEvidenceKey(string key) =>
+        key.StartsWith("agentiCoreDuplex", StringComparison.Ordinal) ||
+        key.StartsWith("duplex", StringComparison.Ordinal) ||
+        key.StartsWith("appsSdk", StringComparison.Ordinal) ||
+        key.StartsWith("codexPlugin", StringComparison.Ordinal) ||
+        key.StartsWith("sharedMcp", StringComparison.Ordinal) ||
+        key.StartsWith("chatGpt", StringComparison.Ordinal) ||
+        key.StartsWith("phoneSeed", StringComparison.Ordinal) ||
+        key.StartsWith("returnTelemetry", StringComparison.Ordinal) ||
+        key.StartsWith("sliLisp", StringComparison.Ordinal) ||
+        key.StartsWith("actualApprovalLeaseValidation", StringComparison.Ordinal) ||
+        key.StartsWith("simultaneousUnmediated", StringComparison.Ordinal);
 
     private static bool LooksLikePathOrSecret(string value) =>
         value.Contains(@":\", StringComparison.Ordinal) ||
         value.Contains("\\Users\\", StringComparison.OrdinalIgnoreCase) ||
         value.Contains("/Users/", StringComparison.OrdinalIgnoreCase) ||
         value.Contains("-----BEGIN", StringComparison.OrdinalIgnoreCase);
+
+    private static SeatedInvocation BuildSeatedInvocation(
+        GptToolInvocationRequest invocation,
+        string command,
+        int benchRunCount,
+        string sessionPrefix,
+        string installRoot,
+        string intakeRoot,
+        string operatorName,
+        string defaultCmeId,
+        string defaultThreadBindingId,
+        string defaultSoulFrameId,
+        string defaultAgentiCoreId,
+        string defaultIdentityTemplateId,
+        string defaultSubjectCmeId,
+        string serviceIdentityId,
+        string defaultDomain,
+        string defaultRole,
+        string defaultJobClass)
+    {
+        var cmeId = ResolveEffectiveCallerCmeId(invocation.CmeId, defaultCmeId);
+        if (string.IsNullOrWhiteSpace(cmeId))
+        {
+            return SeatedInvocation.Denied("", "cme-identity-required", 400, BuildCmeIdentityRequiredPayload());
+        }
+
+        var residentDefaultApplies = string.Equals(cmeId, defaultCmeId, StringComparison.Ordinal);
+        var known = ResolveKnownCmeSeating(installRoot, cmeId);
+        var context = ResolveInstallContextSeating(installRoot, cmeId);
+        var threadBindingId = FirstNonEmpty(
+            invocation.ThreadBindingId,
+            known.ThreadBindingId,
+            residentDefaultApplies ? defaultThreadBindingId : "");
+        if (string.IsNullOrWhiteSpace(threadBindingId))
+        {
+            return SeatedInvocation.Denied(
+                cmeId,
+                "cme-thread-binding-required",
+                400,
+                BuildCmeThreadBindingRequiredPayload(cmeId));
+        }
+
+        var domain = FirstNonEmpty(
+            invocation.Domain,
+            context.Domain,
+            residentDefaultApplies ? defaultDomain : "");
+        var role = FirstNonEmpty(
+            invocation.Role,
+            context.Role,
+            known.DomainRole,
+            residentDefaultApplies ? defaultRole : "");
+        var jobClass = FirstNonEmpty(
+            invocation.JobClass,
+            context.JobClass,
+            residentDefaultApplies ? defaultJobClass : "");
+        if (string.IsNullOrWhiteSpace(domain) ||
+            string.IsNullOrWhiteSpace(role) ||
+            string.IsNullOrWhiteSpace(jobClass))
+        {
+            return SeatedInvocation.Denied(
+                cmeId,
+                "governance-seating-incomplete",
+                409,
+                BuildGovernanceNotReadyPayload(
+                    cmeId,
+                    "governance-seating-incomplete",
+                    "CME route was identified, but Steward/cGoA could not resolve a complete domain, role, and job scope before tool execution."));
+        }
+
+        var soulFrameId = FirstNonEmpty(
+            invocation.SoulFrameId,
+            known.SoulFrameId,
+            residentDefaultApplies ? defaultSoulFrameId : "",
+            $"{cmeId}.SoulFrame");
+        var agentiCoreId = FirstNonEmpty(
+            invocation.AgentiCoreId,
+            known.AgentiCoreId,
+            residentDefaultApplies ? defaultAgentiCoreId : "",
+            $"{cmeId}.AgentiCore");
+        var request = new SanctuaryRequest
+        {
+            Command = command,
+            InstallRootPath = installRoot,
+            IntakeRootPath = intakeRoot,
+            OperatorName = operatorName,
+            CmeId = cmeId,
+            CmeIdentitySelected = true,
+            ServiceIdentityId = serviceIdentityId,
+            CallerCmeId = cmeId,
+            ThreadBindingId = threadBindingId,
+            IdentityTemplateId = FirstNonEmpty(invocation.IdentityTemplateId, context.IdentityTemplateId, defaultIdentityTemplateId),
+            SoulFrameId = soulFrameId,
+            AgentiCoreId = agentiCoreId,
+            ParentCmeId = invocation.ParentCmeId,
+            SubjectCmeId = FirstNonEmpty(invocation.SubjectCmeId, context.SubjectCmeId, residentDefaultApplies ? defaultSubjectCmeId : ""),
+            SwarmId = invocation.SwarmId,
+            SubAgentId = invocation.SubAgentId,
+            ActualApprovalLeasePath = invocation.ActualApprovalLeasePath,
+            Domain = domain,
+            Role = role,
+            JobClass = jobClass,
+            SessionId = string.IsNullOrWhiteSpace(invocation.SessionId)
+                ? $"{sessionPrefix}-{command}-{DateTimeOffset.UtcNow:yyyyMMdd-HHmmss-fffffff}"
+                : invocation.SessionId,
+            BenchRunCount = benchRunCount
+        };
+
+        return SeatedInvocation.FromRequest(request);
+    }
+
+    private static KnownCmeSeating ResolveKnownCmeSeating(string installRoot, string cmeId)
+    {
+        var binding = ReadCmeBindingSeating(installRoot, cmeId);
+        var candidate = ReadIdentityCandidateSeating(installRoot, cmeId);
+        return new KnownCmeSeating(
+            FirstNonEmpty(binding.ThreadBindingId, candidate.ThreadBindingId),
+            FirstNonEmpty(binding.DomainRole, candidate.DomainRole),
+            FirstNonEmpty(binding.SoulFrameId, candidate.SoulFrameId),
+            FirstNonEmpty(binding.AgentiCoreId, candidate.AgentiCoreId),
+            FirstNonEmpty(binding.Source, candidate.Source));
+    }
+
+    private static KnownCmeSeating ReadCmeBindingSeating(string installRoot, string cmeId)
+    {
+        var bindingPath = Path.Combine(installRoot, "mos", "cme-bindings", $"{SafeSegment(cmeId)}.json");
+        if (!File.Exists(bindingPath))
+        {
+            return KnownCmeSeating.Empty;
+        }
+
+        using var document = JsonDocument.Parse(File.ReadAllText(bindingPath, Encoding.UTF8));
+        var root = document.RootElement;
+        return new KnownCmeSeating(
+            ReadString(root, "threadBindingId") ?? "",
+            ReadString(root, "domainRole") ?? "",
+            ReadString(root, "soulFrameId") ?? "",
+            ReadString(root, "agentiCoreId") ?? "",
+            "mos-cme-binding");
+    }
+
+    private static KnownCmeSeating ReadIdentityCandidateSeating(string installRoot, string cmeId)
+    {
+        var candidatePath = Path.Combine(installRoot, "mos", "identity-candidates.json");
+        if (!File.Exists(candidatePath))
+        {
+            return KnownCmeSeating.Empty;
+        }
+
+        using var document = JsonDocument.Parse(File.ReadAllText(candidatePath, Encoding.UTF8));
+        if (!document.RootElement.TryGetProperty("candidates", out var candidates) ||
+            candidates.ValueKind != JsonValueKind.Array)
+        {
+            return KnownCmeSeating.Empty;
+        }
+
+        foreach (var candidate in candidates.EnumerateArray())
+        {
+            if (!string.Equals(ReadString(candidate, "cmeId"), cmeId, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            return new KnownCmeSeating(
+                ReadString(candidate, "lane") ?? "",
+                ReadString(candidate, "domainRole") ?? "",
+                ReadString(candidate, "soulFrameId") ?? "",
+                ReadString(candidate, "agentiCoreId") ?? "",
+                "mos-identity-candidates");
+        }
+
+        return KnownCmeSeating.Empty;
+    }
+
+    private static InstallContextSeating ResolveInstallContextSeating(string installRoot, string cmeId)
+    {
+        var contextPath = Path.Combine(installRoot, "mos", "lab-cme-context.json");
+        if (!File.Exists(contextPath))
+        {
+            return InstallContextSeating.Empty;
+        }
+
+        using var document = JsonDocument.Parse(File.ReadAllText(contextPath, Encoding.UTF8));
+        var root = document.RootElement;
+        var identityTemplateId = ReadString(root, "identityTemplateId") ?? "";
+        var labActorCmeId = ReadString(root, "labActorCmeId") ?? "";
+        var telemetrySubjectCmeId = ReadString(root, "telemetrySubjectCmeId") ?? "";
+        var labDomain = ResolveContextUniverseDomain(root, "lab");
+
+        if (root.TryGetProperty("researchLanes", out var lanes) &&
+            lanes.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var lane in lanes.EnumerateArray())
+            {
+                if (!string.Equals(ReadString(lane, "cmeId"), cmeId, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                return new InstallContextSeating(
+                    ReadString(lane, "domain") ?? "",
+                    ReadString(lane, "role") ?? "",
+                    ReadString(lane, "jobClass") ?? "",
+                    "",
+                    identityTemplateId,
+                    ReadString(lane, "contextUniverseId") ?? "",
+                    "install-lab-research-lane");
+            }
+        }
+
+        if (string.Equals(cmeId, labActorCmeId, StringComparison.Ordinal))
+        {
+            return new InstallContextSeating(
+                FirstNonEmpty(labDomain, "Project-Sanctuary.Lab"),
+                "LabFacingCME",
+                "GovernedToolExecution",
+                telemetrySubjectCmeId,
+                identityTemplateId,
+                "lab",
+                "install-lab-actor");
+        }
+
+        if (string.Equals(cmeId, telemetrySubjectCmeId, StringComparison.Ordinal))
+        {
+            return new InstallContextSeating(
+                FirstNonEmpty(labDomain, "Project-Sanctuary.Lab"),
+                "TelemetrySubject",
+                "GovernedTelemetryReturn",
+                labActorCmeId,
+                identityTemplateId,
+                "lab",
+                "install-telemetry-subject");
+        }
+
+        return InstallContextSeating.Empty;
+    }
+
+    private static string ResolveContextUniverseDomain(JsonElement root, string contextUniverseId)
+    {
+        if (!root.TryGetProperty("contextUniverses", out var contexts) ||
+            contexts.ValueKind != JsonValueKind.Array)
+        {
+            return "";
+        }
+
+        foreach (var context in contexts.EnumerateArray())
+        {
+            if (string.Equals(ReadString(context, "contextUniverseId"), contextUniverseId, StringComparison.Ordinal))
+            {
+                return ReadString(context, "domain") ?? "";
+            }
+        }
+
+        return "";
+    }
+
+    private static string FirstNonEmpty(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+        }
+
+        return "";
+    }
+
+    private static string SafeSegment(string value)
+    {
+        var builder = new StringBuilder(value.Length);
+        foreach (var character in value)
+        {
+            builder.Append(char.IsLetterOrDigit(character) || character is '.' or '_' or '-'
+                ? character
+                : '_');
+        }
+
+        return builder.Length == 0 ? "unnamed" : builder.ToString();
+    }
 
     private static GptToolInvocationRequest ParseInvocation(string body)
     {
@@ -940,9 +1548,109 @@ internal static class SanctuaryMcpLoopbackService
             Tool = ReadString(root, "tool") ?? ReadString(root, "name") ?? "",
             SessionId = ReadString(root, "sessionId") ?? ReadString(root, "session_id") ?? "",
             CmeId = ReadString(root, "cmeId") ?? ReadString(root, "cme_id") ?? "",
+            ThreadBindingId = ReadString(root, "threadBindingId") ?? ReadString(root, "thread_binding_id") ?? "",
+            ParentCmeId = ReadString(root, "parentCmeId") ?? ReadString(root, "parent_cme_id") ?? "",
+            SubjectCmeId = ReadString(root, "subjectCmeId") ?? ReadString(root, "subject_cme_id") ?? "",
+            Domain = ReadString(root, "domain") ?? "",
+            Role = ReadString(root, "role") ?? "",
+            JobClass = ReadString(root, "jobClass") ?? ReadString(root, "job_class") ?? "",
+            SwarmId = ReadString(root, "swarmId") ?? ReadString(root, "swarm_id") ?? "",
+            SubAgentId = ReadString(root, "subAgentId") ?? ReadString(root, "sub_agent_id") ?? "",
+            IdentityTemplateId = ReadString(root, "identityTemplateId") ?? ReadString(root, "identity_template_id") ?? "",
+            SoulFrameId = ReadString(root, "soulFrameId") ?? ReadString(root, "soulframe_id") ?? "",
+            AgentiCoreId = ReadString(root, "agentiCoreId") ?? ReadString(root, "agenticore_id") ?? "",
+            ActualApprovalLeasePath = ReadString(root, "actualApprovalLeasePath") ?? ReadString(root, "actual_approval_lease_path") ?? "",
             BenchRunCount = ReadNullableInt(root, "benchRunCount") ?? ReadNullableInt(root, "bench_run_count")
         };
     }
+
+    private static string ResolveEffectiveCallerCmeId(string invocationCmeId, string defaultCmeId) =>
+        string.IsNullOrWhiteSpace(invocationCmeId) ? defaultCmeId : invocationCmeId;
+
+    private static string ResolveEffectiveThreadBindingId(string invocationThreadBindingId, string defaultThreadBindingId) =>
+        string.IsNullOrWhiteSpace(invocationThreadBindingId) ? defaultThreadBindingId : invocationThreadBindingId;
+
+    private static string ResolveEffectiveSubjectCmeId(string invocationSubjectCmeId, string defaultSubjectCmeId) =>
+        string.IsNullOrWhiteSpace(invocationSubjectCmeId) ? defaultSubjectCmeId : invocationSubjectCmeId;
+
+    private static string ResolveEffectiveBodyId(string invocationBodyId, string defaultBodyId) =>
+        string.IsNullOrWhiteSpace(invocationBodyId) ? defaultBodyId : invocationBodyId;
+
+    private static object BuildCmeIdentityRequiredPayload() => new
+    {
+        schema = "project-sanctuary.cme-identity-required.v1",
+        error = "cme-identity-required",
+        message = "Select or provide a caller CME identity before Sanctuary writes receipts, GEL, OE, SelfGEL, or MoS residue.",
+        acceptedPattern = "{Name}.CME.ID",
+        serviceIdentityId = "Sanctuary.Actual.ID",
+        serviceIdentityIsCme = false,
+        silentDefaultAllowed = false,
+        failClosed = true,
+        providerCalled = false,
+        modelBound = false,
+        externalActionAuthorized = false,
+        gelAdmitted = false,
+        selfGelMutated = false
+    };
+
+    private static object BuildGovernanceNotReadyPayload(string cmeId, string error, string message) => new
+    {
+        schema = "project-sanctuary.governance-seating-not-ready.v1",
+        error,
+        message,
+        cmeId,
+        routeOnly = true,
+        toolExecuted = false,
+        receiptWritten = false,
+        gelWritten = false,
+        oeWritten = false,
+        selfGelWritten = false,
+        coeWritten = false,
+        cSelfGelWritten = false,
+        failClosed = true,
+        providerCalled = false,
+        modelBound = false,
+        externalActionAuthorized = false,
+        gelAdmitted = false,
+        selfGelMutated = false,
+        cmeActualActivated = false,
+        sanctuaryActualActivated = false
+    };
+
+    private static object BuildCmeThreadBindingRequiredPayload(string cmeId) => new
+    {
+        schema = "project-sanctuary.cme-thread-binding-required.v1",
+        error = "cme-thread-binding-required",
+        message = "Provide the native CME thread binding id before Sanctuary writes receipts, GEL, OE, SelfGEL, cOE, cSelfGEL, or MoS residue.",
+        cmeId,
+        acceptedExamples = new[] { "codex-lab-thread", "oria-test-cme-thread" },
+        failClosed = true,
+        providerCalled = false,
+        modelBound = false,
+        externalActionAuthorized = false,
+        gelAdmitted = false,
+        selfGelMutated = false
+    };
+
+    private static object BuildCmeIdentityDeniedPayload(string cmeId, string reason) => new
+    {
+        schema = "project-sanctuary.cme-identity-denied.v1",
+        error = "cme-identity-denied",
+        cmeId,
+        reason,
+        receiptWritten = false,
+        gelWritten = false,
+        oeWritten = false,
+        selfGelWritten = false,
+        coeWritten = false,
+        cSelfGelWritten = false,
+        failClosed = true,
+        providerCalled = false,
+        modelBound = false,
+        externalActionAuthorized = false,
+        gelAdmitted = false,
+        selfGelMutated = false
+    };
 
     private static int BuildBenchRunCount(string command, int? requested)
     {
@@ -1136,7 +1844,57 @@ internal static class SanctuaryMcpLoopbackService
         public string Tool { get; init; } = "";
         public string SessionId { get; init; } = "";
         public string CmeId { get; init; } = "";
+        public string ThreadBindingId { get; init; } = "";
+        public string ParentCmeId { get; init; } = "";
+        public string SubjectCmeId { get; init; } = "";
+        public string Domain { get; init; } = "";
+        public string Role { get; init; } = "";
+        public string JobClass { get; init; } = "";
+        public string SwarmId { get; init; } = "";
+        public string SubAgentId { get; init; } = "";
+        public string IdentityTemplateId { get; init; } = "";
+        public string SoulFrameId { get; init; } = "";
+        public string AgentiCoreId { get; init; } = "";
+        public string ActualApprovalLeasePath { get; init; } = "";
         public int? BenchRunCount { get; init; }
+    }
+
+    private sealed record SeatedInvocation(
+        SanctuaryRequest? Request,
+        string CmeId,
+        string Error,
+        object? Payload,
+        int HttpStatus)
+    {
+        public bool Allowed => Request is not null;
+
+        public static SeatedInvocation FromRequest(SanctuaryRequest request) =>
+            new(request, request.CmeId, "", null, 200);
+
+        public static SeatedInvocation Denied(string cmeId, string error, int httpStatus, object payload) =>
+            new(null, cmeId, error, payload, httpStatus);
+    }
+
+    private sealed record KnownCmeSeating(
+        string ThreadBindingId,
+        string DomainRole,
+        string SoulFrameId,
+        string AgentiCoreId,
+        string Source)
+    {
+        public static KnownCmeSeating Empty { get; } = new("", "", "", "", "");
+    }
+
+    private sealed record InstallContextSeating(
+        string Domain,
+        string Role,
+        string JobClass,
+        string SubjectCmeId,
+        string IdentityTemplateId,
+        string ContextUniverseId,
+        string Source)
+    {
+        public static InstallContextSeating Empty { get; } = new("", "", "", "", "", "", "");
     }
 
     private sealed class SseClientSession(string sessionId, Stream stream)

@@ -1,9 +1,26 @@
 ---
 name: sanctuary-cme
-description: Use when operating Project Sanctuary's developer-preview core executable lane through Codex for plugin posture, status, tool-idle, CME formation, secret intake windows, lab query state, typed secure ping, MoS lineage registers, SLI access-gate registers, Trivium Forum connector posture, external LLM standing probes, cradle boundary organ registers, service heartbeat, bounded refinement tickets, job-slice guard receipts, lease-check receipts, receipt export, install floor checks, issue resolver receipts, domain register receipts, core target receipts, swarm refinement receipts, Lisp Control Matrix receipts, Lisp Matrix Control seat receipts, resonance chamber probes, universal form registers, domain morphism registers, capability composition probes, career spline probes, SelfGEL fibre registers, work posture preload probes, cognitive bench runs, math learning bench runs, Industrial CME live-install posture receipts, meaning bridge receipts, Discernment Lineage Contract receipts, proof-of-discernment bench runs, GPT use-case testing body receipts, pre-personified Industrial rendering receipts, typed admission decants, admission cleave/append models, reviewed GEL/SelfGEL/CME/Sanctuary performance commands, spline watch organ-loop telemetry, and closed-gate verification.
+description: Use only when operating Project Sanctuary's developer-preview local core executable lane through Codex for Sanctuary.exe-backed posture, status, receipts, benches, admission gates, service state, spline telemetry, and other workstation-runtime evidence. For repository-only Sanctuary work that does not require a local installation, use the sibling sanctuary-git skill instead.
 ---
 
 # Sanctuary CME
+
+This is the local executable and receipt-bearing Sanctuary lane.
+
+Use `sanctuary-git` instead when the requested work can be completed from the
+Git-hosted Project Sanctuary repository, its branches, pull requests, CI,
+documents, code, or other committed evidence without running `Sanctuary.exe`.
+
+Do not invoke this skill merely because the Sanctuary plugin is active.
+
+```text
+sanctuary-git = Git/repository evidence lane
+sanctuary-cme = live local executable evidence lane
+```
+
+A local Sanctuary installation is required for the commands in this skill.
+If the local runtime is unavailable, report that boundary instead of
+fabricating a receipt or treating repository state as live bench state.
 
 Use this skill when the user asks Codex to run the Sanctuary core lane, inspect
 receipts, prepare CME formation, stage a local secret intake window, prepare a
@@ -109,3 +126,12 @@ Reviewed commands refuse cold unless they include:
 
 After each invocation, report the command, receipt path, outcome, and closed
 gate or scoped-open gate evidence.
+
+## Evidence Boundary
+
+```text
+Git evidence != local runtime evidence
+repository state != live bench state
+local runtime availability != authority
+receipt production != publication authority
+```

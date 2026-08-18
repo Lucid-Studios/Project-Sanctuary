@@ -1,0 +1,22 @@
+name: Sanctuary Plugin Skill Surface
+
+on:
+  pull_request:
+    paths:
+      - "plugins/sanctuary-cme/**"
+      - ".github/workflows/sanctuary-plugin-skill-surface.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "plugins/sanctuary-cme/**"
+      - ".github/workflows/sanctuary-plugin-skill-surface.yml"
+
+jobs:
+  validate-skill-surface:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate plugin skill discovery surface
+        shell: pwsh
+        run: .\plugins\sanctuary-cme\scripts\Test-SanctuarySkillSurface.ps1

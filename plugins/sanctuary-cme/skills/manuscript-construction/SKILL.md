@@ -93,3 +93,31 @@ Expected invariants:
 - unsupported universal language is narrowed or flagged;
 - limitations/non-claims remain explicit;
 - no publication or merge authority is inferred.
+
+## Triple Rewrite Path
+
+When the user requests the three-way rewrite evaluation, load:
+
+```text
+rewrite-paths/README.md
+rewrite-paths/gnomeronacorde/README.md
+rewrite-paths/gnome-speak/README.md
+rewrite-paths/ocbt/README.md
+```
+
+Run the same source through each lane independently:
+
+```text
+source manuscript
+├─ Gnomeronacorde -> continuity-bearing derivative
+├─ Gnome Speak    -> spline/translation derivative
+└─ OCBT           -> Golden Code lift/rewrite derivative
+```
+
+Do not let one lane's output become another lane's input unless a later synthesis experiment explicitly requests that ordering. Preserve the source, claim standing, provenance, loss accounting, and authority boundary across all three products.
+
+The canonical routing body is:
+
+```text
+plugins/sanctuary-cme/skills/manuscript-construction/rewrite-paths/
+```

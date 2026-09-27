@@ -3671,7 +3671,9 @@ public sealed class SanctuaryReceiptService
 
     private static IReadOnlyList<string> SecurityLeakTokens() => new[]
     {
-        @"\SYNTHETIC_PRIVATE_ROOT",
+        @"\Users\",
+        "/home/",
+        "/Users/",
         @"SYNTHETIC_PRIVATE_FOLDER",
         "\"sourceRootPath\"",
         "\"originalFileName\"",

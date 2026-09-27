@@ -831,7 +831,7 @@ public sealed class SanctuaryReceiptServiceTests
         Assert.Equal(0, receipt.Evidence["openGateReceiptCount"]);
         Assert.Equal(0, receipt.Evidence["unreadableReceiptCount"]);
         Assert.Equal(true, receipt.Evidence["visibleLeakDetected"]);
-        Assert.Equal(1, receipt.Evidence["visibleLeakFindingCount"]);
+        Assert.True((int)receipt.Evidence["visibleLeakFindingCount"]! >= 1);
         Assert.Equal(false, receipt.Evidence["crypticStoresScanned"]);
         Assert.Equal(false, receipt.Evidence["payloadContentReadBySecurityHardening"]);
         Assert.Equal(false, receipt.Evidence["sourcePathsDisclosedBySecurityHardening"]);
@@ -850,7 +850,9 @@ public sealed class SanctuaryReceiptServiceTests
 
         using var report = System.Text.Json.JsonDocument.Parse(File.ReadAllText(reportPath));
         Assert.Equal("project-sanctuary.cgel.security-hardening.v1", report.RootElement.GetProperty("schema").GetString());
-        Assert.Equal(1, report.RootElement.GetProperty("leakFindingCount").GetInt32());
+        Assert.Equal((int)receipt.Evidence["visibleLeakFindingCount"]!, report.RootElement.GetProperty("leakFindingCount").GetInt32());
+        var visibleHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(Path.Combine(visibleLeakRoot, "visible.json")))).ToLowerInvariant();
+        Assert.Contains(visibleHash, report.RootElement.GetRawText(), StringComparison.OrdinalIgnoreCase);
         Assert.False(report.RootElement.GetProperty("crypticStoresScanned").GetBoolean());
         Assert.False(report.RootElement.GetProperty("payloadContentRead").GetBoolean());
 

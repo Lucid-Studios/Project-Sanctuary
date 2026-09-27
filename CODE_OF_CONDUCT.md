@@ -51,8 +51,8 @@ If the issue is sensitive or security-related, follow [SECURITY.md](SECURITY.md)
 For sensitive conduct or participation behavior that should not be handled in
 public, contact:
 
-- `contact-33ba439b7d5a@example.invalid`
+- Ask the repository maintainers for a private reporting channel; do not post sensitive information in public issues.
 
 For repository administration, contact:
 
-- `contact-6ee481b16fd5@example.invalid`
+- Ask the repository maintainers for a private reporting channel; do not post sensitive information in public issues.

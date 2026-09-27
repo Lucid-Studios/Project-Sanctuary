@@ -17,8 +17,8 @@ Do not open public issues for:
 
 Private disclosure contacts:
 
-- `contact-6ee481b16fd5@example.invalid`
-- `contact-33ba439b7d5a@example.invalid`
+- Ask the repository maintainers for a private reporting channel; do not post sensitive information in public issues.
+- Ask the repository maintainers for a private reporting channel; do not post sensitive information in public issues.
 
 ## Public Repository Rule
 

@@ -20,4 +20,4 @@ implementation assistance.
 
 ## Maintainer Contact
 
-- `contact-6ee481b16fd5@example.invalid`
+- Ask the repository maintainers for a private reporting channel; do not post sensitive information in public issues.
